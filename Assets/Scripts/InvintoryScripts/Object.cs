@@ -4,6 +4,7 @@ enum Objects
 {
     TABLE = 0,
     WOOD,
+    STICK,
     COUNT
 }
 
@@ -12,8 +13,7 @@ public abstract class Object : MonoBehaviour
 {
     [SerializeField] protected int objectID;
     [SerializeField] protected string objectName;
-    [SerializeField] protected PlayerControler pc = null;
-    [SerializeField] protected Invintory invintory;
+    [SerializeField] protected Invintory targetInvintory;
     [SerializeField] protected bool playerInArea = false;
 
     private float pickupDist = 3f;
@@ -23,6 +23,8 @@ public abstract class Object : MonoBehaviour
 
     public virtual void Initialize() { }
     protected virtual void Interact() { }
+
+    public Object() { }
 
     private void Reset()
     {
@@ -36,21 +38,19 @@ public abstract class Object : MonoBehaviour
 
     private void OnTriggerEnter(Collider col)
     {
-        PlayerControler pcTemp = col.gameObject.GetComponent<PlayerControler>();
-        if (pcTemp != null)
+        Invintory invTemp = col.gameObject.GetComponentInParent<Invintory>();
+        if (invTemp != null)
         {
-            pc = pcTemp;
-            invintory = pc.GetComponent<Invintory>();
+            targetInvintory = invTemp;
             playerInArea = true;
         }
     }
 
     private void OnTriggerExit(Collider col)
     {
-        if(pc != null)
+        if(targetInvintory != null)
         {
-            pc = null;
-            invintory = null;
+            targetInvintory = null;
             playerInArea = false;
         }
     }

@@ -11,7 +11,7 @@ public class Wood : Object
 
     protected override void Interact()
     {
-        invintory.AddObject(this, 1);
+        targetInvintory.AddObject(this, 1);
         Destroy(gameObject);
     }
 

@@ -1,40 +1,45 @@
-using NUnit.Framework;
-using System.Collections.Generic;
-using System.Linq.Expressions;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
+
+[RequireComponent(typeof(PlayerInput))]
 public class Table : Object
 {
-    public List<Unit> currentRecipe = null;
-    private CraftingPanel panelRef;
-    private bool open;
+    public Recipe TempRecipe;
+    public GameObject tempTargetPrefab;
     public override void Initialize()
     {
         objectID = (int)Objects.TABLE;
         objectName = "Table";
     }
 
-    private void Update()
+    private void Start()
     {
-        if (playerInArea && pc.Interacted && !open)
-        {
-            Interact();
-            open = true;
-        }
-        else if (!playerInArea || (open && pc.Interacted))
-        {
-            try
-            {
-                panelRef.HidePanel();
-                open = false;
-            }
-            catch { }
-        }
+        //temp version, will need to figure out recipies with ui
+        Recipe stick = new Recipe();
+        stick.recipe.Add(((int)Objects.WOOD, 5));
+
+        stick.target = tempTargetPrefab.GetComponent<Stick>();
+        stick.target.Initialize();
+        TempRecipe = stick;
+
+        Debug.Log(TempRecipe.target.ObjectName);
     }
 
     protected override void Interact()
     {
-        panelRef = pc.CraftingPanel;
-        pc.CraftingPanel.ShowPanel();
+        TempRecipe.TryCraft();
+    }
+
+    private void Update()
+    {
+        if (playerInArea)
+        {
+            if(Input.GetKeyDown(KeyCode.E))
+            {
+                TempRecipe.targetInvintory = targetInvintory;
+                Interact();
+            }
+        }
     }
 }
