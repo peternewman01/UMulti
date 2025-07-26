@@ -122,5 +122,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6ceb9f2ae311556499fda9f1495f43b8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  topGenIndex: 0
-  bottomGenIndex: 1
+  generation: {fileID: 11400000, guid: 77769e6fa5352c040b979e70a3597736, type: 2}

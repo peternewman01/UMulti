@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using UnityEditor.Search;
 using UnityEngine;
 
-public abstract class TerrainGeneration : MonoBehaviour
+
+public abstract class TerrainGeneration : ScriptableObject
 {
     [Serializable]
     protected enum PerlinMath
@@ -27,20 +28,23 @@ public abstract class TerrainGeneration : MonoBehaviour
         public PerlinMath mathType;
     }
     
-    protected Vector3 center;
+    protected Vector3 center = Vector3.zero;
     [SerializeField] protected List<PerlinMultipliers> perlinMultipliers = new();
-    
-    protected List<float> terrainAirGaps;
     protected int seed;
 
-    private void Start()
+    public void SetSeed(int newSeed = int.MinValue)
     {
-        seed = UnityEngine.Random.Range(-50000, 50000);
+        if (newSeed != int.MinValue)
+        {
+            seed = newSeed;
+            return;
+        }
+
+        seed = UnityEngine.Random.Range(int.MinValue / 2, int.MaxValue / 2);
     }
 
 
 
-    public abstract void CustomNoise(MarchingAlgorithm algorithm, Vector2Int pos);
-    public float[] GetAirGaps() => terrainAirGaps.ToArray();
+    public abstract float[] CustomNoise(MarchingAlgorithm algorithm, Vector2Int pos);
 }
 

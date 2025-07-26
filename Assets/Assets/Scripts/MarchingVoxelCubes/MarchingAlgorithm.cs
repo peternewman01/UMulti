@@ -12,21 +12,24 @@ using UnityEngine;
 [RequireComponent(typeof(MeshRenderer))]
 public abstract class MarchingAlgorithm : MonoBehaviour
 {
-
+    protected bool hasData = false;
     protected int voxelArea;
     protected Vector2Int chunk;
     protected int subChunk = 0;
     protected float[,,] terrainMap;
-
     private MeshFilter meshFilter;
     private float terrainSurface;
     private List<Vector3> vertices = new();
     private List<int> triangles = new();
     public Action TerrainPopulationComplete;
+    public TerrainGeneration generation = null; // Set in the editor
 
     public void GenerateIsland()
     {
+        gameObject.SetActive(true);
         PopulateTerrainMap();
+        if (hasData) return;
+        else gameObject.SetActive(false);
     }
 
     public virtual void Init(Vector2Int chunk, int subChunk)

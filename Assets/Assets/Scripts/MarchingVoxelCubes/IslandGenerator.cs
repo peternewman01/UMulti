@@ -3,44 +3,39 @@ using Unity.VisualScripting;
 using UnityEngine;
 using static UnityEditor.PlayerSettings;
 
+[CreateAssetMenu(fileName = "NewIslandGeneration", menuName = "MarchingVoxelCubes/TerrainGeneration/Island")]
 public class IslandGenerator : TerrainGeneration
 {
     [SerializeField] protected List<PerlinMultipliers> bottomPerlinMultipliers = new();
 
     [SerializeField] protected Material material;
-    [SerializeField] private Vector3 islandCenter = Vector3.zero;
     [SerializeField] private float islandRadius = 64f;
     [Tooltip("Currently not implemented")]
     [UnityEngine.Range(0, 1)][SerializeField] private float edgeCrispness = 0.95f;
 
-    
-
-    public override void CustomNoise(MarchingAlgorithm algorithm, Vector2Int pos)
+    public override float[] CustomNoise(MarchingAlgorithm algorithm, Vector2Int pos)
     {
         float radiusPercent = GetChunkRadiusPercent(algorithm.GetChunk());
         Vector3 offset = ChunkMananger.Instance.ChunkToWorld(algorithm.GetChunk());
         float distance = Vector3.Distance(center, new Vector2(offset.x, offset.z) + pos);
         float ratio = distance / islandRadius;
-        if (ratio > radiusPercent) return;
+        if (ratio > radiusPercent) return null;
 
-        float value = 0;
+        float halfHeight = ChunkMananger.Instance.GetChunkHeight() /2;
 
+        float[] value = { halfHeight, halfHeight };
+
+        foreach (PerlinMultipliers perlinMultiplier in bottomPerlinMultipliers)
         {
-            foreach (PerlinMultipliers perlinMultiplier in bottomPerlinMultipliers)
-            {
-                value += CalcPerlin(perlinMultiplier, pos.x + (int)offset.x, pos.y + (int)offset.z, ratio);
-            }
-            terrainAirGaps.Add(ChunkMananger.Instance.GetChunkHeight() - value);
+            value[0] -= CalcPerlin(perlinMultiplier, pos.x + (int)offset.x, pos.y + (int)offset.z, ratio);
         }
-        value = 0;
-        {
-            foreach (PerlinMultipliers perlinMultiplier in perlinMultipliers)
-            {
-                value += CalcPerlin(perlinMultiplier, pos.x + (int)offset.x, pos.y + (int)offset.z, ratio);
-            }
 
-            terrainAirGaps.Add(ChunkMananger.Instance.GetChunkHeight() + value);
+        foreach (PerlinMultipliers perlinMultiplier in perlinMultipliers)
+        {
+            value[1] += CalcPerlin(perlinMultiplier, pos.x + (int)offset.x, pos.y + (int)offset.z, ratio);
         }
+
+        return value;
     }
 
     private float CalcPerlin(PerlinMultipliers multi, int x, int z, float distance)

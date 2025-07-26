@@ -14,7 +14,6 @@ public class ChunkMananger : MonoBehaviour
     [Tooltip("How many subchunks to generate per frame")]
     [SerializeField] private uint subChunksPerFrame = 4;    
     //[SerializeField] private MarchingAlgorithm algorithmPrefab;
-    [SerializeField] private TerrainGeneration generator;
     private List<Vector2Int> frontier = new();
     private List<Vector2Int> visited = new();
     private Vector2Int playerChunk = Vector2Int.zero;
@@ -122,5 +121,4 @@ public class ChunkMananger : MonoBehaviour
     public uint GetChunkSize() => chunkSize;
     public uint GetChunkHeight() => subChunks * chunkSize;
     public Vector2Int GetPlayerChunk() => playerChunk;
-    public TerrainGeneration GetGeneration() => generator;
 }
