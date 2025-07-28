@@ -30,21 +30,24 @@ public abstract class TerrainGeneration : ScriptableObject
     
     protected Vector3 center = Vector3.zero;
     [SerializeField] protected List<PerlinMultipliers> perlinMultipliers = new();
-    protected int seed;
+    protected float seed;
+    protected bool hasSetSeed = false;
 
-    public void SetSeed(int newSeed = int.MinValue)
+    public void TrySetSeed(float newSeed)
     {
-        if (newSeed != int.MinValue)
-        {
-            seed = newSeed;
-            return;
-        }
-
-        seed = UnityEngine.Random.Range(int.MinValue / 2, int.MaxValue / 2);
+        if (hasSetSeed) return; // Seed has already been set, do not change it again
+        hasSetSeed = true;
+        seed = newSeed;
     }
 
 
-
+    /// <summary>
+    /// Generates a list of points where the terrain should change from air to solid.
+    /// O(n) complexity, where n is perlinMultipliers.Length
+    /// </summary>
+    /// <param name="algorithm"></param>
+    /// <param name="pos"></param>
+    /// <returns></returns>
     public abstract float[] CustomNoise(MarchingAlgorithm algorithm, Vector2Int pos);
 }
 

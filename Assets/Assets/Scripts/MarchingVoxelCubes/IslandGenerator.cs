@@ -1,7 +1,7 @@
 using System.Collections.Generic;
+using System.Globalization;
 using Unity.VisualScripting;
 using UnityEngine;
-using static UnityEditor.PlayerSettings;
 
 [CreateAssetMenu(fileName = "NewIslandGeneration", menuName = "MarchingVoxelCubes/TerrainGeneration/Island")]
 public class IslandGenerator : TerrainGeneration
@@ -11,13 +11,16 @@ public class IslandGenerator : TerrainGeneration
     [SerializeField] protected Material material;
     [SerializeField] private float islandRadius = 64f;
     [Tooltip("Currently not implemented")]
-    [UnityEngine.Range(0, 1)][SerializeField] private float edgeCrispness = 0.95f;
+    [Range(0, 1)][SerializeField] private float edgeCrispness = 0.95f;
 
-    public override float[] CustomNoise(MarchingAlgorithm algorithm, Vector2Int pos)
+    public override float[] CustomNoise(MarchingAlgorithm algorithm, Vector2Int subPos)
     {
+        TrySetSeed(Random.Range(float.MinValue / 2, float.MaxValue / 2));
+        
         float radiusPercent = GetChunkRadiusPercent(algorithm.GetChunk());
         Vector3 offset = ChunkMananger.Instance.ChunkToWorld(algorithm.GetChunk());
-        float distance = Vector3.Distance(center, new Vector2(offset.x, offset.z) + pos);
+        Vector2Int worldPos = new Vector2Int((int)offset.x, (int)offset.z) + subPos;
+        float distance = Vector2.Distance(center, worldPos);
         float ratio = distance / islandRadius;
         if (ratio > radiusPercent) return null;
 
@@ -27,22 +30,22 @@ public class IslandGenerator : TerrainGeneration
 
         foreach (PerlinMultipliers perlinMultiplier in bottomPerlinMultipliers)
         {
-            value[0] -= CalcPerlin(perlinMultiplier, pos.x + (int)offset.x, pos.y + (int)offset.z, ratio);
+            value[0] -= CalcPerlin(perlinMultiplier, worldPos.x, worldPos.y, distance);
         }
 
         foreach (PerlinMultipliers perlinMultiplier in perlinMultipliers)
         {
-            value[1] += CalcPerlin(perlinMultiplier, pos.x + (int)offset.x, pos.y + (int)offset.z, ratio);
+            value[1] += CalcPerlin(perlinMultiplier, worldPos.x, worldPos.y, distance);
         }
-
+        Debug.Log($"values for chunk({algorithm.GetChunk().x}, {algorithm.GetChunk().y})-subPos({subPos.x}, {subPos.y}): (min:{value[0]}, max:{value[1]})");
         return value;
     }
 
     private float CalcPerlin(PerlinMultipliers multi, int x, int z, float distance)
     {
         float multiplier = 1f;
-        float perlin = (Mathf.PerlinNoise((x + seed) * multi.values.x,
-                    (z + seed) * multi.values.z) * multi.values.y);
+        float perlin = Mathf.PerlinNoise((x + seed) * multi.values.x,
+                    (z + seed) * multi.values.z) * multi.values.y;
 
         switch (multi.mathType)
         {
@@ -52,10 +55,10 @@ public class IslandGenerator : TerrainGeneration
                 multiplier = distance;
                 break;
             case PerlinMath.SIN:
-                multiplier = Mathf.Sin(Mathf.Clamp(distance, 0f, 1f) + 90f);
+                multiplier = Mathf.Sin(Mathf.Clamp(distance / islandRadius, 0f, 1f) + 90f);
                 break;
             case PerlinMath.COS:
-                multiplier = Mathf.Cos(Mathf.Clamp(distance, 0f, 1f));
+                multiplier = Mathf.Cos(Mathf.Clamp(distance / islandRadius, 0f, 1f));
                 break;
             case PerlinMath.TAN:
                 multiplier = Mathf.Tan(Mathf.Clamp(distance, 0f, 1f));

@@ -13,13 +13,13 @@ MonoBehaviour:
   m_Name: IslandGeneration
   m_EditorClassIdentifier: 
   perlinMultipliers:
-  - values: {x: 0.1, y: 4, z: 0.1}
+  - values: {x: 0.1, y: 12, z: 0.1}
     mathType: 3
-  - values: {x: 0.05, y: 3, z: 0.05}
+  - values: {x: 0.05, y: 9, z: 0.05}
     mathType: 3
   bottomPerlinMultipliers:
-  - values: {x: 0.15, y: 1, z: 0.15}
-    mathType: 4
+  - values: {x: 0.15, y: 8, z: 0.15}
+    mathType: 3
   material: {fileID: 2100000, guid: 73c176f402d2c2f4d929aa5da7585d17, type: 2}
-  islandRadius: 32
+  islandRadius: 64
   edgeCrispness: 0.95

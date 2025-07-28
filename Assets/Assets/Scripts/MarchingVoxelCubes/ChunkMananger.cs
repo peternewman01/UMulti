@@ -89,6 +89,7 @@ public class ChunkMananger : MonoBehaviour
     {
         GameObject spawnedChunk = new GameObject();
         spawnedChunk.transform.parent = transform;
+        spawnedChunk.name = "Chunk (" + chunk.x + ", " + chunk.y + ")";
         for (int i = 0; i < subChunks; i++)
         {
             MarchingAlgorithm subChunk = Instantiate(marchingAlgorithmPrefab);

@@ -40,29 +40,38 @@ public abstract class MarchingAlgorithm : MonoBehaviour
         voxelArea = (int)ChunkMananger.Instance.GetChunkSize();
         meshFilter = GetComponent<MeshFilter>();
 
-        terrainMap = new float[(voxelArea) + 1, (voxelArea) + 1, (voxelArea) + 1];
+        terrainMap = new float[voxelArea + 1, voxelArea + 1, voxelArea + 1];
         TerrainPopulationComplete += CreateMeshData;
     }
 
+    /// <summary>
+    /// O(n^3) complexity, where n is voxelArea + 1.
+    /// </summary>
     private void PopulateTerrainMap()
     {  
-        for (int x = 0; x < (voxelArea) + 1; x++)
+        for (int x = 0; x < voxelArea + 1; x++)
         {
-            for (int z = 0; z < (voxelArea) + 1; z++)
+            for (int z = 0; z < voxelArea + 1; z++)
             {
                 CreateTerrainMapDataAt(x, z);
-
-                // Set the value of this point in the terrainMap.
-
             }
         }
 
         TerrainPopulationComplete?.Invoke();
     }
 
+    /// <summary>
+    /// Generates and Assigns terrain map data at x,z sub-coordinates,
+    /// between y = 0 and y = voxelArea.
+    /// O(n) complexity, where n is voxelArea + 1
+    /// </summary>
+    /// <param name="x">x sub-coord</param>
+    /// <param name="z">z sub-coord</param>
     protected abstract void CreateTerrainMapDataAt(int x, int z);
 
-
+    /// <summary>
+    /// O(n^3) complexity, where n is voxelArea.
+    /// </summary>
     private void CreateMeshData()
     {
         ClearMeshData();
@@ -81,7 +90,9 @@ public abstract class MarchingAlgorithm : MonoBehaviour
                     {
 
                         Vector3Int corner = new Vector3Int(x, y, z) + CornerTable[i];
-                        cube[i] = terrainMap[corner.x, corner.y, corner.z];
+
+
+                        cube[i] = terrainMap[corner.x, corner.y, corner.z] == 0 ? 1 : (terrainMap[corner.x, corner.y, corner.z] + 1) % ((int)terrainMap[corner.x, corner.y, corner.z] + 1);
 
                     }
 

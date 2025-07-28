@@ -391,7 +391,7 @@ MonoBehaviour:
   m_IsGlobal: 1
   priority: 0
   blendDistance: 0
-  weight: 1
+  weight: 0
   sharedProfile: {fileID: 11400000, guid: 8ba92e2dd7f884a0f88b98fa2d235fe7, type: 2}
 --- !u!4 &432432461
 Transform:
@@ -438,10 +438,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   marchingAlgorithmPrefab: {fileID: 2150305323032263239, guid: 9c5ce2a33e0ba3542b8f5080e1939752, type: 3}
-  chunkSize: 8
+  chunkSize: 16
   subChunks: 4
   subChunksPerFrame: 1
-  generator: {fileID: 0}
 --- !u!4 &1284833565
 Transform:
   m_ObjectHideFlags: 0
