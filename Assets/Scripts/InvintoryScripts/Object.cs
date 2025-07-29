@@ -1,3 +1,5 @@
+using Unity.Netcode;
+using Unity.VisualScripting;
 using UnityEngine;
 
 enum Objects
@@ -9,7 +11,7 @@ enum Objects
 }
 
 [RequireComponent(typeof(SphereCollider))]
-public abstract class Object : MonoBehaviour
+public abstract class Object : NetworkBehaviour
 {
     [SerializeField] protected int objectID;
     [SerializeField] protected string objectName;

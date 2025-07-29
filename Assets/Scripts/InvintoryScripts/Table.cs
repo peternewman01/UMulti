@@ -1,3 +1,4 @@
+using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -7,6 +8,7 @@ public class Table : Object
 {
     public Recipe TempRecipe;
     public GameObject tempTargetPrefab;
+    public TMP_Text test;
     public override void Initialize()
     {
         objectID = (int)Objects.TABLE;
@@ -22,8 +24,6 @@ public class Table : Object
         stick.target = tempTargetPrefab.GetComponent<Stick>();
         stick.target.Initialize();
         TempRecipe = stick;
-
-        Debug.Log(TempRecipe.target.ObjectName);
     }
 
     protected override void Interact()
@@ -33,6 +33,15 @@ public class Table : Object
 
     private void Update()
     {
+        if (Input.GetKey(KeyCode.E))
+        {
+            test.text = "Detected";
+        }
+        else
+        {
+            test.text = "Not Detected";
+        }
+
         if (playerInArea)
         {
             if(Input.GetKeyDown(KeyCode.E))
