@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: IslandGeneration
   m_EditorClassIdentifier: 
   perlinMultipliers:
-  - values: {x: 0.1, y: 12, z: 0.1}
+  - values: {x: 0.1, y: 30, z: 0.1}
     mathType: 3
   - values: {x: 0.05, y: 9, z: 0.05}
     mathType: 3
