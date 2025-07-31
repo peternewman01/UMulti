@@ -6,9 +6,11 @@ using UnityEngine.InputSystem;
 public class PlayerManager : NetworkBehaviour
 {
     [SerializeField] private Transform boolet;
+    [SerializeField] private Transform slash;
     private Vector2 movementInput;
     private float moveSpeed = 3f;
 
+    private Animator anim;
     public InputActionAsset InputActions;
     public Transform cameraTransform;
     public Transform aimCamTransform;
@@ -22,6 +24,7 @@ public class PlayerManager : NetworkBehaviour
 
     public override void OnNetworkSpawn()
     {
+        Cursor.lockState = CursorLockMode.Locked;
         Debug.Log("Player added!");
 
         if (!IsOwner)
@@ -31,6 +34,7 @@ public class PlayerManager : NetworkBehaviour
         }
         else
         {
+            anim = transform.Find("lilCultist3").GetComponent<Animator>();
             InputActions.FindActionMap("Player").Enable();
         }
     }
@@ -70,6 +74,19 @@ public class PlayerManager : NetworkBehaviour
             camForward.Normalize();
             camRight.Normalize();
             speedMult = 1;
+
+            if(Mathf.Abs(xInput) >= .01f || Mathf.Abs(zInput) >= .01f)
+            {
+                //if(!IsHost)
+                //    RequestWalkAnimServerRpc(true);
+                anim.SetBool("Walking", true);
+            }
+            else
+            {
+                //if(!IsHost)
+                //    RequestWalkAnimServerRpc(false);
+                anim.SetBool("Walking", false);
+            }
         }
         else
         {
@@ -118,21 +135,53 @@ public class PlayerManager : NetworkBehaviour
 
             RequestShootServerRpc(transform.position + Vector3.up, transform.forward);
         }
+        else if(Input.GetMouseButton(0) && Time.time - lastShotTime >= shootCooldown)
+        {
+            lastShotTime = Time.time;
+            RequestSlashServerRpc(transform.position + Vector3.up, -transform.right);
+        }
     }
+
+    //[Rpc(SendTo.Server)] //was trying to figure out how to send animations from client, but found out it was a bool override that was built in...
+    //private void RequestWalkAnimServerRpc(bool state)
+    //{
+    //    Debug.Log("ASSIGNING WALKING TO: " + state);
+    //    anim.SetBool("Walking", state);
+    //}
 
     [Rpc(SendTo.Server)]
     private void RequestShootServerRpc(Vector3 spawnPosition, Vector3 shootDirection)
     {
+        float forwardOffset = 1f; //distance in front of the player
+        Vector3 spawnOffset = transform.forward * forwardOffset;
+
         Transform spawnedBoolet = Instantiate(boolet);
-        spawnedBoolet.transform.position = spawnPosition;
+        spawnedBoolet.transform.position = spawnPosition + spawnOffset;
 
         var netObj = spawnedBoolet.GetComponent<NetworkObject>();
-        netObj.Spawn(true); // Server authority
+        netObj.Spawn(true);
 
         var rb = spawnedBoolet.GetComponent<Rigidbody>();
-        rb.AddForce(shootDirection.normalized * 5000f); // You can tweak the force
+        rb.AddForce(shootDirection.normalized * 5000f); //you can tweak the force
 
         Destroy(spawnedBoolet.gameObject, 3);
+    }
+
+    [Rpc(SendTo.Server)]
+    private void RequestSlashServerRpc(Vector3 spawnPosition, Vector3 shootDirection)
+    {
+        float forwardOffset = .5f; //distance in front of the player
+        Vector3 spawnOffset = transform.forward * forwardOffset;
+
+        Transform spawnedSlash = Instantiate(slash);
+        spawnedSlash.transform.position = spawnPosition + spawnOffset;
+        spawnedSlash.transform.rotation = Quaternion.LookRotation(shootDirection);
+        spawnedSlash.transform.Rotate(Random.Range(-90f, 90f), 0f, 0f);
+
+        var netObj = spawnedSlash.GetComponent<NetworkObject>();
+        netObj.Spawn(true);
+
+        Destroy(spawnedSlash.gameObject, .5f);
     }
 
     //[Rpc(SendTo.ClientsAndHost)]
