@@ -122,7 +122,7 @@ GameObject:
   - component: {fileID: 3733553373281037161}
   m_Layer: 6
   m_Name: Capsule
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -232,9 +232,12 @@ GameObject:
   - component: {fileID: 2879336928035469116}
   - component: {fileID: 2675783541006157575}
   - component: {fileID: 47529052544055719}
+  - component: {fileID: 4770656032579668302}
+  - component: {fileID: 9147985852121145449}
+  - component: {fileID: 3982206497522430119}
   m_Layer: 6
   m_Name: Player
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -476,6 +479,50 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
+--- !u!114 &4770656032579668302
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5199031698185166006}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 90299f6d5abd016449c5b0180de34a85, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &9147985852121145449
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5199031698185166006}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7fc3110ae1c279f4cb31bb139c2cdca8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  targetText: {fileID: 0}
+  inv: {fileID: 0}
+  target: 1
+  targetName: Wood
+--- !u!114 &3982206497522430119
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5199031698185166006}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7fc3110ae1c279f4cb31bb139c2cdca8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  targetText: {fileID: 0}
+  inv: {fileID: 0}
+  target: 2
+  targetName: Stick
 --- !u!1 &5715089899143181011
 GameObject:
   m_ObjectHideFlags: 0
