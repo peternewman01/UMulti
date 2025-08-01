@@ -48,6 +48,6 @@ public abstract class TerrainGeneration : ScriptableObject
     /// <param name="algorithm"></param>
     /// <param name="pos"></param>
     /// <returns></returns>
-    public abstract float[] CustomNoise(MarchingAlgorithm algorithm, Vector2Int pos);
+    public abstract float[] CustomNoise(Vector2Int chunk, Vector2Int pos);
 }
 

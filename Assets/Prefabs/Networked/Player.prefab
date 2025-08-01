@@ -128,7 +128,7 @@ GameObject:
   - component: {fileID: 9147985852121145449}
   - component: {fileID: 3982206497522430119}
   - component: {fileID: 4155171479499230009}
-  - component: {fileID: 314648279300448939}
+  - component: {fileID: 9085496850077203498}
   m_Layer: 6
   m_Name: Player
   m_TagString: Player
@@ -145,7 +145,7 @@ Transform:
   m_GameObject: {fileID: 5199031698185166006}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 50, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -435,21 +435,33 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   TransitionStateInfoList: []
   m_Animator: {fileID: 3216230067998586660}
---- !u!114 &314648279300448939
-MonoBehaviour:
+--- !u!54 &9085496850077203498
+Rigidbody:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5199031698185166006}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 986b45e39e05e2c4c919fbf3d531c86f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ShowTopMostFoldoutHeaderGroup: 1
-  TransitionStateInfoList: []
-  m_Animator: {fileID: 0}
+  serializedVersion: 5
+  m_Mass: 1
+  m_LinearDamping: 0
+  m_AngularDamping: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 1
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 58
+  m_CollisionDetection: 0
 --- !u!1 &5715089899143181011
 GameObject:
   m_ObjectHideFlags: 0
@@ -505,6 +517,30 @@ PrefabInstance:
       propertyPath: m_Center.z
       value: 0.0048
       objectReference: {fileID: 0}
+    - target: {fileID: 833024428566040833, guid: e7c81aa6aace6be4ebcb9433d8af1c0b, type: 3}
+      propertyPath: m_AABB.m_Center.x
+      value: NaN
+      objectReference: {fileID: 0}
+    - target: {fileID: 833024428566040833, guid: e7c81aa6aace6be4ebcb9433d8af1c0b, type: 3}
+      propertyPath: m_AABB.m_Center.y
+      value: NaN
+      objectReference: {fileID: 0}
+    - target: {fileID: 833024428566040833, guid: e7c81aa6aace6be4ebcb9433d8af1c0b, type: 3}
+      propertyPath: m_AABB.m_Center.z
+      value: NaN
+      objectReference: {fileID: 0}
+    - target: {fileID: 833024428566040833, guid: e7c81aa6aace6be4ebcb9433d8af1c0b, type: 3}
+      propertyPath: m_AABB.m_Extent.x
+      value: NaN
+      objectReference: {fileID: 0}
+    - target: {fileID: 833024428566040833, guid: e7c81aa6aace6be4ebcb9433d8af1c0b, type: 3}
+      propertyPath: m_AABB.m_Extent.y
+      value: NaN
+      objectReference: {fileID: 0}
+    - target: {fileID: 833024428566040833, guid: e7c81aa6aace6be4ebcb9433d8af1c0b, type: 3}
+      propertyPath: m_AABB.m_Extent.z
+      value: NaN
+      objectReference: {fileID: 0}
     - target: {fileID: 3437127196191003725, guid: e7c81aa6aace6be4ebcb9433d8af1c0b, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -548,6 +584,30 @@ PrefabInstance:
     - target: {fileID: 5903243558382360467, guid: e7c81aa6aace6be4ebcb9433d8af1c0b, type: 3}
       propertyPath: m_Name
       value: lilCultist3
+      objectReference: {fileID: 0}
+    - target: {fileID: 9044902681538670768, guid: e7c81aa6aace6be4ebcb9433d8af1c0b, type: 3}
+      propertyPath: m_AABB.m_Center.x
+      value: NaN
+      objectReference: {fileID: 0}
+    - target: {fileID: 9044902681538670768, guid: e7c81aa6aace6be4ebcb9433d8af1c0b, type: 3}
+      propertyPath: m_AABB.m_Center.y
+      value: NaN
+      objectReference: {fileID: 0}
+    - target: {fileID: 9044902681538670768, guid: e7c81aa6aace6be4ebcb9433d8af1c0b, type: 3}
+      propertyPath: m_AABB.m_Center.z
+      value: NaN
+      objectReference: {fileID: 0}
+    - target: {fileID: 9044902681538670768, guid: e7c81aa6aace6be4ebcb9433d8af1c0b, type: 3}
+      propertyPath: m_AABB.m_Extent.x
+      value: NaN
+      objectReference: {fileID: 0}
+    - target: {fileID: 9044902681538670768, guid: e7c81aa6aace6be4ebcb9433d8af1c0b, type: 3}
+      propertyPath: m_AABB.m_Extent.y
+      value: NaN
+      objectReference: {fileID: 0}
+    - target: {fileID: 9044902681538670768, guid: e7c81aa6aace6be4ebcb9433d8af1c0b, type: 3}
+      propertyPath: m_AABB.m_Extent.z
+      value: NaN
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

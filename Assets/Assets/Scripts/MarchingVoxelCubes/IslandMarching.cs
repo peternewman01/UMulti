@@ -15,7 +15,7 @@ public class IslandMarching : MarchingAlgorithm
 
     protected override void CreateTerrainMapDataAt(int x, int z)
     {
-        float[] airGaps = generation.CustomNoise(this, new Vector2Int(x, z));
+        float[] airGaps = generation.CustomNoise(chunk, new Vector2Int(x, z));
         if(airGaps == null || airGaps.Length != 2)
         {
             Debug.Log($"IslandMarching: CustomNoise returned null or insufficient data for chunk ({x}, {z}), subchunk ({subChunk})");

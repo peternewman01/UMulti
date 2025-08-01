@@ -13,12 +13,12 @@ public class IslandGenerator : TerrainGeneration
     [Tooltip("Currently not implemented")]
     [Range(0, 1)][SerializeField] private float edgeCrispness = 0.95f;
 
-    public override float[] CustomNoise(MarchingAlgorithm algorithm, Vector2Int subPos)
+    public override float[] CustomNoise(Vector2Int chunk, Vector2Int subPos)
     {
-        TrySetSeed(Random.Range(float.MinValue / 2, float.MaxValue / 2));
+        TrySetSeed(Random.Range(-10000, 10000));
         
-        float radiusPercent = GetChunkRadiusPercent(algorithm.GetChunk());
-        Vector3 offset = ChunkMananger.Instance.ChunkToWorld(algorithm.GetChunk());
+        float radiusPercent = GetChunkRadiusPercent(chunk);
+        Vector3 offset = ChunkMananger.Instance.ChunkToWorld(chunk);
         Vector2Int worldPos = new Vector2Int((int)offset.x, (int)offset.z) + subPos;
         float distance = Vector2.Distance(center, worldPos);
         float ratio = distance / islandRadius;
@@ -37,15 +37,15 @@ public class IslandGenerator : TerrainGeneration
         {
             value[1] += CalcPerlin(perlinMultiplier, worldPos.x, worldPos.y, distance);
         }
-        Debug.Log($"values for chunk({algorithm.GetChunk().x}, {algorithm.GetChunk().y})-subPos({subPos.x}, {subPos.y}): (min:{value[0]}, max:{value[1]})");
+        Debug.Log($"values for chunk({chunk.x}, {chunk.y})-subPos({subPos.x}, {subPos.y}): (min:{value[0]}, max:{value[1]})");
         return value;
     }
 
     private float CalcPerlin(PerlinMultipliers multi, int x, int z, float distance)
     {
         float multiplier = 1f;
-        float perlin = Mathf.PerlinNoise((x + seed) * multi.values.x,
-                    (z + seed) * multi.values.z) * multi.values.y;
+        float perlin = Mathf.PerlinNoise((x * multi.values.x)/* + seed*/,
+                    (z * multi.values.z) /* + seed*/) * multi.values.y;
 
         switch (multi.mathType)
         {
@@ -70,7 +70,7 @@ public class IslandGenerator : TerrainGeneration
                 multiplier = Mathf.Log(distance);
                 break;
             case PerlinMath.INVERSE_LINEAR:
-                multiplier = 1 / distance;
+                multiplier = 1 / (distance + float.Epsilon);
                 break;
             default:
                 break;
