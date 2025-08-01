@@ -10,9 +10,11 @@ public class Recipe
 
     public List<(int, int)> recipe = new List<(int, int)>() { };
     public Object target;
+    public Table table;
+    private Dictionary<Objects, int> holding = new Dictionary<Objects, int>() { };
 
 
-    public void TryCraft()
+    public void TryCraftInvintory()
     {
         bool canCraft = true;
 
@@ -43,5 +45,39 @@ public class Recipe
         {
             Debug.Log("can't craft a " + target.ObjectName);
         }
+    }
+
+    public bool TryCraftTotems()
+    {
+        foreach (KeyValuePair<int, int> item in table.holding)
+        {
+            if(holding.ContainsKey((Objects)item.Key))
+            {
+                holding[(Objects)item.Key] += item.Value;
+            }
+            else
+            {
+                holding.Add((Objects)item.Key, item.Value);
+            }
+        }
+
+        bool canCraft = true;
+
+        foreach (var item in recipe)
+        {
+            if (holding.ContainsKey((Objects)item.Item1))
+            {
+                if (holding[(Objects)item.Item1] < item.Item2)
+                {
+                    canCraft = false;
+                }
+            }
+            else
+            {
+                canCraft = false;
+            }
+        }
+
+        return canCraft;
     }
 }

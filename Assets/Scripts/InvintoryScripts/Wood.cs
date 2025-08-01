@@ -19,7 +19,7 @@ public class Wood : Object
     {
         if (playerInArea)
         {
-            Interact();
+            //Interact();
         }
     }
 }
