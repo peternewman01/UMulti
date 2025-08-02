@@ -1,3 +1,6 @@
+using System;
+using System.Linq;
+using System.Reflection;
 using Unity.Netcode;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -23,15 +26,31 @@ public abstract class Object : NetworkBehaviour
     public int ObjectID => objectID;
     public string ObjectName => objectName;
 
-    public virtual void Initialize() { }
     protected virtual void Interact() { }
+
+    private void Awake()
+    {
+        Type baseType = typeof(Object);
+        var subTypes = Assembly.GetAssembly(baseType).GetTypes()
+            .Where(t => t.IsClass && !t.IsAbstract && t.IsSubclassOf(baseType));
+
+        int id = 0;
+        foreach (Type type in subTypes)
+        {
+            var field = type.GetField("objectID", BindingFlags.NonPublic);
+            field?.SetValue(null, id);
+            id++;
+
+            field = type.GetField("objectName", BindingFlags.NonPublic);
+            field?.SetValue(null, type.Name);
+
+        } 
+    }
 
     public Object() { }
 
     private void Reset()
     {
-        Initialize();
-
         SphereCollider sc = GetComponent<SphereCollider>();
         sc.isTrigger = true;
         float scaledDist = pickupDist/ ((transform.localScale.x + transform.localScale.y + transform.localScale.z)/3);

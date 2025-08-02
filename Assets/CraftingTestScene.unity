@@ -4146,7 +4146,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5491528118600474388, guid: b191ecf0104d105419adf3b5696031d5, type: 3}
       propertyPath: m_Name
-      value: Table
+      value: StickMaker
       objectReference: {fileID: 0}
     - target: {fileID: 8548914285155623681, guid: b191ecf0104d105419adf3b5696031d5, type: 3}
       propertyPath: totems.Array.size

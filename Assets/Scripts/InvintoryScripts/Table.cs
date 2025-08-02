@@ -14,11 +14,6 @@ public class Table : Object
     public Dictionary<int, int> holding = new Dictionary<int, int>();
     [SerializeField] private List<Totem> totems = new List<Totem>();
     [SerializeField] private Transform spawnPos;
-    public override void Initialize()
-    {
-        objectID = (int)Objects.TABLE;
-        objectName = "Table";
-    }
 
     private void Start()
     {
@@ -27,7 +22,6 @@ public class Table : Object
         stick.recipe.Add(((int)Objects.WOOD, 3));
 
         stick.target = tempTargetPrefab.GetComponent<Stick>();
-        stick.target.Initialize();
         TempRecipe = stick;
         TempRecipe.table = this;
     }

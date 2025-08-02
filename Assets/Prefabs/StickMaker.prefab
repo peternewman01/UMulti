@@ -161,7 +161,7 @@ GameObject:
   - component: {fileID: 3775763786808545502}
   - component: {fileID: 8548914285155623681}
   m_Layer: 0
-  m_Name: Table
+  m_Name: StickMaker
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

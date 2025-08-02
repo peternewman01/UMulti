@@ -14,7 +14,6 @@ public class ShowObjectNumber : NetworkBehaviour
         inv = this.gameObject.GetComponent<Invintory>();
         foreach (TMP_Text t in FindObjectsByType<TMP_Text>(FindObjectsSortMode.None))
         {
-            Debug.Log(t.gameObject.name);
             if(t.gameObject.name == targetName)
             {
                 targetText = t; 
