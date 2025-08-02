@@ -5,22 +5,48 @@ using UnityEngine.InputSystem;
 [RequireComponent(typeof(PlayerInput))]
 public class PlayerManager : NetworkBehaviour
 {
-    [SerializeField] private Transform boolet;
-    [SerializeField] private Transform slash;
+    public InputActionAsset InputActions;
+
+    [Header("Movement")]
+    [SerializeField] private Rigidbody rb;
+
+    [SerializeField] private float walkingSpeed = 5f;
+    [SerializeField] private float sprintSpeed = 15f;
+    private Vector3 target;
+    private float speed;
+
+    private InputAction move;
+    private InputAction look;
+    private InputAction sprint;
+    private InputAction interact;
+
     private Vector2 movementInput;
     private float moveSpeed = 3f;
-
-    private Animator anim;
-    public InputActionAsset InputActions;
     public Transform cameraTransform;
     public Transform aimCamTransform;
 
     private Vector3 camForward;
     private Vector3 camRight;
 
+    [Header("Boolet")]
+    [SerializeField] private Transform boolet;
+    [SerializeField] private Transform slash;
+
+    private Animator anim;
+
     private bool canShoot = false;
     private float lastShotTime = 0f;
     private float shootCooldown = 0.2f;
+
+    private void OnEnable()
+    {
+        InputActions.FindActionMap("Player").Enable();
+    }
+
+    private void OnDisable()
+    {
+        InputActions.FindActionMap("Player").Disable();
+    }
 
     public override void OnNetworkSpawn()
     {
@@ -30,13 +56,18 @@ public class PlayerManager : NetworkBehaviour
         if (!IsOwner)
         {
             GetComponent<PlayerInput>().enabled = false;
-            InputActions.FindActionMap("Player").Disable();
         }
         else
         {
             anim = transform.Find("lilCultist3").GetComponent<Animator>();
-            InputActions.FindActionMap("Player").Enable();
         }
+
+        move = InputSystem.actions.FindAction("Move");
+        look = InputSystem.actions.FindAction("Look");
+        sprint = InputSystem.actions.FindAction("Sprint");
+        interact = InputSystem.actions.FindAction("Interact");
+
+        rb = GetComponent<Rigidbody>();
     }
 
     public override void OnNetworkDespawn()
@@ -54,6 +85,24 @@ public class PlayerManager : NetworkBehaviour
         if (!IsOwner) return;
         Walking();
         AimShooting();
+    }
+
+    private void WalkingNew()
+    {
+        movementInput = move.ReadValue<Vector2>();
+        if (sprint.IsPressed())
+        {
+            speed = sprintSpeed;
+        }
+        else
+        {
+            speed = walkingSpeed;
+        }
+
+        Vector3 moveDirection = new Vector3(movementInput.x, 0, movementInput.y).normalized;
+        rb.linearVelocity = moveDirection * speed + new Vector3(0, rb.linearVelocity.y, 0);
+
+        //TODO: need to push over the animation and camera stuff
     }
 
     private void Walking()

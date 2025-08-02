@@ -7,7 +7,7 @@ public class Invintory : MonoBehaviour
 {
     [SerializeField] public Dictionary<int, Unit> Stuff = new Dictionary<int, Unit>();
 
-    public void AddObject(Object obj, int count)
+    public void AddObject<T>(T obj, int count) where T : Object
     {
         if (Stuff.ContainsKey(obj.ObjectID))
         {
@@ -17,10 +17,11 @@ public class Invintory : MonoBehaviour
         {
             Stuff.Add(obj.ObjectID, new Unit(obj, count));
         }
+
         Debug.Log("Player has " + Stuff[obj.ObjectID].count + " " + Stuff[obj.ObjectID].obj.ObjectName);
     }
 
-    public void RemoveObject(Object obj, int count)
+    public void RemoveObject<T>(T obj, int count) where T : Object
     {
         RemoveObject(obj.ObjectID, count);
     }
@@ -36,7 +37,7 @@ public class Invintory : MonoBehaviour
         }
     }
 
-    public bool Has(Object obj, int count)
+    public bool Has<T>(T obj, int count) where T : Object
     {
         return Has(obj.ObjectID, count);
     }

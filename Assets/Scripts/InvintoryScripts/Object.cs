@@ -26,6 +26,14 @@ public abstract class Object : NetworkBehaviour
     public int ObjectID => objectID;
     public string ObjectName => objectName;
 
+    public Object() { }
+
+    public void pickup(Invintory invintory)
+    {
+        invintory.AddObject(this, 1);
+        Destroy(gameObject);
+    }
+
     protected virtual void Interact() { }
 
     private void Awake()
@@ -46,8 +54,6 @@ public abstract class Object : NetworkBehaviour
 
         } 
     }
-
-    public Object() { }
 
     private void Reset()
     {
