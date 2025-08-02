@@ -28,8 +28,8 @@ public abstract class TerrainGeneration : ScriptableObject
         public PerlinMath mathType;
     }
     
-    protected Vector3 center = Vector3.zero;
-    [SerializeField] protected List<PerlinMultipliers> perlinMultipliers = new();
+
+    //[SerializeField] protected List<PerlinMultipliers> perlinMultipliers = new();
     protected float seed;
     protected bool hasSetSeed = false;
 

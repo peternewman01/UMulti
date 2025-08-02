@@ -3903,6 +3903,7 @@ MonoBehaviour:
   chunkSize: 4
   subChunks: 12
   subChunksPerFrame: 8
+  islandManager: {fileID: 11400000, guid: 77769e6fa5352c040b979e70a3597736, type: 2}
 --- !u!4 &1772774570
 Transform:
   m_ObjectHideFlags: 0
@@ -4808,8 +4809,10 @@ MonoBehaviour:
   TempRecipe:
     targetInvintory: {fileID: 0}
     target: {fileID: 0}
+    table: {fileID: 0}
   tempTargetPrefab: {fileID: 9125502469920471631, guid: bfc9b1f46214f0a4da2e58088ae34812, type: 3}
-  test: {fileID: 997069580}
+  totems: []
+  spawnPos: {fileID: 0}
 --- !u!135 &2055419005
 SphereCollider:
   m_ObjectHideFlags: 0
