@@ -18,6 +18,9 @@ public class ChunkMananger : MonoBehaviour
     private List<Vector2Int> visited = new();
     private Vector2Int playerChunk = Vector2Int.zero;
 
+    //TEMP
+    public IslandGeneratorManager islandManager;
+
     private void Awake()
     {
         if (Instance == null)
@@ -30,6 +33,20 @@ public class ChunkMananger : MonoBehaviour
         {
             Debug.LogError("Chunk Manager already exists in scene");
             Destroy(this);
+        }
+    }
+
+    //TEMP
+    private void Update()
+    {
+        if(Input.GetKeyDown(KeyCode.B))
+        {
+            islandManager.CreateNewGenerator();
+        }
+
+        if(FindFirstObjectByType<PlayerManager>())
+        {
+            playerChunk = WorldToChunk(FindFirstObjectByType<PlayerManager>().transform.position);
         }
     }
 

@@ -178,8 +178,12 @@ public abstract class MarchingAlgorithm : MonoBehaviour
     //Accessors  
     public Vector2Int GetChunk() => chunk;
     public int GetSubChunk() => subChunk;
-    public int GetVoxelArea() => voxelArea; 
+    public int GetVoxelArea() => voxelArea;
 
+    internal object GetGenerator()
+    {
+        throw new NotImplementedException();
+    }
 
     Vector3Int[] CornerTable = new Vector3Int[8] {
 

@@ -18,7 +18,7 @@ public class IslandMarching : MarchingAlgorithm
         float[] airGaps = generation.CustomNoise(chunk, new Vector2Int(x, z));
         if(airGaps == null || airGaps.Length != 2)
         {
-            Debug.Log($"IslandMarching: CustomNoise returned null or insufficient data for chunk ({x}, {z}), subchunk ({subChunk})");
+            //Debug.Log($"IslandMarching: CustomNoise returned null or insufficient data for chunk ({x}, {z}), subchunk ({subChunk})");
             for (int y = 0; y < voxelArea + 1; y++)
             {
                 terrainMap[x, y, z] = 0f; // Default to air if no data is available

@@ -10,16 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1413dcc7223383341ab8f22e6c13d0df, type: 3}
-  m_Name: IslandGeneration
+  m_Name: IslandGenerationManager
   m_EditorClassIdentifier: 
-  perlinMultipliers:
-  - values: {x: 0.05, y: 12, z: 0.05}
-    mathType: 3
-  - values: {x: 0.05, y: 9, z: 0.05}
-    mathType: 3
-  bottomPerlinMultipliers:
-  - values: {x: 0.15, y: 8, z: 0.15}
-    mathType: 3
-  material: {fileID: 2100000, guid: 73c176f402d2c2f4d929aa5da7585d17, type: 2}
-  islandRadius: 64
-  edgeCrispness: 0.95
+  possibleGenerators:
+  - {fileID: 11400000, guid: d84670bb6f637c54baa2f8393e760446, type: 2}
