@@ -1,6 +1,8 @@
 using UnityEngine;
 using Unity.Netcode;
 using UnityEngine.InputSystem;
+using UnityEngine.Windows;
+using UnityEditor;
 
 [RequireComponent(typeof(PlayerInput))]
 public class PlayerManager : NetworkBehaviour
@@ -19,6 +21,9 @@ public class PlayerManager : NetworkBehaviour
     private InputAction look;
     private InputAction sprint;
     private InputAction interact;
+    private InputAction attack;
+    private InputAction click;
+    private InputAction jump;
 
     private Vector2 movementInput;
     private float moveSpeed = 3f;
@@ -37,6 +42,12 @@ public class PlayerManager : NetworkBehaviour
     private bool canShoot = false;
     private float lastShotTime = 0f;
     private float shootCooldown = 0.2f;
+
+    [Header("Jumps")]
+    [SerializeField] private int jumpCount = 1;
+    [SerializeField] private int jumpsUsed = 0;
+    [SerializeField] private float jumpForce = 250;
+    [SerializeField] private Transform groundCheck;
 
     private void OnEnable()
     {
@@ -66,6 +77,9 @@ public class PlayerManager : NetworkBehaviour
         look = InputSystem.actions.FindAction("Look");
         sprint = InputSystem.actions.FindAction("Sprint");
         interact = InputSystem.actions.FindAction("Interact");
+        attack = InputSystem.actions.FindAction("Attack");
+        click = InputSystem.actions.FindAction("Click");
+        jump = InputSystem.actions.FindAction("Jump");
 
         rb = GetComponent<Rigidbody>();
     }
@@ -83,8 +97,33 @@ public class PlayerManager : NetworkBehaviour
     void Update()
     {
         if (!IsOwner) return;
-        Walking();
+        WalkingNew();
         AimShooting();
+        JumpCheck();
+    }
+
+    private void JumpCheck()
+    {
+        int groundMask = LayerMask.GetMask("Ground");
+        if (Physics.CheckSphere(groundCheck.position, 0.1f, groundMask) && rb.linearVelocity.y < 3f)
+        {
+            jumpsUsed = 0;
+        }
+        if (jumpsUsed < jumpCount)
+        {
+            if (jump.WasPerformedThisFrame())
+            {
+                jumpsUsed++;
+                rb.AddForce(transform.up * jumpForce);
+            }
+        }
+    }
+
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(groundCheck.position, 0.1f);
     }
 
     private void WalkingNew()
@@ -99,18 +138,40 @@ public class PlayerManager : NetworkBehaviour
             speed = walkingSpeed;
         }
 
-        Vector3 moveDirection = new Vector3(movementInput.x, 0, movementInput.y).normalized;
+        Vector3 moveDirection = (cameraTransform.forward * movementInput.y + cameraTransform.right * movementInput.x);
+        moveDirection.y = 0; // Prevent vertical tilt from affecting movement
+        moveDirection.Normalize();
         rb.linearVelocity = moveDirection * speed + new Vector3(0, rb.linearVelocity.y, 0);
 
-        //TODO: need to push over the animation and camera stuff
+        if (cameraTransform.gameObject.activeSelf)
+        {
+            if (Mathf.Abs(movementInput.x) >= .01f || Mathf.Abs(movementInput.y) >= .01f)
+            {
+                //if(!IsHost)
+                //    RequestWalkAnimServerRpc(true);
+                anim.SetBool("Walking", true);
+            }
+            else
+            {
+                //if(!IsHost)
+                //    RequestWalkAnimServerRpc(false);
+                anim.SetBool("Walking", false);
+            }
+        }
+
+
+        if (movementInput.magnitude > 0)
+        {
+            transform.forward = moveDirection;
+        }
     }
 
-    private void Walking()
+    private void WalkingOld()
     {
         if (cameraTransform == null) return;
 
-        float xInput = Input.GetAxis("Horizontal");
-        float zInput = Input.GetAxis("Vertical");
+        float xInput = 0;// Input.GetAxis("Horizontal");
+        float zInput = 0;// Input.GetAxis("Vertical");
 
         float speedMult;
 
@@ -124,7 +185,7 @@ public class PlayerManager : NetworkBehaviour
             camRight.Normalize();
             speedMult = 1;
 
-            if(Mathf.Abs(xInput) >= .01f || Mathf.Abs(zInput) >= .01f)
+            if (Mathf.Abs(xInput) >= .01f || Mathf.Abs(zInput) >= .01f)
             {
                 //if(!IsHost)
                 //    RequestWalkAnimServerRpc(true);
@@ -165,7 +226,7 @@ public class PlayerManager : NetworkBehaviour
     {
         if (cameraTransform == null || aimCamTransform == null) return;
 
-        if (Input.GetMouseButton(1))
+        if (attack.WasPressedThisFrame())
         {
             aimCamTransform.gameObject.SetActive(true);
             cameraTransform.gameObject.SetActive(false);
@@ -178,13 +239,13 @@ public class PlayerManager : NetworkBehaviour
             canShoot = false;
         }
 
-        if (Input.GetMouseButton(0) && canShoot && Time.time - lastShotTime >= shootCooldown)
+        if (click.WasPressedThisFrame() && canShoot && Time.time - lastShotTime >= shootCooldown)
         {
             lastShotTime = Time.time;
 
             RequestShootServerRpc(transform.position + Vector3.up, transform.forward);
         }
-        else if(Input.GetMouseButton(0) && Time.time - lastShotTime >= shootCooldown)
+        else if (click.WasPressedThisFrame() && Time.time - lastShotTime >= shootCooldown)
         {
             lastShotTime = Time.time;
             RequestSlashServerRpc(transform.position + Vector3.up, -transform.right);
@@ -242,5 +303,4 @@ public class PlayerManager : NetworkBehaviour
     //        ServerOnlyRpc(value + 1, sourceNetworkObjectId);
     //    }
     //}
-
 }
