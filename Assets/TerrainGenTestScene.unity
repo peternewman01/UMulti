@@ -3902,7 +3902,7 @@ MonoBehaviour:
   marchingAlgorithmPrefab: {fileID: 2150305323032263239, guid: 9c5ce2a33e0ba3542b8f5080e1939752, type: 3}
   chunkSize: 16
   subChunks: 4
-  subChunksPerFrame: 4
+  subChunksPerFrame: 24
   renderDistance: 16
   islandManager: {fileID: 11400000, guid: 77769e6fa5352c040b979e70a3597736, type: 2}
 --- !u!4 &1772774570

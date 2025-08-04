@@ -39,6 +39,8 @@ public class IslandGeneratorManager : TerrainGeneration
         foreach (IslandGenerator island in islandGenerators)
         {
             if (island == null) continue;
+            if (island.IsInsideIsland(pos)) return island; //Being inside an island is more important than being "close"
+
             Vector3 center = island.GetCenter();
             float distance = Vector3.Distance(center, pos);
             if (distance < distanceToNearest)

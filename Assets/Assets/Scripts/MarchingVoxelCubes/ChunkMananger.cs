@@ -52,6 +52,11 @@ public class ChunkMananger : MonoBehaviour
         SetSeed(UnityEngine.Random.Range(-10000, 10000));
         //PopulateFrontierWithChunks();
         StartCoroutine(ChunkRecursion());
+
+        for(int i = 0; i < 16; i++)
+        {
+            islandManager.CreateNewGenerator();
+        }
     }
 
     //TEMP
