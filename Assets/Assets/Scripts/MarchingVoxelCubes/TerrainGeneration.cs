@@ -27,19 +27,6 @@ public abstract class TerrainGeneration : ScriptableObject
         public Vector3 values;
         public PerlinMath mathType;
     }
-    
-
-    //[SerializeField] protected List<PerlinMultipliers> perlinMultipliers = new();
-    protected float seed;
-    protected bool hasSetSeed = false;
-
-    public void TrySetSeed(float newSeed)
-    {
-        if (hasSetSeed) return; // Seed has already been set, do not change it again
-        hasSetSeed = true;
-        seed = newSeed;
-    }
-
 
     /// <summary>
     /// Generates a list of points where the terrain should change from air to solid.
@@ -48,6 +35,6 @@ public abstract class TerrainGeneration : ScriptableObject
     /// <param name="algorithm"></param>
     /// <param name="pos"></param>
     /// <returns></returns>
-    public abstract float[] CustomNoise(Vector2Int chunk, Vector2Int pos);
+    public abstract float[] CustomNoise(Vector3 pos);
 }
 

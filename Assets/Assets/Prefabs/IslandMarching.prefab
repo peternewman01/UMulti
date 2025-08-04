@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 1995180507462551992}
   - component: {fileID: 8624352617437211986}
   - component: {fileID: 2150305323032263239}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: IslandMarching
   m_TagString: Untagged
   m_Icon: {fileID: 0}

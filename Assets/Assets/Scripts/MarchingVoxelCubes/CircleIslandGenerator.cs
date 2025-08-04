@@ -9,46 +9,49 @@ public class CircleIslandGenerator : IslandGenerator
     [SerializeField] private float islandRadius = 64f;
     [SerializeField] private float radiusFluxuation = 0f; // How much the radius can fluctuate, 0 means no fluctuation
     [Tooltip("Currently not implemented")]
-    [Range(0, 1)][SerializeField] private float edgeCrispness = 0.95f;
+    //[Range(0, 1)][SerializeField] private float edgeCrispness = 0.95f;
 
-    private void Awake()
+    public override void Init()
     {
-        islandRadius += Random.Range(-radiusFluxuation, radiusFluxuation);  
+        base.Init();
+        islandRadius += Random.Range(-radiusFluxuation, radiusFluxuation);
     }
 
-    public override float[] CustomNoise(Vector2Int chunk, Vector2Int subPos)
-    {
-        TrySetSeed(Random.Range(-10000, 10000));
-        
-        float radiusPercent = GetChunkRadiusPercent(chunk);
-        Vector3 offset = ChunkMananger.Instance.ChunkToWorld(chunk);
-        Vector2Int worldPos = new Vector2Int((int)offset.x, (int)offset.z) + subPos;
-        float distance = Vector2.Distance(center, worldPos);
-        float ratio = distance / islandRadius;
-        if (ratio > radiusPercent) return null;
+    public override float[] CustomNoise(Vector3 pos)
+    {   
+        //float radiusPercent = GetChunkRadiusPercent(chunk);
+        //Vector3 offset = ChunkMananger.Instance.ChunkToWorld(chunk);
+        Vector3 worldPos = pos;
+        if (!IsInsideIsland(worldPos))
+        {
+            return null;
+        }
 
+        float distance = Vector3.Distance(center, worldPos);
         float halfHeight = ChunkMananger.Instance.GetChunkHeight() /2;
+        halfHeight += yFluxuation; // Add random fluctuation to the height
 
         float[] value = { halfHeight, halfHeight };
 
         foreach (PerlinMultipliers perlinMultiplier in bottomPerlinMultipliers)
         {
-            value[0] -= CalcPerlin(perlinMultiplier, worldPos.x, worldPos.y, distance);
+            value[0] -= CalcPerlin(perlinMultiplier, worldPos.x, worldPos.z, distance);
         }
 
         foreach (PerlinMultipliers perlinMultiplier in perlinMultipliers)
         {
-            value[1] += CalcPerlin(perlinMultiplier, worldPos.x, worldPos.y, distance);
+            value[1] += CalcPerlin(perlinMultiplier, worldPos.x, worldPos.z, distance);
         }
         //Debug.Log($"values for chunk({chunk.x}, {chunk.y})-subPos({subPos.x}, {subPos.y}): (min:{value[0]}, max:{value[1]})");
         return value;
     }
 
-    private float CalcPerlin(PerlinMultipliers multi, int x, int z, float distance)
+    private float CalcPerlin(PerlinMultipliers multi, float x, float z, float distance)
     {
+        float seed = ChunkMananger.Instance.Seed;
         float multiplier = 1f;
-        float perlin = Mathf.PerlinNoise((x * multi.values.x)/* + seed*/,
-                    (z * multi.values.z) /* + seed*/) * multi.values.y;
+        float perlin = Mathf.PerlinNoise((x * multi.values.x) + seed,
+                    (z * multi.values.z) + seed) * multi.values.y;
 
         switch (multi.mathType)
         {
@@ -82,18 +85,26 @@ public class CircleIslandGenerator : IslandGenerator
         return perlin * multiplier;
     }
 
-    public float GetChunkRadiusPercent(Vector2Int chunk)
+/*    public float GetChunkRadiusPercent(Vector2Int chunk)
     {
         if (edgeCrispness == 1) return 1;
         float perlinEffect = Mathf.PerlinNoise(chunk.x, chunk.y);
+
+
         float inversCrisp = 1 - edgeCrispness;
         return 1 - (inversCrisp * perlinEffect);
+    }*/
+
+    private float GetRadiusPercent(Vector3 pos)
+    {
+        float distance = Vector3.Distance(center, pos);
+        return distance / islandRadius;
     }
 
     public override float GetIslandMaxDistanceFromCenter() => islandRadius;
 
     public override bool IsInsideIsland(Vector3 pos)
     {
-        return GetChunkRadiusPercent(ChunkMananger.Instance.WorldToChunk(pos)) > 0;
+        return GetRadiusPercent(pos) <= 1;
     }
 }

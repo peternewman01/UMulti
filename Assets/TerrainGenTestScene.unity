@@ -3900,9 +3900,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   marchingAlgorithmPrefab: {fileID: 2150305323032263239, guid: 9c5ce2a33e0ba3542b8f5080e1939752, type: 3}
-  chunkSize: 4
-  subChunks: 12
-  subChunksPerFrame: 8
+  chunkSize: 16
+  subChunks: 4
+  subChunksPerFrame: 4
+  renderDistance: 16
   islandManager: {fileID: 11400000, guid: 77769e6fa5352c040b979e70a3597736, type: 2}
 --- !u!4 &1772774570
 Transform:
@@ -4788,7 +4789,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &2055419004
 MonoBehaviour:
   m_ObjectHideFlags: 0

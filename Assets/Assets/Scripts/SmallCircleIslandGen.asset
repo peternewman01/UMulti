@@ -10,16 +10,16 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d60d555c95c50624a929c68a28453f26, type: 3}
-  m_Name: BasicCircleIslandGen
+  m_Name: SmallCircleIslandGen
   m_EditorClassIdentifier: 
   perlinMultipliers:
   - values: {x: 0.06, y: 12, z: 0.04}
     mathType: 3
   bottomPerlinMultipliers:
-  - values: {x: 0.1, y: 24, z: 0.1}
+  - values: {x: 0.1, y: 8, z: 0.1}
     mathType: 3
-  yFluxuation: 16
-  islandSpacing: 32
+  yFluxuation: 32
+  islandSpacing: 12
   material: {fileID: 2100000, guid: 301b77c23f32bde478daba74d434e418, type: 2}
-  islandRadius: 64
-  radiusFluxuation: 4
+  islandRadius: 16
+  radiusFluxuation: 1
