@@ -11,7 +11,7 @@ public class Recipe
     public List<(int, int)> recipe = new List<(int, int)>() { };
     public Object target;
     public Table table;
-    private Dictionary<Objects, int> holding = new Dictionary<Objects, int>() { };
+    private Dictionary<int, int> holding = new Dictionary<int, int>() { };
 
 
     public void TryCraftInvintory()
@@ -37,13 +37,13 @@ public class Recipe
             {
                 targetInvintory.AddObject(target, 1);
 
-                Debug.Log("you crafted a " +  target.ObjectName);
+                Debug.Log("you crafted a " +  target.getName());
             }
 
         }
         else
         {
-            Debug.Log("can't craft a " + target.ObjectName);
+            Debug.Log("can't craft a " + target.getName());
         }
     }
 
@@ -51,13 +51,13 @@ public class Recipe
     {
         foreach (KeyValuePair<int, int> item in table.holding)
         {
-            if(holding.ContainsKey((Objects)item.Key))
+            if(holding.ContainsKey(item.Key))
             {
-                holding[(Objects)item.Key] += item.Value;
+                holding[item.Key] += item.Value;
             }
             else
             {
-                holding.Add((Objects)item.Key, item.Value);
+                holding.Add(item.Key, item.Value);
             }
         }
 
@@ -65,9 +65,9 @@ public class Recipe
 
         foreach (var item in recipe)
         {
-            if (holding.ContainsKey((Objects)item.Item1))
+            if (holding.ContainsKey(item.Item1))
             {
-                if (holding[(Objects)item.Item1] < item.Item2)
+                if (holding[item.Item1] < item.Item2)
                 {
                     canCraft = false;
                 }

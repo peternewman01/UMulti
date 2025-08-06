@@ -5,26 +5,18 @@ using Unity.Netcode;
 using Unity.VisualScripting;
 using UnityEngine;
 
-enum Objects
-{
-    TABLE = 0,
-    WOOD,
-    STICK,
-    COUNT
-}
-
 [RequireComponent(typeof(SphereCollider))]
 public abstract class Object : NetworkBehaviour
 {
-    [SerializeField] protected int objectID;
-    [SerializeField] protected string objectName;
+    [SerializeField] protected static int objectID;
+    [SerializeField] protected static string objectName;
     [SerializeField] protected Invintory targetInvintory;
     [SerializeField] protected bool playerInArea = false;
 
-    private float pickupDist = 3f;
+    private float dist = 3f;
 
-    public int ObjectID => objectID;
-    public string ObjectName => objectName;
+    public static int ObjectID => objectID;
+    public static string ObjectName => objectName;
 
     public Object() { }
 
@@ -59,7 +51,7 @@ public abstract class Object : NetworkBehaviour
     {
         SphereCollider sc = GetComponent<SphereCollider>();
         sc.isTrigger = true;
-        float scaledDist = pickupDist/ ((transform.localScale.x + transform.localScale.y + transform.localScale.z)/3);
+        float scaledDist = dist/ ((transform.localScale.x + transform.localScale.y + transform.localScale.z)/3);
         sc.radius = scaledDist;
     }
 
@@ -81,4 +73,7 @@ public abstract class Object : NetworkBehaviour
             playerInArea = false;
         }
     }
+
+    public string getName() { return ObjectName; }
+    public int getID() { return ObjectID; }
 }

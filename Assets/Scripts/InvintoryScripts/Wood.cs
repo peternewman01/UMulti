@@ -3,11 +3,6 @@ using UnityEngine;
 
 public class Wood : Object
 {
-    private void Start()
-    {
-        Debug.Log(objectName);
-    }
-
     protected override void Interact()
     {
         targetInvintory.AddObject(this, 1);

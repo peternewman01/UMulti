@@ -6,7 +6,7 @@ public class ShowObjectNumber : NetworkBehaviour
 {
     public TMP_Text targetText;
     [SerializeField] private Invintory inv;
-    [SerializeField] private Objects target = Objects.WOOD;
+    [SerializeField] private int target = Wood.ObjectID;
     [SerializeField] private string targetName = "Wood";
 
     private void Start()

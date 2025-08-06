@@ -143,6 +143,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 50addbc28a4d25246b534e357e62d41f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  holding: {fileID: 0}
 --- !u!1 &5491528118600474388
 GameObject:
   m_ObjectHideFlags: 0
@@ -350,7 +351,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 2936234688
+  GlobalObjectIdHash: 3547058874
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 1
@@ -376,15 +377,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
-  objectID: 0
-  objectName: 
   targetInvintory: {fileID: 0}
   playerInArea: 0
   TempRecipe:
     targetInvintory: {fileID: 0}
     target: {fileID: 0}
     table: {fileID: 0}
-  tempTargetPrefab: {fileID: 9125502469920471631, guid: bfc9b1f46214f0a4da2e58088ae34812, type: 3}
+  tempTargetPrefab: {fileID: 3814012675423302253, guid: bfc9b1f46214f0a4da2e58088ae34812, type: 3}
   totems:
   - {fileID: 139459537532273557}
   - {fileID: 3522908767356952731}
@@ -533,6 +532,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 50addbc28a4d25246b534e357e62d41f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  holding: {fileID: 0}
 --- !u!1 &7364729026312730230
 GameObject:
   m_ObjectHideFlags: 0
@@ -707,3 +707,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 50addbc28a4d25246b534e357e62d41f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  holding: {fileID: 0}

@@ -4,7 +4,6 @@ using UnityEngine.InputSystem;
 using UnityEngine.Windows;
 using UnityEditor;
 
-[RequireComponent(typeof(PlayerInput))]
 public class PlayerManager : NetworkBehaviour
 {
     public InputActionAsset InputActions;
@@ -12,10 +11,11 @@ public class PlayerManager : NetworkBehaviour
     [Header("Movement")]
     [SerializeField] private Rigidbody rb;
 
-    [SerializeField] private float walkingSpeed = 5f;
-    [SerializeField] private float sprintSpeed = 15f;
+    [SerializeField] private float walkingSpeed = 10f;
+    [SerializeField] private float dashForce = 500f;
+    [SerializeField] private float dashResetTime = 0.3f;
+    private bool canDash = true;
     private Vector3 target;
-    private float speed;
 
     private InputAction move;
     private InputAction look;
@@ -39,7 +39,7 @@ public class PlayerManager : NetworkBehaviour
 
     private Animator anim;
 
-    private bool canShoot = false;
+    private bool canShoot = true;
     private float lastShotTime = 0f;
     private float shootCooldown = 0.2f;
 
@@ -66,7 +66,7 @@ public class PlayerManager : NetworkBehaviour
 
         if (!IsOwner)
         {
-            GetComponent<PlayerInput>().enabled = false;
+            //GetComponent<PlayerInput>().enabled = false;
         }
         else
         {
@@ -89,17 +89,13 @@ public class PlayerManager : NetworkBehaviour
         InputActions.FindActionMap("Player").Disable();
     }
 
-    public void OnMove(InputAction.CallbackContext context)
-    {
-        movementInput = context.ReadValue<Vector2>();
-    }
-
     void Update()
     {
         if (!IsOwner) return;
-        WalkingNew();
+        Walking();
         AimShooting();
         JumpCheck();
+        DashCheck();
     }
 
     private void JumpCheck()
@@ -119,29 +115,14 @@ public class PlayerManager : NetworkBehaviour
         }
     }
 
-
-    private void OnDrawGizmos()
-    {
-        Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(groundCheck.position, 0.1f);
-    }
-
-    private void WalkingNew()
+    private void Walking()
     {
         movementInput = move.ReadValue<Vector2>();
-        if (sprint.IsPressed())
-        {
-            speed = sprintSpeed;
-        }
-        else
-        {
-            speed = walkingSpeed;
-        }
 
         Vector3 moveDirection = (cameraTransform.forward * movementInput.y + cameraTransform.right * movementInput.x);
         moveDirection.y = 0; // Prevent vertical tilt from affecting movement
         moveDirection.Normalize();
-        rb.linearVelocity = moveDirection * speed + new Vector3(0, rb.linearVelocity.y, 0);
+        rb.linearVelocity = moveDirection * walkingSpeed + new Vector3(0, rb.linearVelocity.y, 0);
 
         if (cameraTransform.gameObject.activeSelf)
         {
@@ -166,67 +147,23 @@ public class PlayerManager : NetworkBehaviour
         }
     }
 
-    private void WalkingOld()
+    private void DashCheck()
     {
-        if (cameraTransform == null) return;
-
-        float xInput = 0;// Input.GetAxis("Horizontal");
-        float zInput = 0;// Input.GetAxis("Vertical");
-
-        float speedMult;
-
-        if (cameraTransform.gameObject.activeSelf)
+        if(sprint.WasPressedThisFrame() && canDash)
         {
-            camForward = cameraTransform.forward;
-            camRight = cameraTransform.right;
-            camForward.y = 0f;
-            camRight.y = 0f;
-            camForward.Normalize();
-            camRight.Normalize();
-            speedMult = 1;
+            canDash = false;
+            Invoke("CanDash", dashResetTime);
 
-            if (Mathf.Abs(xInput) >= .01f || Mathf.Abs(zInput) >= .01f)
-            {
-                //if(!IsHost)
-                //    RequestWalkAnimServerRpc(true);
-                anim.SetBool("Walking", true);
-            }
-            else
-            {
-                //if(!IsHost)
-                //    RequestWalkAnimServerRpc(false);
-                anim.SetBool("Walking", false);
-            }
+            Vector3 dashDirection = transform.forward + Vector3.up * 0.1f;
+            rb.AddForce(dashDirection.normalized * dashForce);
         }
-        else
-        {
-            camForward = aimCamTransform.forward;
-            camRight = aimCamTransform.right;
-            camForward.y = 0f;
-            camRight.y = 0f;
-            camForward.Normalize();
-            camRight.Normalize();
-            speedMult = .2f;
-        }
-
-        Vector3 moveDir = camForward * zInput + camRight * xInput;
-        transform.position += moveDir * moveSpeed * speedMult * Time.deltaTime;
-
-        if (moveDir.sqrMagnitude > 0.001f)
-        {
-            Quaternion targetRotation = Quaternion.LookRotation(moveDir);
-            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * 10f * speedMult);
-        }
-
-        Vector3 moveDirection = camForward * movementInput.y + camRight * movementInput.x;
-        transform.position += moveDirection * moveSpeed * Time.deltaTime;
     }
 
     private void AimShooting()
     {
         if (cameraTransform == null || aimCamTransform == null) return;
 
-        if (attack.WasPressedThisFrame())
+        if (click.WasPressedThisFrame())
         {
             aimCamTransform.gameObject.SetActive(true);
             cameraTransform.gameObject.SetActive(false);
@@ -245,7 +182,7 @@ public class PlayerManager : NetworkBehaviour
 
             RequestShootServerRpc(transform.position + Vector3.up, transform.forward);
         }
-        else if (click.WasPressedThisFrame() && Time.time - lastShotTime >= shootCooldown)
+        else if (attack.WasPressedThisFrame() && Time.time - lastShotTime >= shootCooldown)
         {
             lastShotTime = Time.time;
             RequestSlashServerRpc(transform.position + Vector3.up, -transform.right);
@@ -270,10 +207,10 @@ public class PlayerManager : NetworkBehaviour
 
         var netObj = spawnedBoolet.GetComponent<NetworkObject>();
         netObj.Spawn(true);
-
+        
         var rb = spawnedBoolet.GetComponent<Rigidbody>();
         rb.AddForce(shootDirection.normalized * 5000f); //you can tweak the force
-
+        
         Destroy(spawnedBoolet.gameObject, 3);
     }
 
@@ -303,4 +240,6 @@ public class PlayerManager : NetworkBehaviour
     //        ServerOnlyRpc(value + 1, sourceNetworkObjectId);
     //    }
     //}
+
+    private void CanDash() { canDash = true; }
 }
