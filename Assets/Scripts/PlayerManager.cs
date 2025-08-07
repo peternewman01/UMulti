@@ -3,6 +3,7 @@ using Unity.Netcode;
 using UnityEngine.InputSystem;
 using UnityEngine.Windows;
 using UnityEditor;
+using Unity.VisualScripting;
 
 public class PlayerManager : NetworkBehaviour
 {
@@ -14,6 +15,7 @@ public class PlayerManager : NetworkBehaviour
     [SerializeField] private float walkingSpeed = 10f;
     [SerializeField] private float dashForce = 500f;
     [SerializeField] private float dashResetTime = 0.3f;
+    [SerializeField] private float dashUpScale = 0.2f;
     private bool canDash = true;
     private Vector3 target;
 
@@ -119,10 +121,13 @@ public class PlayerManager : NetworkBehaviour
     {
         movementInput = move.ReadValue<Vector2>();
 
-        Vector3 moveDirection = (cameraTransform.forward * movementInput.y + cameraTransform.right * movementInput.x);
-        moveDirection.y = 0; // Prevent vertical tilt from affecting movement
-        moveDirection.Normalize();
-        rb.linearVelocity = moveDirection * walkingSpeed + new Vector3(0, rb.linearVelocity.y, 0);
+        target = (cameraTransform.forward * movementInput.y + cameraTransform.right * movementInput.x);
+        target.y = 0;
+        target.Normalize();
+
+        Vector3 pass = target * walkingSpeed + new Vector3(0, rb.linearVelocity.y, 0);
+        rb.linearVelocity = Vector3.Lerp(rb.linearVelocity, pass, Time.fixedDeltaTime * 5);
+
 
         if (cameraTransform.gameObject.activeSelf)
         {
@@ -143,7 +148,9 @@ public class PlayerManager : NetworkBehaviour
 
         if (movementInput.magnitude > 0)
         {
-            transform.forward = moveDirection;
+            Vector3 hold = rb.linearVelocity;
+            hold.y = 0;
+            transform.forward = hold;
         }
     }
 
@@ -154,7 +161,7 @@ public class PlayerManager : NetworkBehaviour
             canDash = false;
             Invoke("CanDash", dashResetTime);
 
-            Vector3 dashDirection = transform.forward + Vector3.up * 0.1f;
+            Vector3 dashDirection = transform.forward + Vector3.up * dashUpScale;
             rb.AddForce(dashDirection.normalized * dashForce);
         }
     }
@@ -163,7 +170,7 @@ public class PlayerManager : NetworkBehaviour
     {
         if (cameraTransform == null || aimCamTransform == null) return;
 
-        if (click.WasPressedThisFrame())
+        if (attack.IsPressed())
         {
             aimCamTransform.gameObject.SetActive(true);
             cameraTransform.gameObject.SetActive(false);
@@ -182,7 +189,7 @@ public class PlayerManager : NetworkBehaviour
 
             RequestShootServerRpc(transform.position + Vector3.up, transform.forward);
         }
-        else if (attack.WasPressedThisFrame() && Time.time - lastShotTime >= shootCooldown)
+        else if (click.WasPressedThisFrame() && Time.time - lastShotTime >= shootCooldown)
         {
             lastShotTime = Time.time;
             RequestSlashServerRpc(transform.position + Vector3.up, -transform.right);
