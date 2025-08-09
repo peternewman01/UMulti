@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: 7690e810a22800540b20d0a51c5dc4aa
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 239139
+  packageName: Clean Outline HDRP
+  packageVersion: 1.01
+  assetPath: Assets/CleanOutlineHDRP/CleanOutlineCustomPass.cs
+  uploadId: 615182

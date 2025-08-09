@@ -20,14 +20,16 @@ public class Table : Object
     {
         //temp version, will need to figure out recipies with ui
         Recipe stick = new Recipe();
-        stick.recipe.Add((Wood.ObjectID, 3));
+        Debug.Log("wood: " + FindFirstObjectByType<Wood>().objectID);
+        Debug.Log("table: " + objectID);
+        stick.recipe.Add((FindFirstObjectByType<Wood>().objectID, 3));
 
         stick.target = tempTargetPrefab.GetComponent<Stick>();
         TempRecipe = stick;
         TempRecipe.table = this;
     }
 
-    protected override void Interact()
+    public override void Interact()
     {
         if (TempRecipe.TryCraftTotems())
         {
@@ -46,12 +48,12 @@ public class Table : Object
     {
         if (playerInArea)
         {
-            if(Input.GetKeyDown(KeyCode.E))
-            {
-                TempRecipe.targetInvintory = targetInvintory;
-                Interact();
-
-            }
+            //if(Input.GetKeyDown(KeyCode.E))
+            //{
+            //    TempRecipe.targetInvintory = targetInvintory;
+            //    Interact();
+            //
+            //}
         }
     }
 

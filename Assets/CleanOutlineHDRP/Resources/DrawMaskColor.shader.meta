@@ -1,0 +1,17 @@
+fileFormatVersion: 2
+guid: 163aaaee1cace08489c3d0328a76cf83
+ShaderImporter:
+  externalObjects: {}
+  defaultTextures: []
+  nonModifiableTextures: []
+  preprocessorOverride: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 239139
+  packageName: Clean Outline HDRP
+  packageVersion: 1.01
+  assetPath: Assets/CleanOutlineHDRP/Resources/DrawMaskColor.shader
+  uploadId: 615182

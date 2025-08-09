@@ -4,6 +4,7 @@ using UnityEngine.InputSystem;
 using UnityEngine.Windows;
 using UnityEditor;
 using Unity.VisualScripting;
+using UnityEngine.Animations;
 
 public class PlayerManager : NetworkBehaviour
 {
@@ -26,6 +27,7 @@ public class PlayerManager : NetworkBehaviour
     private InputAction attack;
     private InputAction click;
     private InputAction jump;
+    private InputAction scroll;
 
     private Vector2 movementInput;
     private float moveSpeed = 3f;
@@ -50,6 +52,10 @@ public class PlayerManager : NetworkBehaviour
     [SerializeField] private int jumpsUsed = 0;
     [SerializeField] private float jumpForce = 250;
     [SerializeField] private Transform groundCheck;
+
+    [Header("Interacting")]
+    public bool Interact;
+    public float scrolling = 0f;
 
     private void OnEnable()
     {
@@ -82,6 +88,7 @@ public class PlayerManager : NetworkBehaviour
         attack = InputSystem.actions.FindAction("Attack");
         click = InputSystem.actions.FindAction("Click");
         jump = InputSystem.actions.FindAction("Jump");
+        scroll = InputSystem.actions.FindAction("Scroll");
 
         rb = GetComponent<Rigidbody>();
     }
@@ -98,6 +105,10 @@ public class PlayerManager : NetworkBehaviour
         AimShooting();
         JumpCheck();
         DashCheck();
+
+        Interact = interact.WasPressedThisFrame();
+
+        scrolling = scroll.ReadValue<float>();
     }
 
     private void JumpCheck()

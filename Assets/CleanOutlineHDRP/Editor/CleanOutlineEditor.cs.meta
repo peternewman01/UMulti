@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: a66bf7aeec095ef4f81e0c45b849c44b
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 239139
+  packageName: Clean Outline HDRP
+  packageVersion: 1.01
+  assetPath: Assets/CleanOutlineHDRP/Editor/CleanOutlineEditor.cs
+  uploadId: 615182

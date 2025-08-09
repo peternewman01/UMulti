@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 46073e17ff3f343438687ebde31c1d24
+DefaultImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 239139
+  packageName: Clean Outline HDRP
+  packageVersion: 1.01
+  assetPath: Assets/CleanOutlineHDRP/Guide/Examples/HiglightOutlineByRenderers.unity
+  uploadId: 615182

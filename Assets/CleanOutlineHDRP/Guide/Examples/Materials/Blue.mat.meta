@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 3850f3cfde19cf341905d6b90218c5fd
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 2100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 239139
+  packageName: Clean Outline HDRP
+  packageVersion: 1.01
+  assetPath: Assets/CleanOutlineHDRP/Guide/Examples/Materials/Blue.mat
+  uploadId: 615182

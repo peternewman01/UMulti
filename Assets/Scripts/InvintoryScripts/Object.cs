@@ -8,15 +8,12 @@ using UnityEngine;
 [RequireComponent(typeof(SphereCollider))]
 public abstract class Object : NetworkBehaviour
 {
-    [SerializeField] protected static int objectID;
-    [SerializeField] protected static string objectName;
+    public int objectID;
+    public string objectName;
     [SerializeField] protected Invintory targetInvintory;
     [SerializeField] protected bool playerInArea = false;
 
     private float dist = 3f;
-
-    public static int ObjectID => objectID;
-    public static string ObjectName => objectName;
 
     public Object() { }
 
@@ -26,24 +23,23 @@ public abstract class Object : NetworkBehaviour
         Destroy(gameObject);
     }
 
-    protected virtual void Interact() { }
+    public virtual void Interact() { }
 
     private void Awake()
     {
         Type baseType = typeof(Object);
         var subTypes = Assembly.GetAssembly(baseType).GetTypes()
             .Where(t => t.IsClass && !t.IsAbstract && t.IsSubclassOf(baseType));
-
+        
         int id = 0;
         foreach (Type type in subTypes)
         {
-            var field = type.GetField("objectID", BindingFlags.NonPublic);
-            field?.SetValue(null, id);
+            if(this.GetType() == type)
+            {
+                objectID = id;
+                objectName = type.Name;
+            }
             id++;
-
-            field = type.GetField("objectName", BindingFlags.NonPublic);
-            field?.SetValue(null, type.Name);
-
         } 
     }
 
@@ -74,6 +70,6 @@ public abstract class Object : NetworkBehaviour
         }
     }
 
-    public string getName() { return ObjectName; }
-    public int getID() { return ObjectID; }
+    public string getName() { return objectName; }
+    public int getID() { return objectID; }
 }

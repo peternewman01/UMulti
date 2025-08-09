@@ -1,0 +1,17 @@
+fileFormatVersion: 2
+guid: d8c95f55601cdba41ac326b630686f00
+ShaderImporter:
+  externalObjects: {}
+  defaultTextures: []
+  nonModifiableTextures: []
+  preprocessorOverride: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 239139
+  packageName: Clean Outline HDRP
+  packageVersion: 1.01
+  assetPath: Assets/CleanOutlineHDRP/Resources/CleanOutlineCustomPass.shader
+  uploadId: 615182
