@@ -13,5 +13,7 @@ MonoBehaviour:
   m_Name: IslandGenerationManager
   m_EditorClassIdentifier: 
   possibleGenerators:
-  - {fileID: 11400000, guid: d84670bb6f637c54baa2f8393e760446, type: 2}
-  - {fileID: 11400000, guid: 0c05bf48c52455a4eaa951254e8c286b, type: 2}
+  - weight: 5
+    generator: {fileID: 11400000, guid: d84670bb6f637c54baa2f8393e760446, type: 2}
+  - weight: 15
+    generator: {fileID: 11400000, guid: 0c05bf48c52455a4eaa951254e8c286b, type: 2}

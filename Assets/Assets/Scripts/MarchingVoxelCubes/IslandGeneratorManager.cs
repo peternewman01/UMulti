@@ -8,35 +8,44 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "IslandManager", menuName = "MarchingVoxelCubes/TerrainGeneration/IslandManager")]
 public class IslandGeneratorManager : TerrainGeneration
 {
+    [Serializable]
+    private struct WeightedGenerator
+    {
+        [Tooltip("Higher == More likely")]
+        public int weight;
+        public IslandGenerator generator;
+    }
     //[SerializeField] private float islandSpacing = 64f;
-    [SerializeField] private List<IslandGenerator> possibleGenerators = new();
-    private List<IslandGenerator> islandGenerators = new();
-    
+    [SerializeField] private List<WeightedGenerator> possibleGenerators = new();
+    private List<IslandGenerator> instancedGenerators = new();
+    private int totalWeight;
 
     private void OnValidate()
     {
+        totalWeight = 0;
         if (possibleGenerators == null || possibleGenerators.Count == 0)
         {
             Debug.LogError("IslandGeneratorManager: No possible generators set. Please add at least one generator to the list.");
             return;
         }
-        foreach (IslandGenerator generator in possibleGenerators)
+        foreach (WeightedGenerator generator in possibleGenerators)
         {
-            if (generator == null)
+            if (generator.generator == null)
             {
                 Debug.LogError("IslandGeneratorManager: One of the possible generators is null. Please ensure all generators are assigned.");
                 return;
             }
+            totalWeight += generator.weight;
         }
 
-        islandGenerators.Clear();
+        instancedGenerators.Clear();
     }
 
     private IslandGenerator GetNearestIsland(Vector3 pos)
     {
         float distanceToNearest = float.MaxValue;
         IslandGenerator islandGenerator = null;
-        foreach (IslandGenerator island in islandGenerators)
+        foreach (IslandGenerator island in instancedGenerators)
         {
             if (island == null) continue;
             if (island.IsInsideIsland(pos)) return island; //Being inside an island is more important than being "close"
@@ -60,11 +69,22 @@ public class IslandGeneratorManager : TerrainGeneration
 
     public void CreateNewGenerator(int index = -1)
     {
-        if (index == -1) { index = UnityEngine.Random.Range(0, possibleGenerators.Count); }
-        IslandGenerator newGenerator = Instantiate(possibleGenerators[index]);
+        IslandGenerator newGenerator;
+
+        if (index <= -1 || index >= possibleGenerators.Count) { 
+            int weight = UnityEngine.Random.Range(1, totalWeight);
+            newGenerator = Instantiate(GetGeneratorByWeight(weight));
+        } else
+        {
+            newGenerator = Instantiate(possibleGenerators[index].generator);
+        }
+
         newGenerator.Init();
         newGenerator.SetCenter(FindViableCenter(newGenerator));
-        islandGenerators.Add(newGenerator);
+        instancedGenerators.Add(newGenerator);
+
+        //Populates frontier in chunk manager to only contain chunks that matter to 
+        ChunkMananger.Instance.AddChunksInRadiusAtPosition(newGenerator.GetCenter(), newGenerator.GetIslandMaxDistanceFromCenter() * 1.5f);
     }
 
     private Vector3 FindViableCenter(IslandGenerator newGenerator)
@@ -89,5 +109,16 @@ public class IslandGeneratorManager : TerrainGeneration
 
         Debug.Log($"IslandGeneratorManager: New generator center set to {center} with max distance {newGeneratorMaxDistance}");
         return center;
+    }
+
+    private IslandGenerator GetGeneratorByWeight(int weight)
+    {
+        int index = -1;
+        for (int total = 0; total < weight; total += possibleGenerators[index].weight)
+        {
+            index++;
+        }
+
+        return possibleGenerators[index].generator;
     }
 }
