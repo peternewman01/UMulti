@@ -6,6 +6,8 @@ using UnityEngine.Rendering.HighDefinition;
 using System.Linq;
 using System.Xml;
 using Unity.VisualScripting;
+using System.Drawing;
+using UnityEngine.UIElements;
 
 public class PlayerObjectInteract : MonoBehaviour
 {
@@ -18,14 +20,8 @@ public class PlayerObjectInteract : MonoBehaviour
     [SerializeField] private float searchRadius = 3f;
 
     [SerializeField] private List<Renderer> objectRenderers = new List<Renderer>();
-    [SerializeField] private GameObject HighlightedObject = null;
-    private Renderer HighlightedObjectRenderer;
 
     [SerializeField] private SphereCollider pickupRadius;
-
-    [SerializeField] private int positionOnOrder = 0;
-
-    private bool scroll;
 
     private void Start()
     {
@@ -59,68 +55,22 @@ public class PlayerObjectInteract : MonoBehaviour
 
     void Update()
     {
-        checkScroll();
 
         blackPass.m_DrawRenderers = objectRenderers;
 
+        Renderer highlighted = ClosestRendererToCameraForward();
+
         goldPass.m_DrawRenderers.Clear();
-        goldPass.m_DrawRenderers.Add(HighlightedObjectRenderer);
+        goldPass.m_DrawRenderers.Add(highlighted);
 
         if (playerManager.Interact)
         {
-            if (HighlightedObject.TryGetComponent<Object>(out var o))
+            if (highlighted.TryGetComponent<Object>(out var o))
             {
                 o.Interact();
             }
         }
 
-    }
-
-    private void checkScroll()
-    {
-        if(scroll)
-        {
-            if(playerManager.scrolling > 0)
-            {
-                scroll = false;
-
-                ScrollHighlightUp();
-            }
-            else if(playerManager.scrolling < 0)
-            {
-                scroll = false;
-
-                ScrollHighlightDown();
-            }
-        }
-        else if(playerManager.scrolling == 0)
-        {
-            scroll = true;
-        }
-
-    }
-
-    private void ScrollHighlightUp()
-    {
-        positionOnOrder--;
-        if(positionOnOrder < 0)
-        {
-            positionOnOrder = objectRenderers.Count() - 1;
-        }
-
-        HighlightedObject = objectRenderers[positionOnOrder].gameObject;
-        HighlightedObjectRenderer = objectRenderers[positionOnOrder];
-    }
-    private void ScrollHighlightDown()
-    {
-        positionOnOrder++;
-        if (positionOnOrder >= objectRenderers.Count())
-        {
-            positionOnOrder = 0;
-        }
-
-        HighlightedObject = objectRenderers[positionOnOrder].gameObject;
-        HighlightedObjectRenderer = objectRenderers[positionOnOrder];
     }
 
     private void OnTriggerEnter(Collider col)
@@ -129,15 +79,7 @@ public class PlayerObjectInteract : MonoBehaviour
         if (obj)
         {
             Renderer r = col.GetComponent<Renderer>();
-            if (HighlightedObject == null)
-            {
-                HighlightedObject = col.gameObject;
-                objectRenderers.Add(r);
-
-                positionOnOrder = objectRenderers.Count-1;
-                HighlightedObjectRenderer = r;
-            }
-            else if (!objectRenderers.Contains(r))
+            if (!objectRenderers.Contains(r))
             {
                 objectRenderers.Add(r);
             }
@@ -150,18 +92,34 @@ public class PlayerObjectInteract : MonoBehaviour
         if (obj)
         {
             Renderer r = col.GetComponent<Renderer>();
-            if (col.gameObject == HighlightedObject)
-            {
-                HighlightedObject = null;
-                objectRenderers.Remove(r);
-
-                positionOnOrder -= 1;
-                HighlightedObjectRenderer = null;
-            }
-            else if (objectRenderers.Contains(r))
+            if (objectRenderers.Contains(r))
             {
                 objectRenderers.Remove(r);
             }
         }
     }
+
+    private Renderer ClosestRendererToCameraForward()
+    {
+        Camera cam = Camera.main;
+        if (cam == null) return null;
+
+        Renderer closestRenderer = null;
+        float rDist = -1f;
+
+        foreach (Renderer r in objectRenderers)
+        {
+            Vector3 toPoint = r.transform.position - cam.transform.position;
+            float dist = Vector3.Cross(toPoint, cam.transform.forward.normalized).magnitude;
+
+            if (rDist < 0f || dist < rDist)
+            {
+                rDist = dist;
+                closestRenderer = r;
+            }
+        }
+
+        return closestRenderer;
+    }
+
 }
