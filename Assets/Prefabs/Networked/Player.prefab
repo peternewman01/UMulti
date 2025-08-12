@@ -334,7 +334,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerManager: {fileID: 0}
   outlinePasses: {fileID: 0}
-  searchRadius: 3
+  searchRadius: 6
   objectRenderers: []
   HighlightedObject: {fileID: 0}
   pickupRadius: {fileID: 0}

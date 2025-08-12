@@ -2050,12 +2050,12 @@ MonoBehaviour:
       Offset: {x: 0, y: 0}
   CenterOnActivate: 1
   TargetOffset: {x: 0, y: 0, z: 0}
-  Damping: {x: 0.5, y: 0.5}
+  Damping: {x: 0.5, y: 0}
   Lookahead:
     Enabled: 1
     Time: 0.5
     Smoothing: 20
-    IgnoreY: 0
+    IgnoreY: 1
 --- !u!114 &1153582229
 MonoBehaviour:
   m_ObjectHideFlags: 0
