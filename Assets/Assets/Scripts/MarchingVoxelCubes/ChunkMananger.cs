@@ -2,6 +2,7 @@ using NUnit.Framework;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting.Dependencies.Sqlite;
 using UnityEngine;
 
 public class ChunkMananger : MonoBehaviour
@@ -88,55 +89,27 @@ public class ChunkMananger : MonoBehaviour
 
     private IEnumerator ChunkRecursion()
     {
-        Vector2Int current = frontier[0];
+        if (frontier.Count == 0) yield return null;
 
         int subChunkCount = 0;
         while (frontier.Count > 0 && subChunkCount < subChunksPerFrame)
         {
-            //if (visited.Contains(current))
-            {
-                frontier.RemoveAt(0);
-                StartCoroutine(GenerateChunk(current));
-            }
-
-            if (!visited.Contains(current + Vector2Int.left))
-            {
-                frontier.Add(current + Vector2Int.left);
-                visited.Add(current + Vector2Int.left);
-            }
-
-            if (!visited.Contains(current + Vector2Int.right))
-            {
-                frontier.Add(current + Vector2Int.right);
-                visited.Add(current + Vector2Int.right);
-            }
-
-            if (!visited.Contains(current + Vector2Int.up))
-            {
-                frontier.Add(current + Vector2Int.up);
-                visited.Add(current + Vector2Int.up);
-            }
-
-            if (!visited.Contains(current + Vector2Int.down))
-            {
-                frontier.Add(current + Vector2Int.down);
-                visited.Add(current + Vector2Int.down);
-            }
-
-            current = frontier[0];
+            Vector2Int current = frontier[0];
+            GenerateChunk(current);
+            frontier.RemoveAt(0);
             subChunkCount += (int)subChunks;
         }
 
         
 
         frontier.Sort(new DistanceCompare());
-        yield return null;
+        yield return new WaitForEndOfFrame();
         StartCoroutine(ChunkRecursion());
         //ChunkRecursion();
     }
 
 
-    public IEnumerator GenerateChunk(Vector2Int chunk)
+    public void GenerateChunk(Vector2Int chunk)
     {
         GameObject spawnedChunk = new GameObject();
         spawnedChunk.transform.parent = transform;
@@ -149,11 +122,46 @@ public class ChunkMananger : MonoBehaviour
             subChunk.transform.position = ChunkToWorld(chunk) + new Vector3(0, i * chunkSize, 0);
             subChunk.Init(chunk, i);
             subChunk.GenerateIsland();
-            
-            if(i % subChunksPerFrame == 0 && i != 0)
-                yield return new WaitForEndOfFrame();
         }
         //StartCoroutine(ChunkRecursion());
+    }
+
+    public void AddChunksInRadiusAtPosition(Vector3 worldPos, float radius)
+    {
+        AddChunks(GetChunksInRadiusAtPosition(worldPos, radius));
+    }
+
+    public void AddChunks(Vector2Int[] chunks)
+    {
+        foreach(var chunk in chunks) {
+            if (frontier.Contains(chunk)) continue;
+            frontier.Add(chunk);
+        }
+    }
+
+    public Vector2Int[] GetChunksInRadiusAtPosition(Vector3 worldPos, float radius)
+    {
+        Vector2Int min = WorldToChunk(new Vector3(worldPos.x - radius, worldPos.y, worldPos.z - radius));
+        Vector2Int max = WorldToChunk(new Vector3(worldPos.x + radius, worldPos.y, worldPos.z + radius));
+        Vector2Int centerChunk = WorldToChunk(worldPos);
+        Vector2Int currentChunk = new();
+        List<Vector2Int> chunkPositions = new();
+
+        for(int x = min.x; x < max.x; x++)
+        {
+            for (int z = min.y; z < max.y; z++)
+            {
+                currentChunk.x = x;
+                currentChunk.y = z;
+
+                if(Vector2Int.Distance(currentChunk, currentChunk) < radius)
+                {
+                    chunkPositions.Add(currentChunk);
+                }
+            }
+        }
+
+        return chunkPositions.ToArray();
     }
 
     public Vector2Int WorldToChunk(Vector3 worldPos)
