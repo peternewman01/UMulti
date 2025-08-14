@@ -47,6 +47,9 @@ public class PlayerManager : NetworkBehaviour
     private float lastShotTime = 0f;
     private float shootCooldown = 0.2f;
 
+    private float lastWaitTime = 0f;
+    private float waitCooldown = 30;
+
     [Header("Jumps")]
     [SerializeField] private int jumpCount = 1;
     [SerializeField] private int jumpsUsed = 0;
@@ -117,14 +120,25 @@ public class PlayerManager : NetworkBehaviour
         if (Physics.CheckSphere(groundCheck.position, 0.1f, groundMask) && rb.linearVelocity.y < 3f)
         {
             jumpsUsed = 0;
+            anim.SetBool("IsGrounded", true);
         }
+        else
+            anim.SetBool("IsGrounded", false);
         if (jumpsUsed < jumpCount)
         {
             if (jump.WasPerformedThisFrame())
             {
                 jumpsUsed++;
                 rb.AddForce(transform.up * jumpForce);
+                anim.SetBool("IsGrounded", false);
+                anim.SetBool("IsJumping", true);
+                anim.SetBool("IsIdleLong", false);
+                lastWaitTime = Time.time;
             }
+        }
+        if (rb.linearVelocity.y < -1f)
+        {
+            anim.SetBool("IsJumping", false);
         }
     }
 
@@ -144,18 +158,22 @@ public class PlayerManager : NetworkBehaviour
         {
             if (Mathf.Abs(movementInput.x) >= .01f || Mathf.Abs(movementInput.y) >= .01f)
             {
-                //if(!IsHost)
-                //    RequestWalkAnimServerRpc(true);
                 anim.SetBool("Walking", true);
+                anim.SetBool("IsIdleLong", false);
+                lastWaitTime = Time.time;
             }
             else
             {
-                //if(!IsHost)
-                //    RequestWalkAnimServerRpc(false);
                 anim.SetBool("Walking", false);
             }
         }
 
+
+        if (Time.time - lastWaitTime >= waitCooldown)
+        {
+            anim.SetBool("IsIdleLong", true);
+            lastWaitTime = Time.time;
+        }
 
         if (movementInput.magnitude > 0)
         {
@@ -170,11 +188,21 @@ public class PlayerManager : NetworkBehaviour
         if(sprint.WasPressedThisFrame() && canDash)
         {
             canDash = false;
+            anim.SetBool("IsIdleLong", false);
+            lastWaitTime = Time.time;
             Invoke("CanDash", dashResetTime);
 
             Vector3 dashDirection = transform.forward + Vector3.up * dashUpScale;
             rb.AddForce(dashDirection.normalized * dashForce);
+            anim.SetBool("IsKnockedOver", true);
+            Invoke("KnockOverReset", 1);
         }
+    }
+
+    //temporary knockdown animation location
+    private void KnockOverReset()
+    {
+        anim.SetBool("IsKnockedOver", false);
     }
 
     private void AimShooting()
@@ -183,6 +211,8 @@ public class PlayerManager : NetworkBehaviour
 
         if (attack.IsPressed())
         {
+            lastWaitTime = Time.time;
+            anim.SetBool("IsIdleLong", false);
             aimCamTransform.gameObject.SetActive(true);
             cameraTransform.gameObject.SetActive(false);
             canShoot = true;
