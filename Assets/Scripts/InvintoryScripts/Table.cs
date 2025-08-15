@@ -9,6 +9,9 @@ using Unity.Netcode;
 [RequireComponent(typeof(PlayerInput))]
 public class Table : Object
 {
+    public static int ObjectID = -1;
+    public static string ObjectName = "";
+
     public Recipe TempRecipe;
     public Transform tempTargetPrefab;
 
@@ -18,10 +21,14 @@ public class Table : Object
 
     private void Start()
     {
+        if (ObjectID == -1)
+        {
+            ObjectID = objectID;
+            ObjectName = objectName;
+        }
+
         //temp version, will need to figure out recipies with ui
         Recipe stick = new Recipe();
-        Debug.Log("wood: " + FindFirstObjectByType<Wood>().objectID);
-        Debug.Log("table: " + objectID);
         stick.recipe.Add((FindFirstObjectByType<Wood>().objectID, 3));
 
         stick.target = tempTargetPrefab.GetComponent<Stick>();
@@ -33,27 +40,11 @@ public class Table : Object
     {
         if (TempRecipe.TryCraftTotems())
         {
-            RequestSpawnServerRpc(spawnPos.position);
-            foreach(Totem totem in totems)
+            foreach (Totem totem in totems)
             {
-                if(totem.holding)
-                {
-                    Destroy(totem.holding);
-                }
+                totem.killHolding();
             }
-        }
-    }
-
-    private void Update()
-    {
-        if (playerInArea)
-        {
-            //if(Input.GetKeyDown(KeyCode.E))
-            //{
-            //    TempRecipe.targetInvintory = targetInvintory;
-            //    Interact();
-            //
-            //}
+            Invoke("DelaySpawn", 0.1f);
         }
     }
 
@@ -82,6 +73,11 @@ public class Table : Object
                 holding.Remove(obj.getID());
             }
         }
+    }
+
+    private void DelaySpawn()
+    {
+        RequestSpawnServerRpc(spawnPos.position);
     }
 
 

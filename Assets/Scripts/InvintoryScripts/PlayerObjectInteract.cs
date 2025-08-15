@@ -67,6 +67,7 @@ public class PlayerObjectInteract : MonoBehaviour
         {
             if (highlighted.TryGetComponent<Object>(out var o))
             {
+                o.Invintory = this.GetComponent<Invintory>();
                 o.Interact();
             }
         }
@@ -101,25 +102,43 @@ public class PlayerObjectInteract : MonoBehaviour
 
     private Renderer ClosestRendererToCameraForward()
     {
-        Camera cam = Camera.main;
-        if (cam == null) return null;
-
-        Renderer closestRenderer = null;
-        float rDist = -1f;
-
-        foreach (Renderer r in objectRenderers)
+        if (objectRenderers.Count > 0)
         {
-            Vector3 toPoint = r.transform.position - cam.transform.position;
-            float dist = Vector3.Cross(toPoint, cam.transform.forward.normalized).magnitude;
+            Camera cam = Camera.main;
+            if (cam == null) return null;
 
-            if (rDist < 0f || dist < rDist)
+            Renderer closestRenderer = null;
+            float rDist = -1f;
+            Renderer removeHold = objectRenderers[0];
+            bool removeHoldSet = false;
+
+            foreach (Renderer r in objectRenderers)
             {
-                rDist = dist;
-                closestRenderer = r;
+                if (r)
+                {
+                    Vector3 toPoint = r.transform.position - cam.transform.position;
+                    float dist = Vector3.Cross(toPoint, cam.transform.forward.normalized).magnitude;
+
+                    if (rDist < 0f || dist < rDist)
+                    {
+                        rDist = dist;
+                        closestRenderer = r;
+                    }
+                }
+                else
+                {
+                    removeHold = r;
+                    removeHoldSet = true;
+                }
             }
+            if (removeHoldSet)
+            {
+                objectRenderers.Remove(removeHold);
+            }
+            return closestRenderer;
         }
 
-        return closestRenderer;
+        return null;
     }
 
 }

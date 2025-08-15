@@ -1,29 +1,81 @@
+using Unity.Netcode;
 using UnityEngine;
 
-public class Totem : MonoBehaviour
+public class Totem : Object
 {
+    public static int ObjectID = -1;
+    public static string ObjectName = "";
     private Table table;
     public GameObject holding;
+    [SerializeField] private Transform spawnPos;
+    public Transform woodPrefab;
+
+    private bool isHolding = false;
+
+
+    public override void Interact()
+    {
+        if (Invintory.Has(Wood.ObjectID, 1))
+        {
+            RequestSpawnServerRpc(spawnPos.position);
+            Invintory.RemoveObject(Wood.ObjectID, 1);
+        }
+    }
 
     private void Start()
     {
+        if (ObjectID == -1)
+        {
+            ObjectID = objectID;
+            ObjectName = objectName;
+        }
+
         table = GetComponentInParent<Table>();
     }
-    private void OnTriggerEnter(Collider obj)
+
+    [Rpc(SendTo.Server)]
+    private void RequestSpawnServerRpc(Vector3 spawnPosition)
     {
-        if(obj.GetComponent<Object>() is Object o)
+        Transform spawnedObj = Instantiate(woodPrefab);
+        spawnedObj.transform.position = spawnPosition;
+
+        var netObj = spawnedObj.GetComponent<NetworkObject>();
+        netObj.Spawn(true);
+
+        table.addTotemHolding(spawnedObj.GetComponent<Object>());
+        holding = spawnedObj.gameObject;
+    }
+
+    [Rpc(SendTo.Server)]
+    private void RequestKillServerRpc(NetworkObjectReference objRef)
+    {
+        if (objRef.TryGet(out NetworkObject netObj))
         {
-            table.addTotemHolding(o);
-            holding = o.gameObject;
+            netObj.Despawn(true);
         }
     }
 
-    private void OnTriggerExit(Collider obj)
+    public void killHolding()
     {
-        if(obj.GetComponent<Object>() is Object o)
+        holding.SetActive(false);
+        var netObj = holding.GetComponent<NetworkObject>();
+        if (netObj != null)
         {
-            table.removeTotemHolding(o);
-            holding = null;
+            if (IsServer)
+            {
+                netObj.Despawn(true);
+            }
+            else
+            {
+                RequestKillServerRpc(netObj);
+            }
         }
+        else
+        {
+            Destroy(holding);
+        }
+
+        table.removeTotemHolding(holding.GetComponent<Object>());
     }
 }
+

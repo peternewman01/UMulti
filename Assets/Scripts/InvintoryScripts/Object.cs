@@ -5,15 +5,12 @@ using Unity.Netcode;
 using Unity.VisualScripting;
 using UnityEngine;
 
-[RequireComponent(typeof(SphereCollider))]
 public abstract class Object : NetworkBehaviour
 {
     public int objectID;
     public string objectName;
-    [SerializeField] protected Invintory targetInvintory;
+    public Invintory Invintory;
     [SerializeField] protected bool playerInArea = false;
-
-    private float dist = 3f;
 
     public Object() { }
 
@@ -41,33 +38,6 @@ public abstract class Object : NetworkBehaviour
             }
             id++;
         } 
-    }
-
-    private void Reset()
-    {
-        SphereCollider sc = GetComponent<SphereCollider>();
-        sc.isTrigger = true;
-        float scaledDist = dist/ ((transform.localScale.x + transform.localScale.y + transform.localScale.z)/3);
-        sc.radius = scaledDist;
-    }
-
-    private void OnTriggerEnter(Collider col)
-    {
-        Invintory invTemp = col.gameObject.GetComponentInParent<Invintory>();
-        if (invTemp != null)
-        {
-            targetInvintory = invTemp;
-            playerInArea = true;
-        }
-    }
-
-    private void OnTriggerExit(Collider col)
-    {
-        if(targetInvintory != null)
-        {
-            targetInvintory = null;
-            playerInArea = false;
-        }
     }
 
     public string getName() { return objectName; }

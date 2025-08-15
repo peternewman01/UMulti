@@ -13,7 +13,6 @@ GameObject:
   - component: {fileID: 2964118066723374100}
   - component: {fileID: 2801630526509492983}
   - component: {fileID: 8696059543524608753}
-  - component: {fileID: 7530660514679349923}
   - component: {fileID: 3003696136283523117}
   - component: {fileID: 5316367674203908720}
   m_Layer: 0
@@ -141,27 +140,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!135 &7530660514679349923
-SphereCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8346321969232095038}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 1
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Radius: 17.142857
-  m_Center: {x: 0.000000059604645, y: 0, z: -0.00000008940697}
 --- !u!114 &3003696136283523117
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -202,5 +180,5 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   objectID: 1
   objectName: Wood
-  targetInvintory: {fileID: 0}
+  Invintory: {fileID: 0}
   playerInArea: 0

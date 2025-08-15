@@ -13,7 +13,6 @@ GameObject:
   - component: {fileID: 4762683764196152210}
   - component: {fileID: 5982389291497039704}
   - component: {fileID: 5930374038275493916}
-  - component: {fileID: 1071291620793383529}
   - component: {fileID: 7033247571078061410}
   - component: {fileID: 2961733448841480494}
   m_Layer: 0
@@ -141,27 +140,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!135 &1071291620793383529
-SphereCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9125502469920471631}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 1
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Radius: 6
-  m_Center: {x: 0.000000059604645, y: 0, z: -0.00000008940697}
 --- !u!114 &7033247571078061410
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -202,5 +180,5 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   objectID: 2
   objectName: Stick
-  targetInvintory: {fileID: 0}
+  Invintory: {fileID: 0}
   playerInArea: 0
