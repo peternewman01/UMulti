@@ -107,4 +107,10 @@ public class CircleIslandGenerator : IslandGenerator
     {
         return GetRadiusPercent(pos) <= 1;
     }
+
+    public override bool IsInsideIsland(Vector2Int chunk)
+    {
+        float distance = Vector2Int.Distance(chunk, ChunkMananger.Instance.WorldToChunk(center));
+        return distance < (islandRadius / ChunkMananger.Instance.GetChunkSize());
+    }
 }

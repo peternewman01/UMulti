@@ -9,15 +9,14 @@ public class ChunkMananger : MonoBehaviour
 {
     public static ChunkMananger Instance;
     [SerializeField] private MarchingAlgorithm marchingAlgorithmPrefab;
-    [SerializeField] private uint chunkSize = 32;
-    [Tooltip("How many cubes tall a chunk is")]
-    [SerializeField] private uint subChunks = 16;
-    [Tooltip("How many subchunks to generate per frame")]
-    [SerializeField] private uint subChunksPerFrame = 4;
-    [SerializeField] private int renderDistance = 64;
+    [Tooltip("How large a sub-cube is for chunk generation")]
+    [SerializeField] private uint subCubeSize = 32;
+    [Tooltip("How many sub-cubes tall a chunk is")]
+    [SerializeField] private uint subCubesPerChunk = 16;
+    [Tooltip("How many sub-cubes to generate per frame")]
+    [SerializeField] private uint chunksPerFrame = 4;
     //[SerializeField] private MarchingAlgorithm algorithmPrefab;
     private List<Vector2Int> frontier = new();
-    private List<Vector2Int> visited = new();
     private Vector2Int playerChunk = Vector2Int.zero;
     private float seed = 0;
     public float Seed
@@ -49,7 +48,6 @@ public class ChunkMananger : MonoBehaviour
     {
         islandManager.CreateNewGenerator(0);
         frontier.Add(Vector2Int.zero);
-        visited.Add(Vector2Int.zero);
         SetSeed(UnityEngine.Random.Range(-10000, 10000));
         //PopulateFrontierWithChunks();
         StartCoroutine(ChunkRecursion());
@@ -89,41 +87,45 @@ public class ChunkMananger : MonoBehaviour
 
     private IEnumerator ChunkRecursion()
     {
-        if (frontier.Count == 0) yield return null;
-
-        int subChunkCount = 0;
-        while (frontier.Count > 0 && subChunkCount < subChunksPerFrame)
+        frontier.Sort(new DistanceCompare());
+        uint cubeCount = 0;
+        while (frontier.Count > 0 && cubeCount < chunksPerFrame * subCubesPerChunk)
         {
             Vector2Int current = frontier[0];
-            GenerateChunk(current);
+            cubeCount += GenerateChunk(current);
             frontier.RemoveAt(0);
-            subChunkCount += (int)subChunks;
         }
 
-        
+        float fps = 1.0f / Time.deltaTime;
 
-        frontier.Sort(new DistanceCompare());
-        yield return new WaitForEndOfFrame();
+        if (chunksPerFrame > 1 && fps < 30)
+            chunksPerFrame--;
+        else if (fps > 90)
+            chunksPerFrame++;
+
+            yield return new WaitForEndOfFrame();
         StartCoroutine(ChunkRecursion());
-        //ChunkRecursion();
     }
 
 
-    public void GenerateChunk(Vector2Int chunk)
+    public uint GenerateChunk(Vector2Int chunk)
     {
+        string name = "Chunk (" + chunk.x + ", " + chunk.y + ")";
         GameObject spawnedChunk = new GameObject();
         spawnedChunk.transform.parent = transform;
         spawnedChunk.name = "Chunk (" + chunk.x + ", " + chunk.y + ")";
-        for (int i = 0; i < subChunks; i++)
+        for (uint i = 0; i < subCubesPerChunk; i++)
         {
+            uint subChunkIndex = i;
             MarchingAlgorithm subChunk = Instantiate(marchingAlgorithmPrefab);
+            subChunk.name = "SubChunk " + subChunkIndex;
             subChunk.transform.parent = spawnedChunk.transform;
-            subChunk.name = "SubChunk " + i;
-            subChunk.transform.position = ChunkToWorld(chunk) + new Vector3(0, i * chunkSize, 0);
-            subChunk.Init(chunk, i);
+            subChunk.transform.position = ChunkToWorld(chunk) + new Vector3(0, subChunkIndex * subCubeSize, 0);
+            subChunk.Init(chunk, subChunkIndex);
             subChunk.GenerateIsland();
         }
-        //StartCoroutine(ChunkRecursion());
+
+        return subCubesPerChunk;
     }
 
     public void AddChunksInRadiusAtPosition(Vector3 worldPos, float radius)
@@ -134,7 +136,7 @@ public class ChunkMananger : MonoBehaviour
     public void AddChunks(Vector2Int[] chunks)
     {
         foreach(var chunk in chunks) {
-            if (frontier.Contains(chunk)) continue;
+            //if (frontier.Contains(chunk)) continue;
             frontier.Add(chunk);
         }
     }
@@ -167,13 +169,13 @@ public class ChunkMananger : MonoBehaviour
     public Vector2Int WorldToChunk(Vector3 worldPos)
     {
         //Ex 67.39, 12.49, 123.69 --> 67/32 = >2 & <3 = 2, 123/32 = <4 & >3 = 3
-        return new Vector2Int(Mathf.FloorToInt(worldPos.x / chunkSize), Mathf.FloorToInt(worldPos.z/ chunkSize));
+        return new Vector2Int(Mathf.FloorToInt(worldPos.x / subCubeSize), Mathf.FloorToInt(worldPos.z/ subCubeSize));
     }
 
     public Vector3 ChunkToWorld(Vector2Int chunk) 
     {
         //Ex 2, 3 --> 2*32 = 64, 0, 96
-        return new Vector3(chunk.x * chunkSize, 0, chunk.y * chunkSize);
+        return new Vector3(chunk.x * subCubeSize, 0, chunk.y * subCubeSize);
     }
 
 /*    private bool IsInRenderDistance(Vector2Int chunk)
@@ -200,8 +202,8 @@ public class ChunkMananger : MonoBehaviour
 
 
     //Accessors
-    public uint GetChunkSize() => chunkSize;
-    public uint GetChunkHeight() => subChunks * chunkSize;
+    public uint GetChunkSize() => subCubeSize;
+    public uint GetChunkHeight() => subCubesPerChunk * subCubeSize;
     public Vector2Int GetPlayerChunk() => playerChunk;
     public void SetSeed(float newSeed) => seed = newSeed;
 }

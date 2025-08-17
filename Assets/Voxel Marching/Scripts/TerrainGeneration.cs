@@ -27,7 +27,6 @@ public abstract class TerrainGeneration : ScriptableObject
         public Vector3 values;
         public PerlinMath mathType;
     }
-
     /// <summary>
     /// Generates a list of points where the terrain should change from air to solid.
     /// O(n) complexity, where n is perlinMultipliers.Length

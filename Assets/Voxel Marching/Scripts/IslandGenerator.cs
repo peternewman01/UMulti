@@ -31,4 +31,7 @@ public abstract class IslandGenerator : TerrainGeneration
 
     public Vector3 GetCenter() => center;
     public float GetSpacing() => islandSpacing;
+
+    public abstract bool IsInsideIsland(Vector2Int chunk);
+
 }

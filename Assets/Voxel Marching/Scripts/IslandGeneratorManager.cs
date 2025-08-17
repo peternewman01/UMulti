@@ -17,8 +17,11 @@ public class IslandGeneratorManager : TerrainGeneration
     }
     //[SerializeField] private float islandSpacing = 64f;
     [SerializeField] private List<WeightedGenerator> possibleGenerators = new();
+    [SerializeField] private List<ResourceGenerator> resourceGenerators = new();
     private List<IslandGenerator> instancedGenerators = new();
     private int totalWeight;
+
+    Action<Vector3> GenerateResources;
 
     private void OnValidate()
     {
@@ -38,7 +41,20 @@ public class IslandGeneratorManager : TerrainGeneration
             totalWeight += generator.weight;
         }
 
+        GenerateResources += GenerateRosourcesForIsland;
+
         instancedGenerators.Clear();
+    }
+
+    private IslandGenerator[] GetAllIslandsAtPosition(Vector3 pos)
+    {
+        List<IslandGenerator> generators = new();
+
+        foreach (IslandGenerator island in instancedGenerators)
+        {
+            if (island.IsInsideIsland(pos)) generators.Add(island);
+        }
+        return generators.ToArray();
     }
 
     private IslandGenerator GetNearestIsland(Vector3 pos)
@@ -62,9 +78,25 @@ public class IslandGeneratorManager : TerrainGeneration
         return islandGenerator;
     }
 
+    private void GenerateRosourcesForIsland(Vector3 pos)
+    {
+        foreach(ResourceGenerator generator in resourceGenerators)
+        {
+            //generator.GenerateResource(pos);
+        }
+    }
+
     public override float[] CustomNoise(Vector3 pos)
     {
-        return GetNearestIsland(pos).CustomNoise(pos);
+        List<float> values = new();
+
+        foreach(IslandGenerator generator in GetAllIslandsAtPosition(pos))
+        {
+            values.AddRange( generator.CustomNoise(pos));
+        }
+
+        GenerateResources?.Invoke(pos);
+        return values.Count > 0 ? values.ToArray() : GetNearestIsland(pos).CustomNoise(pos);
     }
 
     public void CreateNewGenerator(int index = -1)

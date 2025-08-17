@@ -19,7 +19,7 @@ MonoBehaviour:
   - values: {x: 0.1, y: 24, z: 0.1}
     mathType: 3
   yFluxuation: 16
-  islandSpacing: 32
+  islandSpacing: 4
   material: {fileID: 2100000, guid: 301b77c23f32bde478daba74d434e418, type: 2}
   islandRadius: 64
   radiusFluxuation: 4

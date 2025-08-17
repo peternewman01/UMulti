@@ -13,9 +13,9 @@ using UnityEngine;
 public abstract class MarchingAlgorithm : MonoBehaviour
 {
     protected bool hasData = false;
-    protected int voxelArea;
+    protected uint voxelArea;
     protected Vector2Int chunk;
-    protected int subChunk = 0;
+    protected uint subChunk = 0;
     protected float[,,] terrainMap;
     private MeshFilter meshFilter;
     private float terrainSurface;
@@ -32,12 +32,12 @@ public abstract class MarchingAlgorithm : MonoBehaviour
         else gameObject.SetActive(false);
     }
 
-    public virtual void Init(Vector2Int chunk, int subChunk)
+    public virtual void Init(Vector2Int chunk, uint subChunk)
     {
         this.chunk = chunk;
         this.subChunk = subChunk;
 
-        voxelArea = (int)ChunkMananger.Instance.GetChunkSize();
+        voxelArea = ChunkMananger.Instance.GetChunkSize();
         meshFilter = GetComponent<MeshFilter>();
 
         terrainMap = new float[voxelArea + 1, voxelArea + 1, voxelArea + 1];
@@ -177,8 +177,8 @@ public abstract class MarchingAlgorithm : MonoBehaviour
 
     //Accessors  
     public Vector2Int GetChunk() => chunk;
-    public int GetSubChunk() => subChunk;
-    public int GetVoxelArea() => voxelArea;
+    public int GetSubChunk() => (int)subChunk;
+    public int GetVoxelArea() => (int)voxelArea;
 
     internal object GetGenerator()
     {
