@@ -18,7 +18,7 @@ public class ResourceGenerator : TerrainGeneration
         parent = GameObject.Find("Resources");
         if(parent == null) parent = new GameObject("Resources");
 
-        parent.transform.parent = ChunkMananger.Instance.gameObject.transform;
+        parent.transform.parent = ChunkMananger.Instance?.gameObject.transform;
     }
 
     public void DestroyParent()

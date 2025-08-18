@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2e2621bcc4c81fd4580e05f371ee8db0, type: 3}
+  m_Name: MediumRockGenerator
+  m_EditorClassIdentifier: 
+  resourcePrefab: {fileID: 1624423753916669083, guid: 1df31333d36453c4281b4d9387c7255d, type: 3}
+  spawningData:
+    density: 0.03
+    posOffset: 0.25
+    randomness: 0.25
+    maxSteepness: 90
+    minSteepness: 0
+    maxHeight: 500
+    minHeight: -500
