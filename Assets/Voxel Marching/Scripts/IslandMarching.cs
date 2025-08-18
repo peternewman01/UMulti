@@ -15,8 +15,8 @@ public class IslandMarching : MarchingAlgorithm
 
     protected override void CreateTerrainMapDataAt(int x, int z)
     {
-        float[] airGaps = generation.CustomNoise(ChunkMananger.Instance.ChunkToWorld(chunk) + new Vector3(x, 0, z));
-        if(airGaps == null)
+        float[] airGaps = generation.CustomNoise(ChunkMananger.Instance.ChunkToWorld(chunk) + new Vector3(x, 0, z), this);
+        if(airGaps.Length == 0 || airGaps == null)
         {
             for (int y = 0; y < voxelArea + 1; y++)
             {

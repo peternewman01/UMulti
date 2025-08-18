@@ -2,6 +2,7 @@ using NUnit.Framework;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using UnityEditor;
 using UnityEngine;
 
@@ -12,6 +13,7 @@ using UnityEngine;
 [RequireComponent(typeof(MeshRenderer))]
 public abstract class MarchingAlgorithm : MonoBehaviour
 {
+    
     protected bool hasData = false;
     protected uint voxelArea;
     protected Vector2Int chunk;

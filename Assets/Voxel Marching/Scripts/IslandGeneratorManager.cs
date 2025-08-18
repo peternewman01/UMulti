@@ -21,7 +21,7 @@ public class IslandGeneratorManager : TerrainGeneration
     private List<IslandGenerator> instancedGenerators = new();
     private int totalWeight;
 
-    Action<Vector3> GenerateResources;
+    Action<Vector3, MarchingAlgorithm> GenerateResources;
 
     private void OnValidate()
     {
@@ -78,25 +78,25 @@ public class IslandGeneratorManager : TerrainGeneration
         return islandGenerator;
     }
 
-    private void GenerateRosourcesForIsland(Vector3 pos)
+    private void GenerateRosourcesForIsland(Vector3 pos, MarchingAlgorithm algorithm)
     {
         foreach(ResourceGenerator generator in resourceGenerators)
         {
-            //generator.GenerateResource(pos);
+            generator.CustomNoise(pos, algorithm);
         }
     }
 
-    public override float[] CustomNoise(Vector3 pos)
+    public override float[] CustomNoise(Vector3 pos, MarchingAlgorithm algorithm)
     {
         List<float> values = new();
 
         foreach(IslandGenerator generator in GetAllIslandsAtPosition(pos))
         {
-            values.AddRange( generator.CustomNoise(pos));
+            values.AddRange( generator.CustomNoise(pos, algorithm));
         }
 
-        GenerateResources?.Invoke(pos);
-        return values.Count > 0 ? values.ToArray() : GetNearestIsland(pos).CustomNoise(pos);
+        GenerateResources?.Invoke(pos, algorithm);
+        return /*values.Count > 0 ? */values.ToArray()/* : GetNearestIsland(pos).CustomNoise(pos, algorithm)*/;
     }
 
     public void CreateNewGenerator(int index = -1)

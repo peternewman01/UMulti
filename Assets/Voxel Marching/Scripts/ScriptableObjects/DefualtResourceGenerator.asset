@@ -14,10 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   resourcePrefab: {fileID: 7227547228323321900, guid: 7491090dc4daab649ba5797efef094e9, type: 3}
   spawningData:
-    density: 0.5
+    density: 0.33
     posOffset: 0.25
-    randomness: 0.1
-    maxSteepness: 75
+    randomness: 0.15
+    maxSteepness: 90
     minSteepness: 0
     maxHeight: 500
     minHeight: -500

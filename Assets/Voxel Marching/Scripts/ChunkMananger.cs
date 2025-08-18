@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting.Dependencies.Sqlite;
 using UnityEngine;
+using static UnityEditor.PlayerSettings;
 
 public class ChunkMananger : MonoBehaviour
 {
@@ -28,7 +29,7 @@ public class ChunkMananger : MonoBehaviour
     //TEMP
     public IslandGeneratorManager islandManager;
 
-    private void Awake()
+    private void OnValidate()
     {
         if (Instance == null)
         {
@@ -38,7 +39,7 @@ public class ChunkMananger : MonoBehaviour
         else if (Instance != this)
         {
             Debug.LogError("Chunk Manager already exists in scene");
-            Destroy(this);
+            DestroyImmediate(this);
         }
 
 
@@ -116,12 +117,11 @@ public class ChunkMananger : MonoBehaviour
         spawnedChunk.name = "Chunk (" + chunk.x + ", " + chunk.y + ")";
         for (uint i = 0; i < subCubesPerChunk; i++)
         {
-            uint subChunkIndex = i;
             MarchingAlgorithm subChunk = Instantiate(marchingAlgorithmPrefab);
-            subChunk.name = "SubChunk " + subChunkIndex;
+            subChunk.name = "SubChunk " + i;
             subChunk.transform.parent = spawnedChunk.transform;
-            subChunk.transform.position = ChunkToWorld(chunk) + new Vector3(0, subChunkIndex * subCubeSize, 0);
-            subChunk.Init(chunk, subChunkIndex);
+            subChunk.transform.position = ChunkToWorld(chunk) + new Vector3(0, i * subCubeSize, 0);
+            subChunk.Init(chunk, i);
             subChunk.GenerateIsland();
         }
 
@@ -136,7 +136,7 @@ public class ChunkMananger : MonoBehaviour
     public void AddChunks(Vector2Int[] chunks)
     {
         foreach(var chunk in chunks) {
-            //if (frontier.Contains(chunk)) continue;
+            if (frontier.Contains(chunk)) continue;
             frontier.Add(chunk);
         }
     }
@@ -204,6 +204,7 @@ public class ChunkMananger : MonoBehaviour
     //Accessors
     public uint GetChunkSize() => subCubeSize;
     public uint GetChunkHeight() => subCubesPerChunk * subCubeSize;
+    public uint GetSubCubesPerChunk() => subCubesPerChunk;
     public Vector2Int GetPlayerChunk() => playerChunk;
     public void SetSeed(float newSeed) => seed = newSeed;
 }

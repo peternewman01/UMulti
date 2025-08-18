@@ -34,6 +34,6 @@ public abstract class TerrainGeneration : ScriptableObject
     /// <param name="algorithm"></param>
     /// <param name="pos"></param>
     /// <returns></returns>
-    public abstract float[] CustomNoise(Vector3 pos);
+    public abstract float[] CustomNoise(Vector3 pos, MarchingAlgorithm algorithm);
 }
 

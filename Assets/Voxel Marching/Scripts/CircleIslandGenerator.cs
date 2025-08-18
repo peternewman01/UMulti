@@ -17,7 +17,7 @@ public class CircleIslandGenerator : IslandGenerator
         islandRadius += Random.Range(-radiusFluxuation, radiusFluxuation);
     }
 
-    public override float[] CustomNoise(Vector3 pos)
+    public override float[] CustomNoise(Vector3 pos, MarchingAlgorithm algorithm)
     {   
         //float radiusPercent = GetChunkRadiusPercent(chunk);
         //Vector3 offset = ChunkMananger.Instance.ChunkToWorld(chunk);
