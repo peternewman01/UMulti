@@ -192,6 +192,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
   InputActions: {fileID: -944628639613478452, guid: 35845fe01580c41289b024647b1d1c53, type: 3}
+  MainCanvas: {fileID: 0}
+  ControlPanelPrefab: {fileID: 8734425107423751857, guid: 04f45d170cf37af46832ea4ee27025be, type: 3}
+  controlPanel: {fileID: 0}
   rb: {fileID: 9085496850077203498}
   walkingSpeed: 8
   dashForce: 1000
@@ -336,9 +339,7 @@ MonoBehaviour:
   outlinePasses: {fileID: 0}
   searchRadius: 6
   objectRenderers: []
-  HighlightedObject: {fileID: 0}
   pickupRadius: {fileID: 0}
-  positionOnOrder: 0
 --- !u!1 &5715089899143181011
 GameObject:
   m_ObjectHideFlags: 0

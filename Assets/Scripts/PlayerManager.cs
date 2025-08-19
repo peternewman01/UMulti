@@ -9,6 +9,10 @@ using UnityEngine.Animations;
 public class PlayerManager : NetworkBehaviour
 {
     public InputActionAsset InputActions;
+    public Canvas MainCanvas;
+    public GameObject ControlPanelPrefab;
+    [SerializeField] private ControlPanel controlPanel;
+
 
     [Header("Movement")]
     [SerializeField] private Rigidbody rb;
@@ -28,6 +32,7 @@ public class PlayerManager : NetworkBehaviour
     private InputAction click;
     private InputAction jump;
     private InputAction scroll;
+    private InputAction invButton;
 
     private Vector2 movementInput;
     private float moveSpeed = 3f;
@@ -72,6 +77,7 @@ public class PlayerManager : NetworkBehaviour
 
     public override void OnNetworkSpawn()
     {
+        MainCanvas = FindFirstObjectByType<Canvas>();
         Cursor.lockState = CursorLockMode.Locked;
         Debug.Log("Player added!");
 
@@ -92,8 +98,13 @@ public class PlayerManager : NetworkBehaviour
         click = InputSystem.actions.FindAction("Click");
         jump = InputSystem.actions.FindAction("Jump");
         scroll = InputSystem.actions.FindAction("Scroll");
+        invButton = InputSystem.actions.FindAction("InvButton");
 
         rb = GetComponent<Rigidbody>();
+
+        controlPanel = Instantiate(ControlPanelPrefab, MainCanvas.transform).GetComponent<ControlPanel>();
+        controlPanel.playerManager = this;
+        controlPanel.invintory = gameObject.GetComponent<Invintory>();
     }
 
     public override void OnNetworkDespawn()
@@ -112,6 +123,22 @@ public class PlayerManager : NetworkBehaviour
         Interact = interact.WasPressedThisFrame();
 
         scrolling = scroll.ReadValue<float>();
+
+        if(invButton.WasPressedThisFrame())
+        {
+            if(controlPanel.gameObject.activeSelf)
+            {
+                controlPanel.gameObject.SetActive(false);
+                Cursor.lockState = CursorLockMode.Locked;
+                Cursor.visible = false;
+            }
+            else
+            {
+                controlPanel.gameObject.SetActive(true);
+                Cursor.lockState = CursorLockMode.None;
+                Cursor.visible = true;
+            }
+        }
     }
 
     private void JumpCheck()
