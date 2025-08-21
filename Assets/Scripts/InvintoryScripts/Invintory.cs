@@ -5,10 +5,16 @@ using UnityEngine;
 
 public class Invintory : MonoBehaviour
 {
-    [SerializeField] public Dictionary<int, Unit> Stuff = new Dictionary<int, Unit>();
+    public Dictionary<int, Unit> Stuff = new Dictionary<int, Unit>();
+    public ControlPanel ui;
 
     public void AddObject<T>(T obj, int count) where T : Object
     {
+        if(!ui.AddObjects(obj, count))
+        {
+            return;
+        }
+
         if (Stuff.ContainsKey(obj.getID()))
         {
             Stuff[obj.getID()].count += count;
@@ -23,10 +29,22 @@ public class Invintory : MonoBehaviour
 
     public void RemoveObject<T>(T obj, int count) where T : Object
     {
-        RemoveObject(obj.getID(), count);
+        ui.RemoveObjects(obj, count);
+
+        if (Stuff.ContainsKey(obj.objectID))
+        {
+            Stuff[obj.objectID].count -= count;
+            if (Stuff[obj.objectID].count <= 0)
+            {
+                Stuff.Remove(obj.objectID);
+            }
+        }
     }
+
     public void RemoveObject(int id, int count)
     {
+        ui.RemoveObjects(id, count);
+
         if (Stuff.ContainsKey(id))
         {
             Stuff[id].count -= count;

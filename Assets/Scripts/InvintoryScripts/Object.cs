@@ -4,6 +4,7 @@ using System.Reflection;
 using Unity.Netcode;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UI;
 
 public abstract class Object : NetworkBehaviour
 {
@@ -11,6 +12,8 @@ public abstract class Object : NetworkBehaviour
     public string objectName;
     public Invintory Invintory;
     [SerializeField] protected bool playerInArea = false;
+
+    public Sprite objectSprite;
 
     public Object() { }
 
@@ -37,7 +40,9 @@ public abstract class Object : NetworkBehaviour
                 objectName = type.Name;
             }
             id++;
-        } 
+        }
+
+        objectSprite = Resources.Load<Sprite>("ObjectThumbnails/BasicThumbnail");
     }
 
     public string getName() { return objectName; }

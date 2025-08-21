@@ -5,6 +5,7 @@ using UnityEngine.Windows;
 using UnityEditor;
 using Unity.VisualScripting;
 using UnityEngine.Animations;
+using NUnit;
 
 public class PlayerManager : NetworkBehaviour
 {
@@ -12,6 +13,7 @@ public class PlayerManager : NetworkBehaviour
     public Canvas MainCanvas;
     public GameObject ControlPanelPrefab;
     [SerializeField] private ControlPanel controlPanel;
+    [SerializeField] private Invintory inv;
 
 
     [Header("Movement")]
@@ -78,7 +80,7 @@ public class PlayerManager : NetworkBehaviour
     public override void OnNetworkSpawn()
     {
         MainCanvas = FindFirstObjectByType<Canvas>();
-        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.lockState = CursorLockMode.None;
         Debug.Log("Player added!");
 
         if (!IsOwner)
@@ -101,10 +103,13 @@ public class PlayerManager : NetworkBehaviour
         invButton = InputSystem.actions.FindAction("InvButton");
 
         rb = GetComponent<Rigidbody>();
+        inv = gameObject.GetComponent<Invintory>();
 
         controlPanel = Instantiate(ControlPanelPrefab, MainCanvas.transform).GetComponent<ControlPanel>();
         controlPanel.playerManager = this;
-        controlPanel.invintory = gameObject.GetComponent<Invintory>();
+
+        controlPanel.invintory = inv;
+        inv.ui = controlPanel;
     }
 
     public override void OnNetworkDespawn()
