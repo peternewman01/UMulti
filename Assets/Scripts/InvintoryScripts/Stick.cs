@@ -14,4 +14,9 @@ public class Stick : Object
             ObjectName = objectName;
         }
     }
+    public override void Interact()
+    {
+        Invintory.AddObject(this, 1);
+        Destroy(gameObject);
+    }
 }

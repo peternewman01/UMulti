@@ -64,6 +64,9 @@ public class ControlPanel : MonoBehaviour
 
     public bool RemoveObjects(int id, int count)
     {
+        Slot[] removeSlots = new Slot[count];
+        int currentSlot = 0;
+
         int currentlyFound = 0;
         foreach (Slot slot in filledSlots)
         {
@@ -72,11 +75,22 @@ public class ControlPanel : MonoBehaviour
                 slot.ResetItem();
                 currentlyFound++;
 
-                if (currentlyFound == count)
-                {
-                    return true;
-                }
+                openSlots.Insert(0, slot);
+                removeSlots[currentSlot] = slot;
+                currentSlot++;
+
+                if (currentlyFound == count) break;
             }
+        }
+
+        foreach (Slot slot in removeSlots)
+        {
+            filledSlots.Remove(slot);
+        }
+
+        if (currentlyFound == count)
+        {
+            return true;
         }
         return false;
     }
