@@ -6,11 +6,16 @@ using UnityEngine.EventSystems;
 
 public class Slot : MonoBehaviour
 {
+    public ControlPanel ui;
     public Image itemImage;
     public TMP_Text itemText;
+    [SerializeField] private bool filled;
 
     private float lastClickTime;
     private const float doubleClickThreshold = 0.25f;
+
+    public static bool moving = false;
+    public static Slot MovingSlot;
 
     public int objectID;
 
@@ -40,7 +45,26 @@ public class Slot : MonoBehaviour
 
     private void OnSingleClick()
     {
-        Debug.Log("Click");
+        if (moving && MovingSlot && !filled)
+        {
+            MovingSlot.filled = false;
+            filled = true;
+
+            ui.openSlots.Add(MovingSlot);
+            ui.openSlots.Remove(this);
+            ui.filledSlots.Remove(MovingSlot);
+            ui.filledSlots.Add(this);
+
+            this.SetItem(MovingSlot.itemImage.sprite, MovingSlot.itemText.text, objectID);
+            MovingSlot.ResetItem();
+
+            MovingSlot = null;
+        }
+        else if(filled)
+        {
+            moving = true;
+            MovingSlot = this;
+        }
     }
 
     private void OnDoubleClick()
@@ -53,6 +77,7 @@ public class Slot : MonoBehaviour
         itemImage.sprite = null;
         itemImage.color = new Color(1, 1, 1, 0);
         itemText.text = "";
+        filled = false;
 
         objectID = -1;
     }
@@ -61,6 +86,7 @@ public class Slot : MonoBehaviour
         itemImage.sprite = image;
         itemImage.color = new Color(1, 1, 1, 1);
         itemText.text = name;
+        filled = true;
 
         objectID = id;
     }

@@ -7,8 +7,8 @@ public class ControlPanel : MonoBehaviour
 {
     public GameObject slot;
     public Transform startPosition;
-    [SerializeField] private List<Slot> openSlots = new List<Slot>();
-    [SerializeField] private List<Slot> filledSlots = new List<Slot>();
+    public List<Slot> openSlots = new List<Slot>();
+    public List<Slot> filledSlots = new List<Slot>();
 
     [SerializeField] private int slotSpawnCount = 63;
     [SerializeField] private int targetSlot = 0;
@@ -22,6 +22,7 @@ public class ControlPanel : MonoBehaviour
         for(int i = 0; i <  slotSpawnCount; i++)
         {
             openSlots.Add(Instantiate(slot, startPosition).GetComponent<Slot>());
+            openSlots.Last().ui = this;
         }
     }
 
