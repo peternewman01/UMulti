@@ -13,12 +13,12 @@ public class ResourceGenerator : TerrainGeneration
     [SerializeField] private FitnessData spawningData;
     private GameObject parent;
 
-    public void OnValidate()
+    public void Awake()
     {
         parent = GameObject.Find("Resources");
         if(parent == null) parent = new GameObject("Resources");
 
-        parent.transform.parent = ChunkMananger.Instance?.gameObject.transform;
+        parent.transform.parent = ChunkMananger.Instance?.gameObject.transform; 
     }
 
     public void DestroyParent()
@@ -51,7 +51,7 @@ public class ResourceGenerator : TerrainGeneration
     private float ResourceFitness(float x, float z, RaycastHit hitData, FitnessData data)
     {
         float fitness = Mathf.PerlinNoise(x + ChunkMananger.Instance.Seed, z + ChunkMananger.Instance.Seed);
-        Debug.Log($"Perlin at ({x}, {z}) = {fitness}");
+        //Debug.Log($"Perlin at ({x}, {z}) = {fitness}");
         fitness += Random.Range(-data.randomness, data.randomness);
         if (Mathf.Acos(Vector3.Dot(hitData.normal, Vector3.up)) > data.maxSteepness) fitness += 0.9f;
         if (Mathf.Acos(Vector3.Dot(hitData.normal, Vector3.up)) < data.minSteepness) fitness += 0.9f;

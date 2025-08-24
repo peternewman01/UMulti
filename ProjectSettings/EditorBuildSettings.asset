@@ -14,6 +14,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/CraftingTestScene.unity
     guid: 84381db5104f2c545b384f145c2b6e20
+  - enabled: 1
+    path: Assets/TerrainGenTestScene2.unity
+    guid: 7ff7fe59a7bb2b24d922449cef2e38cf
   m_configObjects:
     com.unity.input.settings: {fileID: 11400000, guid: 9aff10eaf0e19d34e9050fbf40e0b2ba, type: 2}
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 35845fe01580c41289b024647b1d1c53, type: 3}

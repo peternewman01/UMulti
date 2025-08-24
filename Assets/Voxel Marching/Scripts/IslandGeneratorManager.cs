@@ -1,6 +1,8 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -18,6 +20,7 @@ public class IslandGeneratorManager : TerrainGeneration
     //[SerializeField] private float islandSpacing = 64f;
     [SerializeField] private List<WeightedGenerator> possibleGenerators = new();
     [SerializeField] private List<ResourceGenerator> resourceGenerators = new();
+    [SerializeField] private uint islandsToGenerate = 16;
     private List<IslandGenerator> instancedGenerators = new();
     private int totalWeight;
 
@@ -49,6 +52,10 @@ public class IslandGeneratorManager : TerrainGeneration
     private IslandGenerator[] GetAllIslandsAtPosition(Vector3 pos)
     {
         List<IslandGenerator> generators = new();
+        if (instancedGenerators.Count <= 0)
+        {
+            CreateInitialGenerators();
+        }
 
         foreach (IslandGenerator island in instancedGenerators)
         {
@@ -99,6 +106,15 @@ public class IslandGeneratorManager : TerrainGeneration
         return /*values.Count > 0 ? */values.ToArray()/* : GetNearestIsland(pos).CustomNoise(pos, algorithm)*/;
     }
 
+    public void CreateInitialGenerators()
+    {
+        for(int i = 0; i < islandsToGenerate; i++)
+        {
+            if (i == 0) CreateNewGenerator(0); //first generator should be of the first type in the weighted list
+            else CreateNewGenerator();
+        }
+    }
+
     public void CreateNewGenerator(int index = -1)
     {
         IslandGenerator newGenerator;
@@ -139,7 +155,7 @@ public class IslandGeneratorManager : TerrainGeneration
             //if (nearestIsland == newGenerator) break;
         }
 
-        Debug.Log($"IslandGeneratorManager: New generator center set to {center} with max distance {newGeneratorMaxDistance}");
+        //Debug.Log($"IslandGeneratorManager: New generator center set to {center} with max distance {newGeneratorMaxDistance}");
         return center;
     }
 

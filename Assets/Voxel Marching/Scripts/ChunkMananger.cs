@@ -2,9 +2,7 @@ using NUnit.Framework;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting.Dependencies.Sqlite;
 using UnityEngine;
-using static UnityEditor.PlayerSettings;
 
 public class ChunkMananger : MonoBehaviour
 {
@@ -26,6 +24,9 @@ public class ChunkMananger : MonoBehaviour
         set { }
     }
 
+    //Events
+    public Action<Vector2Int> PlayerChunkUpdated;
+
     //TEMP
     public IslandGeneratorManager islandManager;
 
@@ -38,8 +39,7 @@ public class ChunkMananger : MonoBehaviour
         }
         else if (Instance != this)
         {
-            Debug.LogError("Chunk Manager already exists in scene");
-            DestroyImmediate(this);
+            DestroyImmediate(gameObject);
         }
 
 
@@ -47,16 +47,17 @@ public class ChunkMananger : MonoBehaviour
 
     private void Start()
     {
-        islandManager.CreateNewGenerator(0);
+        //islandManager.CreateNewGenerator(0);
         frontier.Add(Vector2Int.zero);
         SetSeed(UnityEngine.Random.Range(-10000, 10000));
         //PopulateFrontierWithChunks();
         StartCoroutine(ChunkRecursion());
+        PlayerChunkUpdated?.Invoke(playerChunk);
 
-        for(int i = 0; i < 16; i++)
-        {
-            islandManager.CreateNewGenerator();
-        }
+        /*        for(int i = 0; i < 16; i++)
+                {
+                    islandManager.CreateNewGenerator();
+                }*/
     }
 
     //TEMP
@@ -69,7 +70,13 @@ public class ChunkMananger : MonoBehaviour
 
         if(FindFirstObjectByType<PlayerManager>())
         {
-            playerChunk = WorldToChunk(FindFirstObjectByType<PlayerManager>().transform.position);
+            Vector2Int player = WorldToChunk(FindFirstObjectByType<PlayerManager>().transform.position);
+            if (playerChunk != player)
+            {
+                playerChunk = WorldToChunk(FindFirstObjectByType<PlayerManager>().transform.position);
+                PlayerChunkUpdated?.Invoke(playerChunk);
+            }
+
         }
     }
 
@@ -104,7 +111,7 @@ public class ChunkMananger : MonoBehaviour
         else if (fps > 90)
             chunksPerFrame++;
 
-            yield return new WaitForEndOfFrame();
+        yield return new WaitForEndOfFrame();
         StartCoroutine(ChunkRecursion());
     }
 

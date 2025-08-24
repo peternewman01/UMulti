@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using Unity.Collections.LowLevel.Unsafe;
 using UnityEditor;
 using UnityEngine;
 
@@ -175,6 +176,13 @@ public abstract class MarchingAlgorithm : MonoBehaviour
         }
 
         return index;
+    }
+
+    protected virtual float GetPointValue(float y, float min, float max)
+    {
+        return y >= min - 0.5f && y <= max + 0.5f /*Q1*/ ? /*Q1-T*/ y <= max - 0.5f /*Q2*/ ? /*Q2-T*/ y >= min + 0.5f /*Q3*/ ?
+     /*Q3-T*/ 1f : /*Q3-F*/ y > min /*Q4*/ ? /*Q4-T*/ y - min : /*Q4-F*/ min - y :
+     /*Q2-F*/ y < max /*Q5*/ ? /*Q5-T*/ max - y : /*Q5-F*/ y - max : /*Q1-F*/ 0f; //Black magic  :~}
     }
 
     //Accessors  

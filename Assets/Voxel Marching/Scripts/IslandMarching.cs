@@ -4,15 +4,6 @@ using UnityEngine;
 
 public class IslandMarching : MarchingAlgorithm
 {
-    [Tooltip("Ensure Prefab has proper index")]
-
-
-    private void Awake()
-    {
-        
-    }
-
-
     protected override void CreateTerrainMapDataAt(int x, int z)
     {
         float[] airGaps = generation.CustomNoise(ChunkMananger.Instance.ChunkToWorld(chunk) + new Vector3(x, 0, z), this);
@@ -34,9 +25,7 @@ public class IslandMarching : MarchingAlgorithm
         {
 
             uint yValue = y + yOffset;
-            float point = yValue >= minHeight - 0.5f && yValue <= maxHeight + 0.5f /*Q1*/ ? /*Q1-T*/ yValue <= maxHeight - 0.5f /*Q2*/ ? /*Q2-T*/ yValue >= minHeight + 0.5f /*Q3*/ ?
-                     /*Q3-T*/ 1f : /*Q3-F*/ yValue > minHeight /*Q4*/ ? /*Q4-T*/ yValue - minHeight : /*Q4-F*/ minHeight - yValue : 
-                     /*Q2-F*/ yValue < maxHeight /*Q5*/ ? /*Q5-T*/ maxHeight - yValue : /*Q5-F*/ yValue - maxHeight : /*Q1-F*/ 0f; //Black magic  :~}
+            float point = GetPointValue(yValue, minHeight, maxHeight);
 
             if (point > 0f) hasData = true;
             terrainMap[x, y, z] = point;
