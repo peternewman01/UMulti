@@ -13,7 +13,7 @@ public class ResourceGenerator : TerrainGeneration
     [SerializeField] private FitnessData spawningData;
     private GameObject parent;
 
-    public void Awake()
+    public void SetParent()
     {
         parent = GameObject.Find("Resources");
         if(parent == null) parent = new GameObject("Resources");
@@ -32,6 +32,8 @@ public class ResourceGenerator : TerrainGeneration
         {
             return null;
         }
+
+        SetParent();
 
         pos.y = ChunkMananger.Instance.GetChunkHeight();
         pos.x += Random.Range(-spawningData.posOffset, spawningData.posOffset);

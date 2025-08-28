@@ -95,6 +95,8 @@ public class ChunkMananger : MonoBehaviour
 
     private IEnumerator ChunkRecursion()
     {
+        yield return new WaitForEndOfFrame();
+        StartCoroutine(ChunkRecursion());
         frontier.Sort(new DistanceCompare());
         uint cubeCount = 0;
         while (frontier.Count > 0 && cubeCount < chunksPerFrame * subCubesPerChunk)
@@ -110,9 +112,6 @@ public class ChunkMananger : MonoBehaviour
             chunksPerFrame--;
         else if (fps > 90)
             chunksPerFrame++;
-
-        yield return new WaitForEndOfFrame();
-        StartCoroutine(ChunkRecursion());
     }
 
 
