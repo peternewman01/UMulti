@@ -1,11 +1,13 @@
 using UnityEngine;
 using Unity.Netcode;
 using UnityEngine.InputSystem;
+using System.Collections;
 using UnityEngine.Windows;
 using UnityEditor;
 using Unity.VisualScripting;
 using UnityEngine.Animations;
 using NUnit;
+using Unity.Cinemachine;
 
 public class PlayerManager : NetworkBehaviour
 {
@@ -39,7 +41,7 @@ public class PlayerManager : NetworkBehaviour
     private Vector2 movementInput;
     private float moveSpeed = 3f;
     public Transform cameraTransform;
-    public Transform aimCamTransform;
+    //public Transform aimCamTransform;
 
     private Vector3 camForward;
     private Vector3 camRight;
@@ -58,7 +60,7 @@ public class PlayerManager : NetworkBehaviour
     private float waitCooldown = 30;
 
     [Header("Jumps")]
-    [SerializeField] private int jumpCount = 1;
+    [SerializeField] private int jumpCount = 2;
     [SerializeField] private int jumpsUsed = 0;
     [SerializeField] private float jumpForce = 250;
     [SerializeField] private Transform groundCheck;
@@ -66,6 +68,29 @@ public class PlayerManager : NetworkBehaviour
     [Header("Interacting")]
     public bool Interact;
     public float scrolling = 0f;
+
+    [Header("Weapon")]
+    [SerializeField] private Transform weapon;
+
+    [SerializeField] private float swingAngle = 30f;
+    [SerializeField] private float swingDuration = 0.3f;
+    [SerializeField] private Vector3 swingAxis = Vector3.up;
+    [SerializeField] private Vector3 axisOffset = new Vector3(0, 90, 0);
+    [SerializeField] private TrailRenderer weaponTrail;
+    float heightOffset = 1.0f;
+    private Transform currentSlash;
+    private Vector3 swingDir;
+    private Quaternion baseRotation;
+
+    private bool isSwinging = false;
+    private bool isSwingingbool = false;
+    private float swingTimer = 0f;
+    private Quaternion swingStart;
+    private Quaternion swingEnd;
+
+    [SerializeField] float scrollSensitivity = 10f;
+    float cameraDistance;
+    CinemachineComponentBase componentBase;
 
     private void OnEnable()
     {
@@ -124,6 +149,8 @@ public class PlayerManager : NetworkBehaviour
         AimShooting();
         JumpCheck();
         DashCheck();
+        CameraScroll();
+        UpdateSwing();
 
         Interact = interact.WasPressedThisFrame();
 
@@ -215,6 +242,23 @@ public class PlayerManager : NetworkBehaviour
         }
     }
 
+    private void CameraScroll()
+    {
+        if(componentBase == null)
+        {
+            componentBase = cameraTransform.GetComponent<CinemachineCamera>().GetCinemachineComponent(CinemachineCore.Stage.Body);
+        }
+
+        if(scrolling != 0)
+        {
+            cameraDistance = scrolling * scrollSensitivity;
+            if(componentBase is CinemachinePositionComposer)
+            {
+                (componentBase as CinemachinePositionComposer).CameraDistance -= cameraDistance;
+            }
+        }
+    }
+
     private void DashCheck()
     {
         if(sprint.WasPressedThisFrame() && canDash)
@@ -239,33 +283,76 @@ public class PlayerManager : NetworkBehaviour
 
     private void AimShooting()
     {
-        if (cameraTransform == null || aimCamTransform == null) return;
+        if (cameraTransform == null) return;
 
-        if (attack.IsPressed())
+        if (click.IsPressed()) //aim right click
         {
             lastWaitTime = Time.time;
             anim.SetBool("IsIdleLong", false);
-            aimCamTransform.gameObject.SetActive(true);
-            cameraTransform.gameObject.SetActive(false);
+
             canShoot = true;
         }
         else
         {
-            aimCamTransform.gameObject.SetActive(false);
-            cameraTransform.gameObject.SetActive(true);
             canShoot = false;
         }
 
-        if (click.WasPressedThisFrame() && canShoot && Time.time - lastShotTime >= shootCooldown)
+        if (attack.WasPressedThisFrame() && canShoot && Time.time - lastShotTime >= shootCooldown)
         {
             lastShotTime = Time.time;
 
             RequestShootServerRpc(transform.position + Vector3.up, transform.forward);
         }
-        else if (click.WasPressedThisFrame() && Time.time - lastShotTime >= shootCooldown)
+        else if (attack.WasPressedThisFrame() && Time.time - lastShotTime >= shootCooldown)
         {
             lastShotTime = Time.time;
+
+            anim.SetBool("IsIdleLong", false);
             RequestSlashServerRpc(transform.position + Vector3.up, -transform.right);
+        }
+    }
+
+    private void StartSwing(Transform slashTransform)
+    {
+        if (weapon == null) return;
+
+        isSwingingbool = false;
+        isSwinging = true;
+        weaponTrail.enabled = false;
+        swingTimer = 0f;
+
+        currentSlash = slashTransform;
+
+        // Use the slash’s orientation instead of the player’s
+        baseRotation = currentSlash.rotation * Quaternion.Euler(axisOffset);
+
+        // define start and end around the slash’s up axis
+        swingStart = baseRotation * Quaternion.AngleAxis(-swingAngle * .5f, swingAxis);
+        swingEnd = baseRotation * Quaternion.AngleAxis(swingAngle * 1.1f, swingAxis);
+    }
+
+    private void UpdateSwing()
+    {
+        if (!isSwinging || weapon == null || currentSlash == null) return;
+
+        swingTimer += Time.deltaTime;
+        float t = swingTimer / swingDuration;
+
+        //interpolate weapon rotation
+        weapon.rotation = Quaternion.Slerp(swingStart, swingEnd, t);
+
+        //keep weapon at a radius from player’s origin
+        float distance = .2f;
+        Vector3 dir = (weapon.rotation * Vector3.forward).normalized;
+        weapon.position = transform.position + Vector3.up * heightOffset + dir * distance;
+        weaponTrail.enabled = true;
+
+        if (t >= .5f)
+        {
+            weaponTrail.Clear();
+            weaponTrail.enabled = false;
+            print("weapon trail disabled");
+            isSwinging = false;
         }
     }
 
@@ -276,10 +363,10 @@ public class PlayerManager : NetworkBehaviour
     //    anim.SetBool("Walking", state);
     //}
 
-    [Rpc(SendTo.Server)]
+    [Rpc(SendTo.ClientsAndHost)]
     private void RequestShootServerRpc(Vector3 spawnPosition, Vector3 shootDirection)
     {
-        float forwardOffset = 1f; //distance in front of the player
+        float forwardOffset = .5f; //distance in front of the player
         Vector3 spawnOffset = transform.forward * forwardOffset;
 
         Transform spawnedBoolet = Instantiate(boolet);
@@ -294,10 +381,15 @@ public class PlayerManager : NetworkBehaviour
         Destroy(spawnedBoolet.gameObject, 3);
     }
 
-    [Rpc(SendTo.Server)]
+    [Rpc(SendTo.ClientsAndHost)]
     private void RequestSlashServerRpc(Vector3 spawnPosition, Vector3 shootDirection)
     {
-        float forwardOffset = .5f; //distance in front of the player
+        weaponTrail.Clear();
+        weaponTrail.enabled = false;
+        print("weapon trail disabled");
+        Transform p = transform.parent;
+
+        float forwardOffset = .5f;
         Vector3 spawnOffset = transform.forward * forwardOffset;
 
         Transform spawnedSlash = Instantiate(slash);
@@ -307,8 +399,21 @@ public class PlayerManager : NetworkBehaviour
 
         var netObj = spawnedSlash.GetComponent<NetworkObject>();
         netObj.Spawn(true);
+        spawnedSlash.parent = transform;
 
+        StartCoroutine(UnparentAfterDelay(transform, p, 0.3f));
         Destroy(spawnedSlash.gameObject, .5f);
+
+        //weaponTrail.enabled = true;
+        print("weapontrail started");
+
+        StartSwing(spawnedSlash);
+    }
+
+    private IEnumerator UnparentAfterDelay(Transform t, Transform p, float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        t.parent = null;
     }
 
     //[Rpc(SendTo.ClientsAndHost)]

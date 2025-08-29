@@ -30,7 +30,7 @@ public class FindPlayer : NetworkBehaviour
                 if (obj.IsOwner)
                 {
                     obj.GetComponent<PlayerManager>().cameraTransform = transform;
-                    if(aimCam != null) obj.GetComponent<PlayerManager>().aimCamTransform = aimCam.transform;
+                    //if(aimCam != null) obj.GetComponent<PlayerManager>().aimCamTransform = aimCam.transform;
                     Transform target = obj.transform.Find("CameraTrackingTarget");
 
                     //Debug.Log(obj.name + " added");
