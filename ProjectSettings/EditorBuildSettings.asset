@@ -5,16 +5,16 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 1
+  - enabled: 0
     path: Assets/TerrainGenTestScene.unity
     guid: 68660494b464af5498c283f68f955f68
-  - enabled: 1
+  - enabled: 0
     path: Assets/OutdoorsScene.unity
     guid: 8124e5870f4fd4c779e7a5f994e84ad1
-  - enabled: 1
+  - enabled: 0
     path: Assets/CraftingTestScene.unity
     guid: 84381db5104f2c545b384f145c2b6e20
-  - enabled: 1
+  - enabled: 0
     path: Assets/TerrainGenTestScene2.unity
     guid: 7ff7fe59a7bb2b24d922449cef2e38cf
   - enabled: 1

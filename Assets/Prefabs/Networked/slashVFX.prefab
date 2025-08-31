@@ -11,6 +11,8 @@ GameObject:
   - component: {fileID: 1863424066443970522}
   - component: {fileID: 1179523805374752692}
   - component: {fileID: 3993679931667273693}
+  - component: {fileID: 2499809903893852559}
+  - component: {fileID: 2425373630201939201}
   m_Layer: 0
   m_Name: slashVFX
   m_TagString: Untagged
@@ -105,6 +107,41 @@ MonoBehaviour:
   SwitchTransformSpaceWhenParented: 0
   Interpolate: 1
   SlerpPosition: 0
+--- !u!114 &2499809903893852559
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1169051767809893461}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7756a407d12db9b43a3c28b33fe77ac6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ShowTopMostFoldoutHeaderGroup: 1
+  damage: 1
+--- !u!65 &2425373630201939201
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1169051767809893461}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1.25, y: 2, z: 0.17}
+  m_Center: {x: 0.4, y: 0, z: 0}
 --- !u!1 &1667214499920779343
 GameObject:
   m_ObjectHideFlags: 0

@@ -7,20 +7,41 @@ public class DeathSpawner : Entity
     [SerializeField] private GameObject obj;
     [SerializeField] private int count;
     [SerializeField] private float radius = 1;
+    [Range(0f, 1f)] [SerializeField] private float spawnChance = 1;
+    [SerializeField] private bool guaranteed = false;
+    private void OnEnable()
+    {
+        OnDeath += deathSpawn;
+    }
 
-    public override void onHeal() { }
-    public override void onHurt() { }
-    public override void onDeath()
+    private void OnDisable()
+    {
+        OnDeath -= deathSpawn;
+    }
+    public void deathSpawn()
     {
         SpawnObjects();
+        Invoke("delayDestroy", 0.05f);
+    }
+
+    public void delayDestroy()
+    {
         Destroy(gameObject);
     }
     private void SpawnObjects()
     {
+        //TODO: spawn multiple objects
+            //Chance? hardset? BOTH??
         Vector3 spawnPoint = this.transform.position + Vector3.up * radius;
+        bool hasSpawned = false;
         for(int i = 0; i < count; i++)
         {
-            RequestSpawnServerRpc(spawnPoint + Random.insideUnitSphere * radius);
+            float chance = Random.Range(0, 1);
+            if(chance < spawnChance || (guaranteed && !hasSpawned))
+            {
+                RequestSpawnServerRpc(spawnPoint + Random.insideUnitSphere * radius);
+                hasSpawned = true;
+            }
         }
     }
 

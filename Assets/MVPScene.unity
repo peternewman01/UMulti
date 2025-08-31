@@ -4676,6 +4676,87 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 3020480049690943038, guid: 4bc8ba7ee75a1cc40966a6c8235284a3, type: 3}
   m_PrefabInstance: {fileID: 349668545}
   m_PrefabAsset: {fileID: 0}
+--- !u!1001 &1741921461
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 4141666829644401968, guid: 11067b82e06cd3d41b5efc537ff30b29, type: 3}
+      propertyPath: m_Name
+      value: Cow
+      objectReference: {fileID: 0}
+    - target: {fileID: 5105437426495186944, guid: 11067b82e06cd3d41b5efc537ff30b29, type: 3}
+      propertyPath: wanderReachDistance
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6955564091977586383, guid: 11067b82e06cd3d41b5efc537ff30b29, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 7.769
+      objectReference: {fileID: 0}
+    - target: {fileID: 6955564091977586383, guid: 11067b82e06cd3d41b5efc537ff30b29, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 103.82
+      objectReference: {fileID: 0}
+    - target: {fileID: 6955564091977586383, guid: 11067b82e06cd3d41b5efc537ff30b29, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -4.719
+      objectReference: {fileID: 0}
+    - target: {fileID: 6955564091977586383, guid: 11067b82e06cd3d41b5efc537ff30b29, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6955564091977586383, guid: 11067b82e06cd3d41b5efc537ff30b29, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6955564091977586383, guid: 11067b82e06cd3d41b5efc537ff30b29, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6955564091977586383, guid: 11067b82e06cd3d41b5efc537ff30b29, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6955564091977586383, guid: 11067b82e06cd3d41b5efc537ff30b29, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6955564091977586383, guid: 11067b82e06cd3d41b5efc537ff30b29, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6955564091977586383, guid: 11067b82e06cd3d41b5efc537ff30b29, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8756911987885144968, guid: 11067b82e06cd3d41b5efc537ff30b29, type: 3}
+      propertyPath: count
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 8756911987885144968, guid: 11067b82e06cd3d41b5efc537ff30b29, type: 3}
+      propertyPath: guaranteed
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8756911987885144968, guid: 11067b82e06cd3d41b5efc537ff30b29, type: 3}
+      propertyPath: spawnChance
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 9027939441387178273, guid: 11067b82e06cd3d41b5efc537ff30b29, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 3642621553
+      objectReference: {fileID: 0}
+    - target: {fileID: 9027939441387178273, guid: 11067b82e06cd3d41b5efc537ff30b29, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 1894362060
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 11067b82e06cd3d41b5efc537ff30b29, type: 3}
 --- !u!1 &1772774568
 GameObject:
   m_ObjectHideFlags: 0
@@ -4686,7 +4767,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1772774570}
   - component: {fileID: 1772774569}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: ChunkManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5519,7 +5600,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2013873520}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Resources
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5988,3 +6069,4 @@ SceneRoots:
   - {fileID: 506805289}
   - {fileID: 692526770}
   - {fileID: 1168462246}
+  - {fileID: 1741921461}
