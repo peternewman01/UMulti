@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using Unity.Netcode;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public abstract class Entity : NetworkBehaviour
 {
-    [SerializeField] private int hp;
+    //[SerializeField] private int hp;
+    [SerializeField] private NetworkVariable<int> hp = new NetworkVariable<int>(0, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
 
     public event Action OnHurt;
     public event Action OnHeal;
@@ -18,28 +20,28 @@ public abstract class Entity : NetworkBehaviour
 
     public int Health
     {
-        get => hp;
+        get => hp.Value;
         set
         {
-            if (hp != value)
+            if (hp.Value != value)
             {
-                if (hp > value)
+                if (hp.Value > value)
                 {
                     OnHurt?.Invoke();
                 }
-                else if (hp < value)
+                else if (hp.Value < value)
                 {
                     OnHeal?.Invoke();
                 }
 
-                if (value <= 0)
+                if (value  <= 0)
                 {
                     OnDeath?.Invoke();
                 }
 
                 if (activate)
                 {
-                    hp = value;
+                    hp.Value = value;
                     foreach (Entity e in owned)
                     {
                         e.Health = value;
@@ -48,7 +50,7 @@ public abstract class Entity : NetworkBehaviour
                 }
                 else if (pointEntity != null)
                 {
-                    hp = value;
+                    hp.Value = value;
                     pointEntity.Health = value;
                 }
             }
@@ -62,7 +64,7 @@ public abstract class Entity : NetworkBehaviour
         {
             if (entity != this && activate)
             {
-                entity.Health = this.hp;
+                entity.Health = this.hp.Value;
 
                 entity.activate = false;
                 entity.pointEntity = this;
@@ -71,5 +73,4 @@ public abstract class Entity : NetworkBehaviour
             }
         }
     }
-
 }

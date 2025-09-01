@@ -6,6 +6,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
+[RequireComponent(typeof(NetworkObject))]
 public abstract class Object : NetworkBehaviour
 {
     public int objectID;

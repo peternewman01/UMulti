@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Linq;
 using Unity.AI.Navigation;
 using Unity.Netcode;
 using UnityEngine;
@@ -18,7 +19,10 @@ public class NavEntity : Entity
     [SerializeField] private bool wandering = false;
     [SerializeField] private bool waiting = false;
 
+    private NavMeshSurface surface;
     [SerializeField] private LayerMask surfaceLayer;
+    [SerializeField] private Vector3 navSurfaceSize;
+    [SerializeField] private int navSurfaceCount = -1;
 
     private void Start()
     {
@@ -39,6 +43,8 @@ public class NavEntity : Entity
         {
             wandering = false;
         }
+
+        //rebaking should just be a big area, then if the entity moves away from that area it moves to that and sets a new bake position
     }
 
     public IEnumerator Wander()
@@ -64,6 +70,7 @@ public class NavEntity : Entity
     void EnsureNavMeshSurface()
     {
         NavMeshSurface surface = FindFirstObjectByType<NavMeshSurface>();
+        this.surface = surface;
 
         if (surface == null)
         {
@@ -73,7 +80,9 @@ public class NavEntity : Entity
             surface.layerMask = surfaceLayer;
             surface.agentTypeID = agent.agentTypeID;
             surface.useGeometry = NavMeshCollectGeometry.PhysicsColliders;
+            surface.size = navSurfaceSize;
         }
         surface.BuildNavMesh();
+        navSurfaceCount = NavMesh.CalculateTriangulation().areas.Length;
     }
 }

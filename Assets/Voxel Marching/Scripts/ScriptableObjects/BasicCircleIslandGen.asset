@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: BasicCircleIslandGen
   m_EditorClassIdentifier: 
   perlinMultipliers:
-  - values: {x: 0.06, y: 12, z: 0.04}
+  - values: {x: 0.06, y: 20, z: 0.04}
     mathType: 3
   bottomPerlinMultipliers:
   - values: {x: 0.1, y: 24, z: 0.1}

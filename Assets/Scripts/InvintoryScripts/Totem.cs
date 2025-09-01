@@ -18,6 +18,7 @@ public class Totem : Object
         if (Invintory.Has(Wood.ObjectID, 1))
         {
             RequestSpawnServerRpc(spawnPos.position);
+
             Invintory.RemoveObject(Wood.ObjectID, 1);
         }
     }
@@ -33,8 +34,8 @@ public class Totem : Object
         table = GetComponentInParent<Table>();
     }
 
-    [Rpc(SendTo.Server)]
-    private void RequestSpawnServerRpc(Vector3 spawnPosition)
+    [Rpc(SendTo.Everyone)]
+    public void RequestSpawnServerRpc(Vector3 spawnPosition)
     {
         Transform spawnedObj = Instantiate(woodPrefab);
         spawnedObj.transform.position = spawnPosition;
@@ -47,7 +48,7 @@ public class Totem : Object
     }
 
     [Rpc(SendTo.Server)]
-    private void RequestKillServerRpc(NetworkObjectReference objRef)
+    public void RequestKillServerRpc(NetworkObjectReference objRef)
     {
         if (objRef.TryGet(out NetworkObject netObj))
         {

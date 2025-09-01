@@ -178,11 +178,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
-  hp: 1
+  hp:
+    m_InternalValue: 10
   activate: 1
   obj: {fileID: 1723330688389428828, guid: 955be55b38c17b14a8571ec1ce5ee34a, type: 3}
-  count: 3
+  count: 4
   radius: 1
+  spawnChance: 0.5
+  guaranteed: 1
 --- !u!114 &5105437426495186944
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -196,7 +199,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
-  hp: 0
+  hp:
+    m_InternalValue: 10
   activate: 1
   agent: {fileID: 0}
   rb: {fileID: 0}
@@ -209,6 +213,8 @@ MonoBehaviour:
   surfaceLayer:
     serializedVersion: 2
     m_Bits: 256
+  navSurfaceSize: {x: 0, y: 0, z: 0}
+  navSurfaceCount: -1
 --- !u!195 &4735365054962477574
 NavMeshAgent:
   m_ObjectHideFlags: 0

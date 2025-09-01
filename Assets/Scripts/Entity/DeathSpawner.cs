@@ -36,12 +36,14 @@ public class DeathSpawner : Entity
         bool hasSpawned = false;
         for(int i = 0; i < count; i++)
         {
-            float chance = Random.Range(0, 1);
+            float chance = Random.Range(0f, 1f);
             if(chance < spawnChance || (guaranteed && !hasSpawned))
             {
+                Debug.Log("spawned " + chance);
                 RequestSpawnServerRpc(spawnPoint + Random.insideUnitSphere * radius);
                 hasSpawned = true;
-            }
+            }else
+                Debug.Log("didnt spawn " + chance);
         }
     }
 
