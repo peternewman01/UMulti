@@ -39,11 +39,9 @@ public class DeathSpawner : Entity
             float chance = Random.Range(0f, 1f);
             if(chance < spawnChance || (guaranteed && !hasSpawned))
             {
-                Debug.Log("spawned " + chance);
                 RequestSpawnServerRpc(spawnPoint + Random.insideUnitSphere * radius);
                 hasSpawned = true;
-            }else
-                Debug.Log("didnt spawn " + chance);
+            }
         }
     }
 
