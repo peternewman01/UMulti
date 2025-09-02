@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: MediumRockGenerator
   m_EditorClassIdentifier: 
   resourcePrefab: {fileID: 1624423753916669083, guid: 1df31333d36453c4281b4d9387c7255d, type: 3}
+  isNetworkObject: 0
   spawningData:
     density: 0.03
     posOffset: 0.25

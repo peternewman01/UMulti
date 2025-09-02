@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: SmallRockGenerator
   m_EditorClassIdentifier: 
   resourcePrefab: {fileID: 8123802821930704265, guid: 0b6405c8a4e9ab24a8948490bc5d66c9, type: 3}
+  isNetworkObject: 0
   spawningData:
     density: 0.08
     posOffset: 0.25

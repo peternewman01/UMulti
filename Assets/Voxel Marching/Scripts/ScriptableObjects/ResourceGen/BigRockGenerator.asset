@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: BigRockGenerator
   m_EditorClassIdentifier: 
   resourcePrefab: {fileID: 7733100026862656815, guid: ceaa6797543faef4391494a12cdbb35f, type: 3}
+  isNetworkObject: 0
   spawningData:
     density: 0.01
     posOffset: 0.25

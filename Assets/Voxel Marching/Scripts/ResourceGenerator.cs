@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using Unity.Cinemachine;
+using Unity.Netcode;
 using Unity.VisualScripting;
 using UnityEngine;
 using Random = UnityEngine.Random;
@@ -10,6 +11,7 @@ using Random = UnityEngine.Random;
 public class ResourceGenerator : TerrainGeneration
 {
     [SerializeField] private GameObject resourcePrefab;
+    [SerializeField] private bool isNetworkObject = true;
     [SerializeField] private FitnessData spawningData;
     private GameObject parent;
 
@@ -35,7 +37,7 @@ public class ResourceGenerator : TerrainGeneration
 
         SetParent();
 
-        pos.y = ChunkMananger.Instance.GetChunkHeight();
+        pos.y = ChunkMananger.Instance.GetChunkHeight() - 5.0f;
         pos.x += Random.Range(-spawningData.posOffset, spawningData.posOffset);
         pos.z += Random.Range(-spawningData.posOffset, spawningData.posOffset);
         if (Physics.Raycast(new Ray(pos, Vector3.down), out RaycastHit hitData, float.MaxValue))
@@ -43,7 +45,18 @@ public class ResourceGenerator : TerrainGeneration
             if (ResourceFitness(pos.x, pos.z, hitData, spawningData) < spawningData.density)
             {
                 pos.y = hitData.point.y;
-                GameObject obj = Instantiate(resourcePrefab, pos, Quaternion.identity, parent.transform);
+                GameObject spawned = null;
+                if (isNetworkObject)
+                {
+                    ServerFunctions.SpawnObjectServerRpc(resourcePrefab, out spawned);
+                }
+                else
+                {
+                    spawned = Instantiate(resourcePrefab, parent.transform);
+                }
+
+                spawned.transform.position = pos;
+                spawned.transform.parent = parent.transform;
             }
         }
 
