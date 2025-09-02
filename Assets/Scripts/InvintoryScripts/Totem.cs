@@ -34,7 +34,7 @@ public class Totem : Object
         table = GetComponentInParent<Table>();
     }
 
-    [Rpc(SendTo.Everyone)]
+    [ServerRpc(RequireOwnership = false)]
     public void RequestSpawnServerRpc(Vector3 spawnPosition)
     {
         Transform spawnedObj = Instantiate(woodPrefab);
@@ -47,7 +47,7 @@ public class Totem : Object
         holding = spawnedObj.gameObject;
     }
 
-    [Rpc(SendTo.Server)]
+    [ServerRpc(RequireOwnership = false)]
     public void RequestKillServerRpc(NetworkObjectReference objRef)
     {
         if (objRef.TryGet(out NetworkObject netObj))
@@ -62,14 +62,7 @@ public class Totem : Object
         var netObj = holding.GetComponent<NetworkObject>();
         if (netObj != null)
         {
-            if (IsServer)
-            {
-                netObj.Despawn(true);
-            }
-            else
-            {
-                RequestKillServerRpc(netObj);
-            }
+            RequestKillServerRpc(netObj);
         }
         else
         {

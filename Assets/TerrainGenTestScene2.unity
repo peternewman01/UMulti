@@ -3910,6 +3910,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1772774570}
+  - component: {fileID: 1772774571}
   - component: {fileID: 1772774569}
   m_Layer: 0
   m_Name: ChunkManager
@@ -3930,7 +3931,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 606a6a303245e2945803492e60c637cf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  marchingAlgorithmPrefab: {fileID: 2367693969411036325, guid: 7f933c1c38ccf8a4db50ca956eec64c4, type: 3}
+  ShowTopMostFoldoutHeaderGroup: 1
+  marchingAlgorithmPrefab: {fileID: 2150305323032263239, guid: 9c5ce2a33e0ba3542b8f5080e1939752, type: 3}
   subCubeSize: 16
   subCubesPerChunk: 16
   chunksPerFrame: 4
@@ -3951,6 +3953,31 @@ Transform:
   - {fileID: 1586002011}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1772774571
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1772774568}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  GlobalObjectIdHash: 943286317
+  InScenePlacedSourceGlobalObjectIdHash: 0
+  DeferredDespawnTick: 0
+  Ownership: 1
+  AlwaysReplicateAsRoot: 0
+  SynchronizeTransform: 1
+  ActiveSceneSynchronization: 0
+  SceneMigrationSynchronization: 1
+  SpawnWithObservers: 1
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1
+  SyncOwnerTransformWhenParented: 1
+  AllowOwnerToParent: 0
 --- !u!4 &1784895511 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3674114003042369426, guid: 2b60a274036320a4bad801b4764cfb36, type: 3}

@@ -2,9 +2,10 @@ using NUnit.Framework;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 
-public class ChunkMananger : MonoBehaviour
+public class ChunkMananger : NetworkBehaviour
 {
     public static ChunkMananger Instance;
     [SerializeField] private MarchingAlgorithm marchingAlgorithmPrefab;
@@ -17,18 +18,20 @@ public class ChunkMananger : MonoBehaviour
     //[SerializeField] private MarchingAlgorithm algorithmPrefab;
     private List<Vector2Int> frontier = new();
     private Vector2Int playerChunk = Vector2Int.zero;
-    private float seed = 0;
+    private NetworkVariable<float> seed = new(0);
+
+
+    private Vector2Int[] INITIAL_CHUNKS = { Vector2Int.zero, Vector2Int.down, Vector2Int.left, Vector2Int.right, Vector2Int.up, 
+        Vector2Int.down + Vector2Int.left, Vector2Int.down + Vector2Int.right, Vector2Int.up + Vector2Int.left, Vector2Int.up + Vector2Int.right};
+
     public float Seed
     {
-        get => seed;
+        get => seed.Value;
         set { }
     }
 
     //Events
     public Action<Vector2Int> PlayerChunkUpdated;
-
-    //TEMP
-    public IslandGeneratorManager islandManager;
 
     private void OnValidate()
     {
@@ -41,33 +44,20 @@ public class ChunkMananger : MonoBehaviour
         {
             DestroyImmediate(gameObject);
         }
-
-
     }
 
-    private void Start()
+    public override void OnNetworkSpawn()
     {
-        //islandManager.CreateNewGenerator(0);
-        frontier.Add(Vector2Int.zero);
+        base.OnNetworkSpawn();
+        frontier.AddRange(INITIAL_CHUNKS);
         SetSeed(UnityEngine.Random.Range(-10000, 10000));
-        //PopulateFrontierWithChunks();
-        StartCoroutine(ChunkRecursion());
-        PlayerChunkUpdated?.Invoke(playerChunk);
-
-        /*        for(int i = 0; i < 16; i++)
-                {
-                    islandManager.CreateNewGenerator();
-                }*/
+        NetworkManager.Singleton.OnServerStarted += StartChunkLoadingServerRpc;
     }
+
 
     //TEMP
     private void Update()
     {
-        if(Input.GetKeyDown(KeyCode.B))
-        {
-            islandManager.CreateNewGenerator();
-        }
-
         if(FindFirstObjectByType<PlayerManager>())
         {
             Vector2Int player = WorldToChunk(FindFirstObjectByType<PlayerManager>().transform.position);
@@ -91,6 +81,13 @@ public class ChunkMananger : MonoBehaviour
             else if (xDist < yDist) return -1;
             else return 0;
         }
+    }
+
+    [ServerRpc()]
+    private void StartChunkLoadingServerRpc()
+    {
+        StartCoroutine(ChunkRecursion());
+        PlayerChunkUpdated?.Invoke(playerChunk);
     }
 
     private IEnumerator ChunkRecursion()
@@ -117,21 +114,30 @@ public class ChunkMananger : MonoBehaviour
 
     public uint GenerateChunk(Vector2Int chunk)
     {
-        string name = "Chunk (" + chunk.x + ", " + chunk.y + ")";
+        Destroy(GameObject.Find(GetChunkName(chunk)));
         GameObject spawnedChunk = new GameObject();
+        spawnedChunk.AddComponent<NetworkObject>().Spawn();
         spawnedChunk.transform.parent = transform;
-        spawnedChunk.name = "Chunk (" + chunk.x + ", " + chunk.y + ")";
+        spawnedChunk.name = GetChunkName(chunk);
+
         for (uint i = 0; i < subCubesPerChunk; i++)
         {
             MarchingAlgorithm subChunk = Instantiate(marchingAlgorithmPrefab);
-            subChunk.name = "SubChunk " + i;
+            subChunk.name = GetChunkName(chunk) + "--SubChunk " + i;
+            subChunk.InitChunkData(chunk, i);
+            subChunk.GetComponent<NetworkObject>().Spawn();
             subChunk.transform.parent = spawnedChunk.transform;
             subChunk.transform.position = ChunkToWorld(chunk) + new Vector3(0, i * subCubeSize, 0);
-            subChunk.Init(chunk, i);
-            subChunk.GenerateIsland();
+/*            if(IsOwner && subChunk.IsSpawned)
+                subChunk.GenerateIslandRpc();*/
         }
 
         return subCubesPerChunk;
+    }
+
+    public string GetChunkName(Vector2Int chunk)
+    {
+        return $"Chunk ({ chunk.x}, { chunk.y})";
     }
 
     public void AddChunksInRadiusAtPosition(Vector3 worldPos, float radius)
@@ -184,27 +190,27 @@ public class ChunkMananger : MonoBehaviour
         return new Vector3(chunk.x * subCubeSize, 0, chunk.y * subCubeSize);
     }
 
-/*    private bool IsInRenderDistance(Vector2Int chunk)
-    {
-        //Check if the chunk is within the render distance of the player chunk
-        return Vector2Int.Distance(playerChunk, chunk) <= renderDistance;
-    }
-
-    private void PopulateFrontierWithChunks()
-    {
-        //Populate the frontier with chunks within the render distance of the player chunk
-        for (int x = -renderDistance; x <= renderDistance; x++)
+    /*    private bool IsInRenderDistance(Vector2Int chunk)
         {
-            for (int y = -renderDistance; y <= renderDistance; y++)
+            //Check if the chunk is within the render distance of the player chunk
+            return Vector2Int.Distance(playerChunk, chunk) <= renderDistance;
+        }
+
+        private void PopulateFrontierWithChunks()
+        {
+            //Populate the frontier with chunks within the render distance of the player chunk
+            for (int x = -renderDistance; x <= renderDistance; x++)
             {
-                Vector2Int chunk = new Vector2Int(playerChunk.x + x, playerChunk.y + y);
-                if (!visited.Contains(chunk) && IsInRenderDistance(chunk))
+                for (int y = -renderDistance; y <= renderDistance; y++)
                 {
-                    frontier.Add(chunk);
+                    Vector2Int chunk = new Vector2Int(playerChunk.x + x, playerChunk.y + y);
+                    if (!visited.Contains(chunk) && IsInRenderDistance(chunk))
+                    {
+                        frontier.Add(chunk);
+                    }
                 }
             }
-        }
-    }*/
+        }*/
 
 
     //Accessors
@@ -212,5 +218,17 @@ public class ChunkMananger : MonoBehaviour
     public uint GetChunkHeight() => subCubesPerChunk * subCubeSize;
     public uint GetSubCubesPerChunk() => subCubesPerChunk;
     public Vector2Int GetPlayerChunk() => playerChunk;
-    public void SetSeed(float newSeed) => seed = newSeed;
+    private void SetSeed(float newSeed) => seed.Value = newSeed;
+}
+
+public class ServerFunctions : NetworkManager
+{
+    [ServerRpc(RequireOwnership = false)]
+    public static void SpawnObjectServerRpc(MonoBehaviour prefab, out GameObject spawned)
+    {
+        if (prefab.GetComponent<NetworkObject>() == null) spawned = null; ;
+
+        spawned = Instantiate(prefab.gameObject);
+        spawned.GetComponent<NetworkObject>().Spawn();
+    }
 }

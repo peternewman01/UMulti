@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using Unity.Collections.LowLevel.Unsafe;
+using Unity.Netcode;
 using UnityEditor;
 using UnityEngine;
 
@@ -12,7 +13,8 @@ using UnityEngine;
 
 [RequireComponent(typeof(MeshFilter))]
 [RequireComponent(typeof(MeshRenderer))]
-public abstract class MarchingAlgorithm : MonoBehaviour
+
+public abstract class MarchingAlgorithm : NetworkBehaviour
 {
     
     protected bool hasData = false;
@@ -27,24 +29,34 @@ public abstract class MarchingAlgorithm : MonoBehaviour
     public Action TerrainPopulationComplete;
     public TerrainGeneration generation = null; // Set in the editor
 
-    public void GenerateIsland()
+    public override void OnNetworkSpawn()
     {
-        gameObject.SetActive(true);
-        PopulateTerrainMap();
-        if (hasData) return;
-        else gameObject.SetActive(false);
+        base.OnNetworkSpawn();
+        Init();
+        GenerateIslandRpc();
     }
 
-    public virtual void Init(Vector2Int chunk, uint subChunk)
+
+    [Rpc(SendTo.Server)]
+    public void GenerateIslandRpc()
+    {
+        PopulateTerrainMap();
+        gameObject.SetActive(hasData);
+    }
+
+    public virtual void Init()
+    {
+        voxelArea = ChunkMananger.Instance.GetChunkSize();
+        meshFilter = GetComponent<MeshFilter>();
+        NetworkVariable<float[,,]> networkTerrainMap = new();
+        terrainMap = new float[voxelArea + 1, voxelArea + 1, voxelArea + 1];
+        TerrainPopulationComplete += CreateMeshData;
+    }
+
+    public virtual void InitChunkData(Vector2Int chunk, uint subChunk)
     {
         this.chunk = chunk;
         this.subChunk = subChunk;
-
-        voxelArea = ChunkMananger.Instance.GetChunkSize();
-        meshFilter = GetComponent<MeshFilter>();
-
-        terrainMap = new float[voxelArea + 1, voxelArea + 1, voxelArea + 1];
-        TerrainPopulationComplete += CreateMeshData;
     }
 
     /// <summary>

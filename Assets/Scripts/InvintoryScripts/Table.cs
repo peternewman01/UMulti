@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using System.Collections.Generic;
 using Unity.Netcode;
+using System.Collections;
 
 
 [RequireComponent(typeof(PlayerInput))]
@@ -81,7 +82,7 @@ public class Table : Object
     }
 
 
-    [Rpc(SendTo.Server)]
+    [ServerRpc()]
     private void RequestSpawnServerRpc(Vector3 spawnPosition)
     {
         Transform spawnedObj = Instantiate(tempTargetPrefab);
