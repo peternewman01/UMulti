@@ -1168,6 +1168,58 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 6
       objectReference: {fileID: 0}
+    - target: {fileID: 9036855995354540745, guid: e7c81aa6aace6be4ebcb9433d8af1c0b, type: 3}
+      propertyPath: m_Coefficients.Array.data[9].maxDistance
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9036855995354540745, guid: e7c81aa6aace6be4ebcb9433d8af1c0b, type: 3}
+      propertyPath: m_Coefficients.Array.data[40].maxDistance
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9036855995354540745, guid: e7c81aa6aace6be4ebcb9433d8af1c0b, type: 3}
+      propertyPath: m_Coefficients.Array.data[68].maxDistance
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9036855995354540745, guid: e7c81aa6aace6be4ebcb9433d8af1c0b, type: 3}
+      propertyPath: m_Coefficients.Array.data[69].maxDistance
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9036855995354540745, guid: e7c81aa6aace6be4ebcb9433d8af1c0b, type: 3}
+      propertyPath: m_Coefficients.Array.data[70].maxDistance
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9036855995354540745, guid: e7c81aa6aace6be4ebcb9433d8af1c0b, type: 3}
+      propertyPath: m_Coefficients.Array.data[71].maxDistance
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9036855995354540745, guid: e7c81aa6aace6be4ebcb9433d8af1c0b, type: 3}
+      propertyPath: m_Coefficients.Array.data[72].maxDistance
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9036855995354540745, guid: e7c81aa6aace6be4ebcb9433d8af1c0b, type: 3}
+      propertyPath: m_Coefficients.Array.data[75].maxDistance
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9036855995354540745, guid: e7c81aa6aace6be4ebcb9433d8af1c0b, type: 3}
+      propertyPath: m_Coefficients.Array.data[77].maxDistance
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9036855995354540745, guid: e7c81aa6aace6be4ebcb9433d8af1c0b, type: 3}
+      propertyPath: m_Coefficients.Array.data[93].maxDistance
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9036855995354540745, guid: e7c81aa6aace6be4ebcb9433d8af1c0b, type: 3}
+      propertyPath: m_Coefficients.Array.data[94].maxDistance
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9036855995354540745, guid: e7c81aa6aace6be4ebcb9433d8af1c0b, type: 3}
+      propertyPath: m_Coefficients.Array.data[95].maxDistance
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9036855995354540745, guid: e7c81aa6aace6be4ebcb9433d8af1c0b, type: 3}
+      propertyPath: m_Coefficients.Array.data[96].maxDistance
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 9044902681538670768, guid: e7c81aa6aace6be4ebcb9433d8af1c0b, type: 3}
       propertyPath: m_AABB.m_Center.x
       value: NaN
