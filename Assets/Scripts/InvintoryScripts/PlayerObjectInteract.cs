@@ -14,7 +14,6 @@ public class PlayerObjectInteract : MonoBehaviour
     [SerializeField] private PlayerManager playerManager;
 
     [SerializeField] private CustomPassVolume outlinePasses;
-    [SerializeField] private CleanOutlineCustomPass blackPass;
     [SerializeField] private CleanOutlineCustomPass goldPass;
 
     [SerializeField] private float searchRadius = 3f;
@@ -33,11 +32,7 @@ public class PlayerObjectInteract : MonoBehaviour
         {
             if (cp is CleanOutlineCustomPass cleanPass)
             {
-                if (cp.name == "BlackOutline")
-                {
-                    blackPass = cleanPass;
-                }
-                else if (cp.name == "GoldOutline")
+                if (cp.name == "GoldOutline")
                 {
                     goldPass = cleanPass;
                 }
@@ -51,17 +46,17 @@ public class PlayerObjectInteract : MonoBehaviour
             pickupRadius.isTrigger = true;
         }
 
+
+        Renderer highlighted = ClosestRendererToCameraForward();
+        goldPass.m_DrawRenderers.Add(highlighted);
+
     }
 
     void Update()
     {
-
-        blackPass.m_DrawRenderers = objectRenderers;
-
         Renderer highlighted = ClosestRendererToCameraForward();
 
-        goldPass.m_DrawRenderers.Clear();
-        goldPass.m_DrawRenderers.Add(highlighted);
+        goldPass.m_DrawRenderers[0] = highlighted;
 
         if (playerManager.Interact)
         {

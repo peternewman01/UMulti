@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7879467974425329217}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Pos
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -40,7 +40,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5576430080325078988}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Pos
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -76,7 +76,8 @@ GameObject:
   - component: {fileID: 4644888813063751405}
   - component: {fileID: 5247365178064651136}
   - component: {fileID: 3193937510996402506}
-  m_Layer: 0
+  - component: {fileID: 5554441245471875134}
+  m_Layer: 9
   m_Name: Totem 3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -211,9 +212,35 @@ MonoBehaviour:
   objectName: 
   Invintory: {fileID: 0}
   playerInArea: 0
+  objectSprite: {fileID: 0}
   holding: {fileID: 0}
   spawnPos: {fileID: 5576430080325078988}
   woodPrefab: {fileID: 6704981672725469668, guid: 798e03e2fd1847941b6f41951db7bdf4, type: 3}
+--- !u!114 &5554441245471875134
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2504990373832052732}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  GlobalObjectIdHash: 0
+  InScenePlacedSourceGlobalObjectIdHash: 0
+  DeferredDespawnTick: 0
+  Ownership: 1
+  AlwaysReplicateAsRoot: 0
+  SynchronizeTransform: 1
+  ActiveSceneSynchronization: 0
+  SceneMigrationSynchronization: 1
+  SpawnWithObservers: 1
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1
+  SyncOwnerTransformWhenParented: 1
+  AllowOwnerToParent: 0
 --- !u!1 &3361861019761332665
 GameObject:
   m_ObjectHideFlags: 0
@@ -223,7 +250,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4438164136827221249}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Pos
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -261,7 +288,7 @@ GameObject:
   - component: {fileID: 7428198052696396830}
   - component: {fileID: 3775763786808545502}
   - component: {fileID: 8548914285155623681}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: StickMaker
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -460,6 +487,7 @@ MonoBehaviour:
   objectName: 
   Invintory: {fileID: 0}
   playerInArea: 0
+  objectSprite: {fileID: 0}
   TempRecipe:
     targetInvintory: {fileID: 0}
     target: {fileID: 0}
@@ -484,7 +512,8 @@ GameObject:
   - component: {fileID: 5111524478551862176}
   - component: {fileID: 6518162681582110967}
   - component: {fileID: 139459537532273557}
-  m_Layer: 0
+  - component: {fileID: 618453326508069726}
+  m_Layer: 9
   m_Name: Totem 1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -619,9 +648,35 @@ MonoBehaviour:
   objectName: 
   Invintory: {fileID: 0}
   playerInArea: 0
+  objectSprite: {fileID: 0}
   holding: {fileID: 0}
   spawnPos: {fileID: 7879467974425329217}
   woodPrefab: {fileID: 6704981672725469668, guid: 798e03e2fd1847941b6f41951db7bdf4, type: 3}
+--- !u!114 &618453326508069726
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6289348856120325570}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  GlobalObjectIdHash: 0
+  InScenePlacedSourceGlobalObjectIdHash: 0
+  DeferredDespawnTick: 0
+  Ownership: 1
+  AlwaysReplicateAsRoot: 0
+  SynchronizeTransform: 1
+  ActiveSceneSynchronization: 0
+  SceneMigrationSynchronization: 1
+  SpawnWithObservers: 1
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1
+  SyncOwnerTransformWhenParented: 1
+  AllowOwnerToParent: 0
 --- !u!1 &7364729026312730230
 GameObject:
   m_ObjectHideFlags: 0
@@ -631,7 +686,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1044584760826724119}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: SpawnPos
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -667,7 +722,8 @@ GameObject:
   - component: {fileID: 8411994907961615700}
   - component: {fileID: 5350935921053897869}
   - component: {fileID: 3522908767356952731}
-  m_Layer: 0
+  - component: {fileID: 2160736236349248814}
+  m_Layer: 9
   m_Name: Totem 2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -802,6 +858,32 @@ MonoBehaviour:
   objectName: 
   Invintory: {fileID: 0}
   playerInArea: 0
+  objectSprite: {fileID: 0}
   holding: {fileID: 0}
   spawnPos: {fileID: 4438164136827221249}
   woodPrefab: {fileID: 6704981672725469668, guid: 798e03e2fd1847941b6f41951db7bdf4, type: 3}
+--- !u!114 &2160736236349248814
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7903017813832731521}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  GlobalObjectIdHash: 0
+  InScenePlacedSourceGlobalObjectIdHash: 0
+  DeferredDespawnTick: 0
+  Ownership: 1
+  AlwaysReplicateAsRoot: 0
+  SynchronizeTransform: 1
+  ActiveSceneSynchronization: 0
+  SceneMigrationSynchronization: 1
+  SpawnWithObservers: 1
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1
+  SyncOwnerTransformWhenParented: 1
+  AllowOwnerToParent: 0

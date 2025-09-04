@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 8696059543524608753}
   - component: {fileID: 3003696136283523117}
   - component: {fileID: 5316367674203908720}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Wood
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -182,3 +182,4 @@ MonoBehaviour:
   objectName: Wood
   Invintory: {fileID: 0}
   playerInArea: 0
+  objectSprite: {fileID: 0}

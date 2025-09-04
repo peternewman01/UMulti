@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 8981273519184345042}
   - component: {fileID: 7585600191273617011}
   - component: {fileID: 7717715480850766720}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Circle.001
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -95,7 +95,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8419078753318571547}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Grip
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -132,7 +132,7 @@ GameObject:
   - component: {fileID: 5930374038275493916}
   - component: {fileID: 7033247571078061410}
   - component: {fileID: 2961733448841480494}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Stick
   m_TagString: Untagged
   m_Icon: {fileID: 0}
