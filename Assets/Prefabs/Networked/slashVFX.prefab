@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 3993679931667273693}
   - component: {fileID: 2499809903893852559}
   - component: {fileID: 2425373630201939201}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: slashVFX
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -153,7 +153,7 @@ GameObject:
   - component: {fileID: 3306409555387343280}
   - component: {fileID: 8676994477222847779}
   - component: {fileID: 2626076040813091681}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Particle System
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5023,7 +5023,7 @@ GameObject:
   - component: {fileID: 2548258070368783423}
   - component: {fileID: 4082564250850026622}
   - component: {fileID: 167164046016425425}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Plane
   m_TagString: Untagged
   m_Icon: {fileID: 0}
