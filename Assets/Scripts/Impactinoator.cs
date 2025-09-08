@@ -1,9 +1,17 @@
 ﻿using UnityEngine;
+using Unity.Cinemachine;
 
 public class Impactinoator : MonoBehaviour
 {
     [SerializeField] private GameObject vfxPrefab;
     [SerializeField] private float vfxLifetime = 2f;
+
+    private CinemachineImpulseSource impulseSource;
+
+    private void Awake()
+    {
+        impulseSource = gameObject.GetComponent<CinemachineImpulseSource>();
+    }
 
     private void OnTriggerEnter(Collider other)
     {
@@ -16,6 +24,9 @@ public class Impactinoator : MonoBehaviour
 
         //face opposite the hit direction
         Quaternion rotation = Quaternion.LookRotation(-hitDirection);
+
+        //camera shake
+        CameraShakeManager.instance.CameraShake(impulseSource, .1f);
 
         GameObject vfx = Instantiate(vfxPrefab, contactPoint, rotation);
         Destroy(vfx, vfxLifetime);
