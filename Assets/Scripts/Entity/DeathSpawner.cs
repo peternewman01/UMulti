@@ -38,7 +38,7 @@ public class DeathSpawner : Entity
     private void SpawnObjects()
     {
         Vector3 spawnPoint = transform.position;// + Vector3.up * radius;
-        Debug.Log(startSpawnPos);
+        //Debug.Log(startSpawnPos);
         bool hasSpawned = false;
         for(int i = 0; i < count; i++)
         {

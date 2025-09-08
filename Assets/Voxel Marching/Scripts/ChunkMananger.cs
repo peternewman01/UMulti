@@ -15,6 +15,8 @@ public class ChunkMananger : NetworkBehaviour
     [SerializeField] private uint subCubesPerChunk = 16;
     [Tooltip("How many sub-cubes to generate per frame")]
     [SerializeField] private uint chunksPerFrame = 4;
+    private NetworkObject resourceParent;
+    private NetworkObject chunkParent;
     //[SerializeField] private MarchingAlgorithm algorithmPrefab;
     private List<Vector2Int> frontier = new();
     private Vector2Int playerChunk = Vector2Int.zero;
@@ -30,6 +32,18 @@ public class ChunkMananger : NetworkBehaviour
         set { }
     }
 
+    public NetworkObject ResourceParent
+    {
+        get => resourceParent;
+        set { }
+    }
+
+    public NetworkObject ChunkParent
+    {
+        get => chunkParent;
+        set { }
+    }
+
     //Events
     public Action<Vector2Int> PlayerChunkUpdated;
 
@@ -38,6 +52,7 @@ public class ChunkMananger : NetworkBehaviour
         if (Instance == null)
         {
             Instance = this;
+
 
         }
         else if (Instance != this)
@@ -49,6 +64,18 @@ public class ChunkMananger : NetworkBehaviour
     public override void OnNetworkSpawn()
     {
         base.OnNetworkSpawn();
+
+        foreach (Transform child in transform)
+            Destroy(child.gameObject);
+
+        chunkParent = new GameObject("Chunks").AddComponent<NetworkObject>();
+        chunkParent.Spawn();
+        chunkParent.transform.parent = transform;
+
+        resourceParent = new GameObject("Resources").AddComponent<NetworkObject>();
+        resourceParent.Spawn();
+        resourceParent.transform.parent = transform;
+
         frontier.AddRange(INITIAL_CHUNKS);
         SetSeed(UnityEngine.Random.Range(-10000, 10000));
         NetworkManager.Singleton.OnServerStarted += StartChunkLoadingServerRpc;
@@ -117,7 +144,7 @@ public class ChunkMananger : NetworkBehaviour
         Destroy(GameObject.Find(GetChunkName(chunk)));
         GameObject spawnedChunk = new GameObject();
         spawnedChunk.AddComponent<NetworkObject>().Spawn();
-        spawnedChunk.transform.parent = transform;
+        spawnedChunk.transform.parent = chunkParent.transform;
         spawnedChunk.name = GetChunkName(chunk);
 
         for (uint i = 0; i < subCubesPerChunk; i++)

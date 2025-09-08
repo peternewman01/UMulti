@@ -22,4 +22,5 @@ MonoBehaviour:
   - {fileID: 11400000, guid: debfba7d03ca0a349a79b213a0960a06, type: 2}
   - {fileID: 11400000, guid: 163ded92cd70f3f4c945da45a2fac840, type: 2}
   - {fileID: 11400000, guid: 01bf052f561e67c4b9130a2417afdb14, type: 2}
+  - {fileID: 11400000, guid: 58e29ad9eb3e10f4ba62c8143cbd255e, type: 2}
   islandsToGenerate: 16

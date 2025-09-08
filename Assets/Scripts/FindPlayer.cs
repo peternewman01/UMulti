@@ -4,6 +4,7 @@ using Unity.Cinemachine;
 
 public class FindPlayer : NetworkBehaviour
 {
+    public LayerMask mask;
     //wait till find a player prefab that IsOwner and set cinemachine freelook's target to player
     private CinemachineCamera freeLookCam;
     private CinemachineCamera aimCam;
@@ -11,6 +12,7 @@ public class FindPlayer : NetworkBehaviour
 
     private void OnEnable()
     {
+        //TODO: This seems easy to mess up in editor setup -- improve editor experience
         freeLookCam = transform.GetComponent<CinemachineCamera>();
         cp = transform.parent.GetComponent<CameraPointer>();
         aimCam = cp.aimCam;
@@ -29,6 +31,7 @@ public class FindPlayer : NetworkBehaviour
             {
                 if (obj.IsOwner)
                 {
+
                     obj.GetComponent<PlayerManager>().cameraTransform = transform;
                     //if(aimCam != null) obj.GetComponent<PlayerManager>().aimCamTransform = aimCam.transform;
                     Transform target = obj.transform.Find("CameraTrackingTarget");

@@ -1,13 +1,14 @@
-using UnityEngine;
-using Unity.Netcode;
-using UnityEngine.InputSystem;
-using System.Collections;
-using UnityEngine.Windows;
-using UnityEditor;
-using Unity.VisualScripting;
-using UnityEngine.Animations;
 using NUnit;
+using System.Collections;
 using Unity.Cinemachine;
+using Unity.Netcode;
+using Unity.VisualScripting;
+using UnityEditor;
+using UnityEngine;
+using UnityEngine.Animations;
+using UnityEngine.InputSystem;
+using UnityEngine.UI;
+using UnityEngine.Windows;
 
 public class PlayerManager : NetworkBehaviour
 {
@@ -135,6 +136,9 @@ public class PlayerManager : NetworkBehaviour
 
         controlPanel.invintory = inv;
         inv.ui = controlPanel;
+        controlPanel.gameObject.SetActive(false);
+
+        Invoke("SpawningRaycast", 0.2f);
     }
 
     public override void OnNetworkDespawn()
@@ -353,6 +357,14 @@ public class PlayerManager : NetworkBehaviour
             weaponTrail.enabled = false;
             print("weapon trail disabled");
             isSwinging = false;
+        }
+    }
+
+    private void SpawningRaycast()
+    {
+        if (Physics.Raycast(new Ray(new Vector3(0, 500, 0), Vector3.down), out RaycastHit hitInfo, float.MaxValue, LayerMask.GetMask("Ground"))) //raycast down to ground @ (0, 500, 0) 
+        {
+            transform.position = hitInfo.point;
         }
     }
 

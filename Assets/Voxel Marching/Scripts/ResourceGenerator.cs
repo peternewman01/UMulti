@@ -13,20 +13,6 @@ public class ResourceGenerator : TerrainGeneration
     [SerializeField] private GameObject resourcePrefab;
     [SerializeField] private bool isNetworkObject = true;
     [SerializeField] private FitnessData spawningData;
-    private GameObject parent;
-
-    public void SetParent()
-    {
-        parent = GameObject.Find("Resources");
-        if(parent == null) parent = new GameObject("Resources");
-
-        parent.transform.parent = ChunkMananger.Instance?.gameObject.transform; 
-    }
-
-    public void DestroyParent()
-    {
-        Destroy(parent);
-    }
 
     public override float[] CustomNoise(Vector3 pos, MarchingAlgorithm algorithm)
     {
@@ -35,12 +21,10 @@ public class ResourceGenerator : TerrainGeneration
             return null;
         }
 
-        SetParent();
-
         pos.y = ChunkMananger.Instance.GetChunkHeight() - 5.0f;
         pos.x += Random.Range(-spawningData.posOffset, spawningData.posOffset);
         pos.z += Random.Range(-spawningData.posOffset, spawningData.posOffset);
-        if (Physics.Raycast(new Ray(pos, Vector3.down), out RaycastHit hitData, float.MaxValue))
+        if (Physics.Raycast(new Ray(pos, Vector3.down), out RaycastHit hitData, float.MaxValue, ~LayerMask.NameToLayer("Ground")))
         {
             if (ResourceFitness(pos.x, pos.z, hitData, spawningData) < spawningData.density)
             {
@@ -52,11 +36,11 @@ public class ResourceGenerator : TerrainGeneration
                 }
                 else
                 {
-                    spawned = Instantiate(resourcePrefab, parent.transform);
+                    spawned = Instantiate(resourcePrefab, ChunkMananger.Instance.ResourceParent.transform);
                 }
 
                 spawned.transform.position = pos;
-                spawned.transform.parent = parent.transform;
+                spawned.transform.parent = ChunkMananger.Instance.ResourceParent.transform;
             }
         }
 
