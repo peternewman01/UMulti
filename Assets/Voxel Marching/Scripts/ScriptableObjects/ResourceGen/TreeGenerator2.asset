@@ -15,7 +15,7 @@ MonoBehaviour:
   resourcePrefab: {fileID: 487047076839378032, guid: 20594024570a10f45a468a9b93cd922c, type: 3}
   isNetworkObject: 1
   spawningData:
-    density: 0.2
+    density: 0.15
     posOffset: 0.25
     randomness: 0.15
     maxSteepness: 90

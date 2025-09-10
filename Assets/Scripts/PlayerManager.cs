@@ -49,6 +49,7 @@ public class PlayerManager : NetworkBehaviour
 
     [Header("Boolet")]
     [SerializeField] private Transform boolet;
+    [SerializeField] private Transform pinnacle;
     [SerializeField] private Transform slash;
 
     private Animator anim;
@@ -78,6 +79,7 @@ public class PlayerManager : NetworkBehaviour
     [SerializeField] private Vector3 swingAxis = Vector3.up;
     [SerializeField] private Vector3 axisOffset = new Vector3(0, 90, 0);
     [SerializeField] private TrailRenderer weaponTrail;
+    private Collider weaponCollider;
     float heightOffset = 1.0f;
     private Transform currentSlash;
     private Vector3 swingDir;
@@ -134,6 +136,9 @@ public class PlayerManager : NetworkBehaviour
         controlPanel = Instantiate(ControlPanelPrefab, MainCanvas.transform).GetComponent<ControlPanel>();
         controlPanel.playerManager = this;
 
+        weaponCollider = weapon.transform.GetChild(2).GetComponent<CapsuleCollider>();
+        if (weaponCollider == null)
+            Debug.Log(weapon.transform.GetChild(2).name);
         controlPanel.invintory = inv;
         inv.ui = controlPanel;
         controlPanel.gameObject.SetActive(false);
@@ -323,6 +328,7 @@ public class PlayerManager : NetworkBehaviour
         isSwingingbool = false;
         isSwinging = true;
         weaponTrail.enabled = false;
+        weaponCollider.enabled = true;
         swingTimer = 0f;
 
         currentSlash = slashTransform;
@@ -355,7 +361,8 @@ public class PlayerManager : NetworkBehaviour
         {
             weaponTrail.Clear();
             weaponTrail.enabled = false;
-            print("weapon trail disabled");
+            weaponCollider.enabled = false;
+            print("weapon trail and collider disabled");
             isSwinging = false;
         }
     }
@@ -382,7 +389,12 @@ public class PlayerManager : NetworkBehaviour
         Vector3 spawnOffset = transform.forward * forwardOffset;
 
         Transform spawnedBoolet = Instantiate(boolet);
+        Transform spawnedPinnacle = Instantiate(pinnacle);
         spawnedBoolet.transform.position = spawnPosition + spawnOffset;
+        spawnedPinnacle.transform.position = weaponTrail.transform.position;
+        spawnedPinnacle.transform.rotation = weaponTrail.transform.rotation;
+
+        spawnedPinnacle.transform.SetParent(weaponTrail.transform.parent);
 
         var netObj = spawnedBoolet.GetComponent<NetworkObject>();
         netObj.Spawn(true);
@@ -391,6 +403,7 @@ public class PlayerManager : NetworkBehaviour
         rb.AddForce(shootDirection.normalized * 5000f); //you can tweak the force
         
         Destroy(spawnedBoolet.gameObject, 3);
+        Destroy(spawnedPinnacle.gameObject, 2);
     }
 
     [Rpc(SendTo.ClientsAndHost)]
