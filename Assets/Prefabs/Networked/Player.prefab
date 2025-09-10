@@ -1374,6 +1374,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 5903243558382360467, guid: e7c81aa6aace6be4ebcb9433d8af1c0b, type: 3}
       insertIndex: -1
       addedObject: {fileID: 4773087885763130483}
+    - targetCorrespondingSourceObject: {fileID: 5903243558382360467, guid: e7c81aa6aace6be4ebcb9433d8af1c0b, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 6797540870831299729}
   m_SourcePrefab: {fileID: 100100000, guid: e7c81aa6aace6be4ebcb9433d8af1c0b, type: 3}
 --- !u!4 &576634335262636055 stripped
 Transform:
@@ -1401,6 +1404,20 @@ MonoBehaviour:
   - m_Rig: {fileID: 8589396535164373588}
     m_Active: 1
   m_Effectors: []
+--- !u!114 &6797540870831299729
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2314427997911119560}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9cf15d72db351b34fa46fff045b8b67b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  stepVFX: {fileID: 3445425356084730897, guid: a638a4135b7ef8b4d9e9b104429cdf41, type: 3}
+  vfxOffset: {x: 0, y: 0, z: 0}
 --- !u!95 &3216230067998586660 stripped
 Animator:
   m_CorrespondingSourceObject: {fileID: 6723962797177689727, guid: e7c81aa6aace6be4ebcb9433d8af1c0b, type: 3}
