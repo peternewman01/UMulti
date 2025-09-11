@@ -90,5 +90,5 @@ public class Slot : MonoBehaviour
         objectID = id;
     }
 
-
+    public bool isFilled() {  return filled; } 
 }

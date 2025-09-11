@@ -634,6 +634,7 @@ GameObject:
   - component: {fileID: 9085496850077203498}
   - component: {fileID: 8889824241053453272}
   - component: {fileID: 6953621338408064027}
+  - component: {fileID: 1117286762680026606}
   m_Layer: 6
   m_Name: Player
   m_TagString: Player
@@ -734,6 +735,8 @@ MonoBehaviour:
   idealHandRot: {x: 0, y: 0, z: 0, w: 0}
   scrollSensitivity: 10
   impulseSource: {fileID: 6953621338408064027}
+  holding: {fileID: 0}
+  stick: {fileID: 0}
 --- !u!114 &2675783541006157575
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -918,6 +921,22 @@ MonoBehaviour:
     DissipationDistance: 100
     PropagationSpeed: 343
   DefaultVelocity: {x: 0, y: -1, z: 0}
+--- !u!114 &1117286762680026606
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5199031698185166006}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 658e01bff3211014c964bcfa12713abc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  holdingSlot: {fileID: 0}
+  canHit: 0
+  wasHolding: 0
+  stick: {fileID: 3175494475631461071}
 --- !u!1 &5715089899143181011
 GameObject:
   m_ObjectHideFlags: 0
@@ -1258,6 +1277,10 @@ PrefabInstance:
     - target: {fileID: 9125502469920471631, guid: 70094e619e0b7ca4eabdeaf0b45a4016, type: 3}
       propertyPath: m_Name
       value: StickEquipment
+      objectReference: {fileID: 0}
+    - target: {fileID: 9125502469920471631, guid: 70094e619e0b7ca4eabdeaf0b45a4016, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

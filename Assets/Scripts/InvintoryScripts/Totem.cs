@@ -37,7 +37,7 @@ public class Totem : Object
     [ServerRpc(RequireOwnership = false)]
     public void RequestSpawnServerRpc(Vector3 spawnPosition)
     {
-        Transform spawnedObj = Instantiate(woodPrefab);
+a        Transform spawnedObj = Instantiate(woodPrefab);
         spawnedObj.transform.position = spawnPosition;
 
         var netObj = spawnedObj.GetComponent<NetworkObject>();

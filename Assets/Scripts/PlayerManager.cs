@@ -100,6 +100,7 @@ public class PlayerManager : NetworkBehaviour
     CinemachineComponentBase componentBase;
     [SerializeField] private CinemachineImpulseSource impulseSource; //recoil impulse
 
+    public StickHolding holding;
     private void OnEnable()
     {
         InputActions.FindActionMap("Player").Enable();
@@ -149,6 +150,10 @@ public class PlayerManager : NetworkBehaviour
         controlPanel.gameObject.SetActive(false);
 
         Invoke("SpawningRaycast", 0.2f);
+
+
+        holding = GetComponent<StickHolding>();
+        holding.holdingSlot = controlPanel.slotHolding;
     }
 
     public override void OnNetworkDespawn()
@@ -307,6 +312,12 @@ public class PlayerManager : NetworkBehaviour
 
     private void AimShooting()
     {
+        if (!holding.canHit)
+        {
+            return; 
+        }
+
+
         if (cameraTransform == null) return;
 
         if (click.IsPressed()) //aim right click
