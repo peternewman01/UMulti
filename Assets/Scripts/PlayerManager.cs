@@ -79,7 +79,11 @@ public class PlayerManager : NetworkBehaviour
     [SerializeField] private Vector3 swingAxis = Vector3.up;
     [SerializeField] private Vector3 axisOffset = new Vector3(0, 90, 0);
     [SerializeField] private TrailRenderer weaponTrail;
-    private Collider weaponCollider;
+    [SerializeField] private Collider weaponCollider;
+    [SerializeField] private Transform lookAtPoint;
+    [SerializeField] private LayerMask aimLayers;
+    [SerializeField] private Quaternion idealHandRot;
+    float maxLookDistance = 100f;
     float heightOffset = 1.0f;
     private Transform currentSlash;
     private Vector3 swingDir;
@@ -94,6 +98,7 @@ public class PlayerManager : NetworkBehaviour
     [SerializeField] float scrollSensitivity = 10f;
     float cameraDistance;
     CinemachineComponentBase componentBase;
+    [SerializeField] private CinemachineImpulseSource impulseSource; //recoil impulse
 
     private void OnEnable()
     {
@@ -136,9 +141,9 @@ public class PlayerManager : NetworkBehaviour
         controlPanel = Instantiate(ControlPanelPrefab, MainCanvas.transform).GetComponent<ControlPanel>();
         controlPanel.playerManager = this;
 
-        weaponCollider = weapon.transform.GetChild(2).GetComponent<CapsuleCollider>();
-        if (weaponCollider == null)
-            Debug.Log(weapon.transform.GetChild(2).name);
+        //weaponCollider = weapon.transform.GetChild(2).GetComponent<CapsuleCollider>();
+        //if (weaponCollider == null)
+        //    Debug.Log(weapon.transform.GetChild(2).name);
         controlPanel.invintory = inv;
         inv.ui = controlPanel;
         controlPanel.gameObject.SetActive(false);
@@ -165,7 +170,17 @@ public class PlayerManager : NetworkBehaviour
 
         scrolling = scroll.ReadValue<float>();
 
-        if(invButton.WasPressedThisFrame())
+        //for torso ik target
+        if (Physics.Raycast(cameraTransform.position, cameraTransform.forward, out RaycastHit hit, maxLookDistance, aimLayers))
+        {
+            lookAtPoint.position = hit.point;
+        }
+        else
+        {
+            lookAtPoint.position = cameraTransform.position + cameraTransform.forward * maxLookDistance;
+        }
+
+        if (invButton.WasPressedThisFrame())
         {
             if(controlPanel.gameObject.activeSelf)
             {
@@ -219,7 +234,7 @@ public class PlayerManager : NetworkBehaviour
         target.Normalize();
 
         Vector3 pass = target * walkingSpeed + new Vector3(0, rb.linearVelocity.y, 0);
-        rb.linearVelocity = Vector3.Lerp(rb.linearVelocity, pass, Time.fixedDeltaTime * 5);
+        rb.linearVelocity = Vector3.Lerp(rb.linearVelocity, pass, Time.unscaledDeltaTime * 5);
 
 
         if (cameraTransform.gameObject.activeSelf)
@@ -310,6 +325,7 @@ public class PlayerManager : NetworkBehaviour
         {
             lastShotTime = Time.time;
 
+            CameraShakeManager.instance.CameraShake(impulseSource, .1f); //recoil
             RequestShootServerRpc(transform.position + Vector3.up, transform.forward);
         }
         else if (attack.WasPressedThisFrame() && Time.time - lastShotTime >= shootCooldown)
@@ -359,6 +375,7 @@ public class PlayerManager : NetworkBehaviour
 
         if (t >= .5f)
         {
+            //weapon.rotation = Quaternion.Slerp(swingEnd, idealHandRot, t); //not working rn, will try something else tomorrow
             weaponTrail.Clear();
             weaponTrail.enabled = false;
             weaponCollider.enabled = false;
@@ -394,13 +411,15 @@ public class PlayerManager : NetworkBehaviour
         spawnedPinnacle.transform.position = weaponTrail.transform.position;
         spawnedPinnacle.transform.rotation = weaponTrail.transform.rotation;
 
-        spawnedPinnacle.transform.SetParent(weaponTrail.transform.parent);
-
         var netObj = spawnedBoolet.GetComponent<NetworkObject>();
         netObj.Spawn(true);
-        
+
+        var netObj2 = spawnedPinnacle.GetComponent<NetworkObject>();
+        netObj2.Spawn(true);
+        spawnedPinnacle.transform.parent = weaponTrail.transform.parent;
+
         var rb = spawnedBoolet.GetComponent<Rigidbody>();
-        rb.AddForce(shootDirection.normalized * 5000f); //you can tweak the force
+        rb.AddForce(shootDirection.normalized * 5000f);
         
         Destroy(spawnedBoolet.gameObject, 3);
         Destroy(spawnedPinnacle.gameObject, 2);
