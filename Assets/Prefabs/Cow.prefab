@@ -181,7 +181,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
   hp:
-    m_InternalValue: 10
+    m_InternalValue: 15
   activate: 1
   obj: {fileID: 1723330688389428828, guid: 955be55b38c17b14a8571ec1ce5ee34a, type: 3}
   count: 4

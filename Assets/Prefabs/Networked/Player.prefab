@@ -736,7 +736,6 @@ MonoBehaviour:
   scrollSensitivity: 10
   impulseSource: {fileID: 6953621338408064027}
   holding: {fileID: 0}
-  stick: {fileID: 0}
 --- !u!114 &2675783541006157575
 MonoBehaviour:
   m_ObjectHideFlags: 0

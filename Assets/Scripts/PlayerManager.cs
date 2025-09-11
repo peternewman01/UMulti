@@ -314,7 +314,7 @@ public class PlayerManager : NetworkBehaviour
     {
         if (!holding.canHit)
         {
-            return; 
+            //return; 
         }
 
 
@@ -451,6 +451,12 @@ public class PlayerManager : NetworkBehaviour
         spawnedSlash.transform.position = spawnPosition + spawnOffset;
         spawnedSlash.transform.rotation = Quaternion.LookRotation(shootDirection);
         spawnedSlash.transform.Rotate(Random.Range(-90f, 90f), 0f, 0f);
+
+        if(!holding.canHit)
+        {
+            hurtEntities slashHurt = spawnedSlash.gameObject.GetComponent<hurtEntities>();
+            slashHurt.setDamage(1);
+        }
 
         var netObj = spawnedSlash.GetComponent<NetworkObject>();
         netObj.Spawn(true);

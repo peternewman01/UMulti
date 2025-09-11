@@ -8,6 +8,12 @@ public class StickHolding : MonoBehaviour
     public bool wasHolding = false;
     public GameObject stick;
 
+    private void Start()
+    {
+        canHit = false;
+        stick.SetActive(false);
+    }
+
     private void Update()
     {
         if(holdingSlot.isFilled() != wasHolding)

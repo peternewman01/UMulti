@@ -19,4 +19,12 @@ public class hurtEntities : NetworkBehaviour
             }
         }
     }
+
+    public void setDamage(int damage)
+    {
+        if(damage >= 0)
+        {
+            this.damage = damage;
+        }
+    }
 }
