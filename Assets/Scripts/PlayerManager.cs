@@ -154,6 +154,11 @@ public class PlayerManager : NetworkBehaviour
 
         holding = GetComponent<StickHolding>();
         holding.holdingSlot = controlPanel.slotHolding;
+
+
+        controlPanel.gameObject.SetActive(false);
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
     }
 
     public override void OnNetworkDespawn()
