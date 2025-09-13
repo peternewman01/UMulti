@@ -101,10 +101,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
-  hp: 2
+  hp:
+    m_InternalValue: 4
+  activate: 1
   obj: {fileID: 8346321969232095038, guid: 798e03e2fd1847941b6f41951db7bdf4, type: 3}
   count: 2
   radius: 1
+  spawnChance: 1
+  guaranteed: 0
 --- !u!1 &4723368885877934171
 GameObject:
   m_ObjectHideFlags: 0

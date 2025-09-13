@@ -17,13 +17,17 @@ public class ControlPanel : MonoBehaviour
     public PlayerManager playerManager;
     public Invintory invintory;
 
+    public Slot slotHolding;
+
     private void Start()
     {
-        for(int i = 0; i <  slotSpawnCount; i++)
+        for (int i = 0; i <  slotSpawnCount; i++)
         {
             openSlots.Add(Instantiate(slot, startPosition).GetComponent<Slot>());
             openSlots.Last().ui = this;
         }
+        openSlots.Add(slotHolding);
+        openSlots.Last().ui = this;
     }
 
     public bool AddObjects(Object obj, int count)
@@ -37,7 +41,7 @@ public class ControlPanel : MonoBehaviour
         {
             openSlots.First().SetItem(obj.objectSprite, obj.objectName, obj.objectID);
             filledSlots.Add(openSlots.First());
-            openSlots.Remove(openSlots.First());
+            openSlots.Remove(openSlots.First());    
             targetSlot++;
         }
 

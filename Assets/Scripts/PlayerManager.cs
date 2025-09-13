@@ -49,6 +49,7 @@ public class PlayerManager : NetworkBehaviour
 
     [Header("Boolet")]
     [SerializeField] private Transform boolet;
+    [SerializeField] private Transform pinnacle;
     [SerializeField] private Transform slash;
 
     private Animator anim;
@@ -78,6 +79,11 @@ public class PlayerManager : NetworkBehaviour
     [SerializeField] private Vector3 swingAxis = Vector3.up;
     [SerializeField] private Vector3 axisOffset = new Vector3(0, 90, 0);
     [SerializeField] private TrailRenderer weaponTrail;
+    [SerializeField] private Collider weaponCollider;
+    [SerializeField] private Transform lookAtPoint;
+    [SerializeField] private LayerMask aimLayers;
+    [SerializeField] private Quaternion idealHandRot;
+    float maxLookDistance = 100f;
     float heightOffset = 1.0f;
     private Transform currentSlash;
     private Vector3 swingDir;
@@ -92,7 +98,9 @@ public class PlayerManager : NetworkBehaviour
     [SerializeField] float scrollSensitivity = 10f;
     float cameraDistance;
     CinemachineComponentBase componentBase;
+    [SerializeField] private CinemachineImpulseSource impulseSource; //recoil impulse
 
+    public StickHolding holding;
     private void OnEnable()
     {
         InputActions.FindActionMap("Player").Enable();
@@ -134,11 +142,18 @@ public class PlayerManager : NetworkBehaviour
         controlPanel = Instantiate(ControlPanelPrefab, MainCanvas.transform).GetComponent<ControlPanel>();
         controlPanel.playerManager = this;
 
+        //weaponCollider = weapon.transform.GetChild(2).GetComponent<CapsuleCollider>();
+        //if (weaponCollider == null)
+        //    Debug.Log(weapon.transform.GetChild(2).name);
         controlPanel.invintory = inv;
         inv.ui = controlPanel;
         controlPanel.gameObject.SetActive(false);
 
         Invoke("SpawningRaycast", 0.2f);
+
+
+        holding = GetComponent<StickHolding>();
+        holding.holdingSlot = controlPanel.slotHolding;
     }
 
     public override void OnNetworkDespawn()
@@ -160,7 +175,17 @@ public class PlayerManager : NetworkBehaviour
 
         scrolling = scroll.ReadValue<float>();
 
-        if(invButton.WasPressedThisFrame())
+        //for torso ik target
+        if (Physics.Raycast(cameraTransform.position, cameraTransform.forward, out RaycastHit hit, maxLookDistance, aimLayers))
+        {
+            lookAtPoint.position = hit.point;
+        }
+        else
+        {
+            lookAtPoint.position = cameraTransform.position + cameraTransform.forward * maxLookDistance;
+        }
+
+        if (invButton.WasPressedThisFrame())
         {
             if(controlPanel.gameObject.activeSelf)
             {
@@ -214,7 +239,7 @@ public class PlayerManager : NetworkBehaviour
         target.Normalize();
 
         Vector3 pass = target * walkingSpeed + new Vector3(0, rb.linearVelocity.y, 0);
-        rb.linearVelocity = Vector3.Lerp(rb.linearVelocity, pass, Time.fixedDeltaTime * 5);
+        rb.linearVelocity = Vector3.Lerp(rb.linearVelocity, pass, Time.unscaledDeltaTime * 5);
 
 
         if (cameraTransform.gameObject.activeSelf)
@@ -287,6 +312,12 @@ public class PlayerManager : NetworkBehaviour
 
     private void AimShooting()
     {
+        if (!holding.canHit)
+        {
+            //return; 
+        }
+
+
         if (cameraTransform == null) return;
 
         if (click.IsPressed()) //aim right click
@@ -305,6 +336,7 @@ public class PlayerManager : NetworkBehaviour
         {
             lastShotTime = Time.time;
 
+            CameraShakeManager.instance.CameraShake(impulseSource, .1f); //recoil
             RequestShootServerRpc(transform.position + Vector3.up, transform.forward);
         }
         else if (attack.WasPressedThisFrame() && Time.time - lastShotTime >= shootCooldown)
@@ -323,6 +355,7 @@ public class PlayerManager : NetworkBehaviour
         isSwingingbool = false;
         isSwinging = true;
         weaponTrail.enabled = false;
+        weaponCollider.enabled = true;
         swingTimer = 0f;
 
         currentSlash = slashTransform;
@@ -353,9 +386,11 @@ public class PlayerManager : NetworkBehaviour
 
         if (t >= .5f)
         {
+            //weapon.rotation = Quaternion.Slerp(swingEnd, idealHandRot, t); //not working rn, will try something else tomorrow
             weaponTrail.Clear();
             weaponTrail.enabled = false;
-            print("weapon trail disabled");
+            weaponCollider.enabled = false;
+            print("weapon trail and collider disabled");
             isSwinging = false;
         }
     }
@@ -382,15 +417,23 @@ public class PlayerManager : NetworkBehaviour
         Vector3 spawnOffset = transform.forward * forwardOffset;
 
         Transform spawnedBoolet = Instantiate(boolet);
+        Transform spawnedPinnacle = Instantiate(pinnacle);
         spawnedBoolet.transform.position = spawnPosition + spawnOffset;
+        spawnedPinnacle.transform.position = weaponTrail.transform.position;
+        spawnedPinnacle.transform.rotation = weaponTrail.transform.rotation;
 
         var netObj = spawnedBoolet.GetComponent<NetworkObject>();
         netObj.Spawn(true);
-        
+
+        var netObj2 = spawnedPinnacle.GetComponent<NetworkObject>();
+        netObj2.Spawn(true);
+        spawnedPinnacle.transform.parent = weaponTrail.transform.parent;
+
         var rb = spawnedBoolet.GetComponent<Rigidbody>();
-        rb.AddForce(shootDirection.normalized * 5000f); //you can tweak the force
+        rb.AddForce(shootDirection.normalized * 5000f);
         
         Destroy(spawnedBoolet.gameObject, 3);
+        Destroy(spawnedPinnacle.gameObject, 2);
     }
 
     [Rpc(SendTo.ClientsAndHost)]
@@ -408,6 +451,12 @@ public class PlayerManager : NetworkBehaviour
         spawnedSlash.transform.position = spawnPosition + spawnOffset;
         spawnedSlash.transform.rotation = Quaternion.LookRotation(shootDirection);
         spawnedSlash.transform.Rotate(Random.Range(-90f, 90f), 0f, 0f);
+
+        if(!holding.canHit)
+        {
+            hurtEntities slashHurt = spawnedSlash.gameObject.GetComponent<hurtEntities>();
+            slashHurt.setDamage(1);
+        }
 
         var netObj = spawnedSlash.GetComponent<NetworkObject>();
         netObj.Spawn(true);
