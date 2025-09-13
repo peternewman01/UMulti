@@ -15,8 +15,8 @@ public class ChunkMananger : NetworkBehaviour
     [SerializeField] private uint subCubesPerChunk = 16;
     [Tooltip("How many sub-cubes to generate per frame")]
     [SerializeField] private uint chunksPerFrame = 4;
-    [SerializeField][UnityEngine.Range(0.01f, 1f)] private float cubeSpacing = 0.5f;
-    [SerializeField][UnityEngine.Range(0.01f, 1f)] private float stepHeight = 0.5f;
+    [SerializeField][UnityEngine.Min(0.01f)] private float cubeSpacing = 0.5f;
+    [SerializeField][UnityEngine.Range(0f, 1f)] private float stepHeightPercent = 0.5f;
     private NetworkObject resourceParent;
     private NetworkObject chunkParent;
     //[SerializeField] private MarchingAlgorithm algorithmPrefab;
@@ -156,7 +156,7 @@ public class ChunkMananger : NetworkBehaviour
             subChunk.InitChunkData(chunk, i);
             subChunk.GetComponent<NetworkObject>().Spawn();
             subChunk.transform.parent = spawnedChunk.transform;
-            subChunk.transform.position = (ChunkToWorld(chunk) + new Vector3(0, i * subCubeSize, 0) * stepHeight) * cubeSpacing;
+            subChunk.transform.position = (ChunkToWorld(chunk) + new Vector3(0, i * subCubeSize, 0) * stepHeightPercent) * cubeSpacing;
 /*            if(IsOwner && subChunk.IsSpawned)
                 subChunk.GenerateIslandRpc();*/
         }
@@ -248,7 +248,7 @@ public class ChunkMananger : NetworkBehaviour
     public uint GetSubCubesPerChunk() => subCubesPerChunk;
     public Vector2Int GetPlayerChunk() => playerChunk;
     public float GetSpacing() => cubeSpacing;
-    public float GetStepHeight() => stepHeight;
+    public float GetStepHeight() => stepHeightPercent;
     private void SetSeed(float newSeed) => seed.Value = newSeed;
 
 }
