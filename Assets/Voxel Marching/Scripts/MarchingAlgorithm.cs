@@ -112,7 +112,8 @@ public abstract class MarchingAlgorithm : NetworkBehaviour
                     }
 
                     // Pass the value into our MarchCube function.
-                    MarchCube(new Vector3(x , y, z), cube);
+
+                    MarchCube(new Vector3(x, y, z), cube);
 
                 }
             }
@@ -151,12 +152,13 @@ public abstract class MarchingAlgorithm : NetworkBehaviour
                     continue;
 
                 // Get the vertices for the start and end of this edge.
-                Vector3 vert1 = (position + EdgeTable[indice, 0]);
+                Vector3 vert1 = (position + EdgeTable[indice, 0]); 
                 Vector3 vert2 = (position + EdgeTable[indice, 1]);
 
                 // Get the midpoint of this edge.
                 Vector3 vertPosition = (vert1 + vert2) / 2f;
-
+                vertPosition *= ChunkMananger.Instance.GetSpacing();
+                vertPosition.y *= ChunkMananger.Instance.GetStepHeight();
                 // Add to our vertices and triangles list and incremement the edgeIndex.
                 vertices.Add(vertPosition);
                 triangles.Add(vertices.Count - 1);
