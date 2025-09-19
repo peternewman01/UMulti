@@ -32,7 +32,8 @@ public class NavEntity : Entity
 
     private void Update()
     {
-        transform.forward = agent.velocity;
+        if(agent.velocity.magnitude != 0)
+            transform.forward = agent.velocity;
 
         if (!wandering && !waiting)
         {

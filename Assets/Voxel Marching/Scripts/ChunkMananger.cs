@@ -9,6 +9,7 @@ public class ChunkMananger : NetworkBehaviour
 {
     public static ChunkMananger Instance;
     [SerializeField] private MarchingAlgorithm marchingAlgorithmPrefab;
+
     [Tooltip("How large a sub-cube is for chunk generation")]
     [SerializeField] private uint subCubeSize = 32;
     [Tooltip("How many sub-cubes tall a chunk is")]
@@ -24,6 +25,8 @@ public class ChunkMananger : NetworkBehaviour
     private Vector2Int playerChunk = Vector2Int.zero;
     private NetworkVariable<float> seed = new(0);
 
+
+    public Action<Vector2Int> ChunkFinishedGenerating;
 
     private Vector2Int[] INITIAL_CHUNKS = { Vector2Int.zero, Vector2Int.down, Vector2Int.left, Vector2Int.right, Vector2Int.up, 
         Vector2Int.down + Vector2Int.left, Vector2Int.down + Vector2Int.right, Vector2Int.up + Vector2Int.left, Vector2Int.up + Vector2Int.right};
@@ -54,8 +57,6 @@ public class ChunkMananger : NetworkBehaviour
         if (Instance == null)
         {
             Instance = this;
-
-
         }
         else if (Instance != this)
         {
@@ -66,6 +67,7 @@ public class ChunkMananger : NetworkBehaviour
     private void Start()
     {
         stepHeightAngle = Mathf.Tan(Mathf.Deg2Rad * stepHeightAngle);
+        
     }
 
     public override void OnNetworkSpawn()
@@ -130,14 +132,18 @@ public class ChunkMananger : NetworkBehaviour
         StartCoroutine(ChunkRecursion());
         frontier.Sort(new DistanceCompare());
         uint cubeCount = 0;
+        List<Vector2Int> generatedChunks = new();
         while (frontier.Count > 0 && cubeCount < chunksPerFrame * subCubesPerChunk)
         {
             Vector2Int current = frontier[0];
             cubeCount += GenerateChunk(current);
             frontier.RemoveAt(0);
+            generatedChunks.Add(current);
         }
-
+        StartCoroutine(FrameDelayFinishGeneration(generatedChunks));
         float fps = 1.0f / Time.deltaTime;
+
+
 
         if (chunksPerFrame > 1 && fps < 30)
             chunksPerFrame--;
@@ -145,6 +151,14 @@ public class ChunkMananger : NetworkBehaviour
             chunksPerFrame++;
     }
 
+    private IEnumerator FrameDelayFinishGeneration(List<Vector2Int> chunks)
+    {
+        yield return new WaitForEndOfFrame();
+        foreach (var chunk in chunks)
+        {
+            ChunkFinishedGenerating?.Invoke(chunk);
+        }
+    }
 
     public uint GenerateChunk(Vector2Int chunk)
     {
@@ -224,29 +238,6 @@ public class ChunkMananger : NetworkBehaviour
         return new Vector3(chunk.x * subCubeSize, 0, chunk.y * subCubeSize);
     }
 
-    /*    private bool IsInRenderDistance(Vector2Int chunk)
-        {
-            //Check if the chunk is within the render distance of the player chunk
-            return Vector2Int.Distance(playerChunk, chunk) <= renderDistance;
-        }
-
-        private void PopulateFrontierWithChunks()
-        {
-            //Populate the frontier with chunks within the render distance of the player chunk
-            for (int x = -renderDistance; x <= renderDistance; x++)
-            {
-                for (int y = -renderDistance; y <= renderDistance; y++)
-                {
-                    Vector2Int chunk = new Vector2Int(playerChunk.x + x, playerChunk.y + y);
-                    if (!visited.Contains(chunk) && IsInRenderDistance(chunk))
-                    {
-                        frontier.Add(chunk);
-                    }
-                }
-            }
-        }*/
-
-
     //Accessors
     public uint GetChunkSize() => subCubeSize;
     public uint GetChunkHeight() => subCubesPerChunk * subCubeSize;
@@ -255,6 +246,13 @@ public class ChunkMananger : NetworkBehaviour
     public float GetSpacing() => cubeSpacing;
     public float GetStepHeight() => stepHeightAngle;
     private void SetSeed(float newSeed) => seed.Value = newSeed;
+
+    public MarchingAlgorithm GetMarchingAlgorithm(Vector2Int chunk, int subChunk)
+    {
+        string name = GetChunkName(chunk);
+        GameObject chunkObj = GameObject.Find(name);
+        return chunkObj.transform.GetChild(subChunk).GetComponent<MarchingAlgorithm>();
+    }
 
 }
 
