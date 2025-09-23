@@ -83,6 +83,7 @@ public class PlayerManager : NetworkBehaviour
     [SerializeField] private Transform lookAtPoint;
     [SerializeField] private LayerMask aimLayers;
     [SerializeField] private Quaternion idealHandRot;
+    [SerializeField] private Transform movementTrails;
     float maxLookDistance = 100f;
     float heightOffset = 1.0f;
     private Transform currentSlash;
@@ -175,6 +176,12 @@ public class PlayerManager : NetworkBehaviour
         DashCheck();
         CameraScroll();
         UpdateSwing();
+
+        if(rb.linearVelocity.magnitude >= 1f)
+            movementTrails.gameObject.SetActive(true);
+        else
+            movementTrails.gameObject.SetActive(false);
+
 
         Interact = interact.WasPressedThisFrame();
 
@@ -298,6 +305,7 @@ public class PlayerManager : NetworkBehaviour
         if(sprint.WasPressedThisFrame() && canDash)
         {
             canDash = false;
+
             anim.SetBool("IsIdleLong", false);
             lastWaitTime = Time.time;
             Invoke("CanDash", dashResetTime);
