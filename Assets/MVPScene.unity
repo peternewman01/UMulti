@@ -4309,7 +4309,7 @@ MonoBehaviour:
   RecenteringTarget: 2
   HorizontalAxis:
     Value: 0
-    Center: 17.045563
+    Center: 54.26642
     Range: {x: -180, y: 180}
     Wrap: 1
     Recentering:
