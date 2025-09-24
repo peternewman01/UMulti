@@ -5846,7 +5846,7 @@ MonoBehaviour:
   RopeTops: {fileID: 3581717221549455503}
   ropeTopsSpeed: 20
   ropeMaterial: {fileID: -876546973899608171, guid: 783ca800291d60b4c9fadaad2890ffd6, type: 3}
-  ropeWidth: 0.05
+  ropeWidth: 0.01
 --- !u!114 &2675783541006157575
 MonoBehaviour:
   m_ObjectHideFlags: 0
