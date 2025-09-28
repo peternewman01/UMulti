@@ -60,7 +60,7 @@ public class PlayerObjectInteract : MonoBehaviour
 
         if (playerManager.Interact)
         {
-            if (highlighted.TryGetComponent<Object>(out var o))
+            if (highlighted.TryGetComponent<Entity>(out var o))
             {
                 o.Invintory = this.GetComponent<Invintory>();
                 o.Interact();
@@ -71,7 +71,7 @@ public class PlayerObjectInteract : MonoBehaviour
 
     private void OnTriggerEnter(Collider col)
     {
-        Object obj = col.GetComponent<Object>();
+        Entity obj = col.GetComponent<Entity>();
         if (obj)
         {
             Renderer r = col.GetComponent<Renderer>();
@@ -84,7 +84,7 @@ public class PlayerObjectInteract : MonoBehaviour
 
     private void OnTriggerExit(Collider col)
     {
-        Object obj = col.GetComponent<Object>();
+        Entity obj = col.GetComponent<Entity>();
         if (obj)
         {
             Renderer r = col.GetComponent<Renderer>();

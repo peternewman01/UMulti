@@ -5,7 +5,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public abstract class Entity : NetworkBehaviour
+public abstract class HurtableEntity : Entity
 {
     //[SerializeField] private int hp;
     [SerializeField] private NetworkVariable<int> hp = new NetworkVariable<int>(0, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
@@ -15,7 +15,7 @@ public abstract class Entity : NetworkBehaviour
     public event Action OnDeath;
 
     public bool activate = true;
-    protected Entity pointEntity;
+    protected HurtableEntity pointEntity;
     protected List<Entity> owned = new List<Entity>();
 
     public int Health
@@ -42,7 +42,7 @@ public abstract class Entity : NetworkBehaviour
                 if (activate)
                 {
                     hp.Value = value;
-                    foreach (Entity e in owned)
+                    foreach (HurtableEntity e in owned)
                     {
                         e.Health = value;
                     }
@@ -60,7 +60,7 @@ public abstract class Entity : NetworkBehaviour
 
     void Start()
     {
-        foreach (var entity in GetComponents<Entity>())
+        foreach (var entity in GetComponents<HurtableEntity>())
         {
             if (entity != this && activate)
             {

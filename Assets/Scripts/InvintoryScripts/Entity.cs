@@ -7,28 +7,27 @@ using UnityEngine;
 using UnityEngine.UI;
 
 [RequireComponent(typeof(NetworkObject))]
-public abstract class Object : NetworkBehaviour
+public abstract class Entity : NetworkBehaviour
 {
-    public int objectID;
-    public string objectName;
-    public Invintory Invintory;
+    private int objectID;
+    private string objectName;
     [SerializeField] protected bool playerInArea = false;
 
     public Sprite objectSprite;
 
-    public Object() { }
+    public Entity() { }
 
     public void pickup(Invintory invintory)
     {
-        invintory.AddObject(this, 1);
+        invintory.AddItem(objectID, 1);
         Destroy(gameObject);
     }
 
-    public virtual void Interact() { }
+    public abstract void Interact();
 
     private void Awake()
     {
-        Type baseType = typeof(Object);
+        Type baseType = typeof(Entity);
         var subTypes = Assembly.GetAssembly(baseType).GetTypes()
             .Where(t => t.IsClass && !t.IsAbstract && t.IsSubclassOf(baseType));
         

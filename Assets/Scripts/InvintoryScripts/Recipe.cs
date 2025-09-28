@@ -3,81 +3,42 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-[Serializable]
-public class Recipe
+public class RecipeData : ScriptableObject
 {
-    public Invintory targetInvintory;
+    [SerializeField] private ItemData[] requiredItems;
+    [SerializeField] private ItemData outputItemData;
 
-    public List<(int, int)> recipe = new List<(int, int)>() { };
-    public Object target;
-    public Table table;
-    private Dictionary<int, int> holding = new Dictionary<int, int>() { };
-
-
-    public void TryCraftInvintory()
+    public bool CanInventoryCraft(Invintory inventory)
     {
-        bool canCraft = true;
-
-        foreach (var item in recipe)
+        foreach (ItemData item in requiredItems)
         {
-            if (!targetInvintory.Has(item.Item1, item.Item2))
-            {
-                canCraft = false;
-            }
+            if (inventory.Has(item)) continue;
+            return false;
         }
 
-        if(canCraft)
-        {
-            foreach (var item in recipe)
-            {
-                targetInvintory.RemoveObject(item.Item1, item.Item2);
-            }
-
-            if (target != null)
-            {
-                targetInvintory.AddObject(target, 1);
-
-                Debug.Log("you crafted a " +  target.getName());
-            }
-
-        }
-        else
-        {
-            Debug.Log("can't craft a " + target.getName());
-        }
+        return true;
     }
 
-    public bool TryCraftTotems()
+    public bool TryCraftItemFromInventory(Invintory inventory)
     {
-        foreach (KeyValuePair<int, int> item in table.holding)
+        if (!CanInventoryCraft(inventory)) return false;
+
+        foreach (ItemData item in requiredItems)
         {
-            if(holding.ContainsKey(item.Key))
-            {
-                holding[item.Key] += item.Value;
-            }
-            else
-            {
-                holding.Add(item.Key, item.Value);
-            }
+            inventory.RemoveItem(item);
         }
 
-        bool canCraft = true;
+        inventory.AddItem(outputItemData);
+        return true;
+    }
 
-        foreach (var item in recipe)
+    public void CraftItemFromInventory(Invintory inventory)
+    {
+        foreach (ItemData item in requiredItems)
         {
-            if (holding.ContainsKey(item.Item1))
-            {
-                if (holding[item.Item1] < item.Item2)
-                {
-                    canCraft = false;
-                }
-            }
-            else
-            {
-                canCraft = false;
-            }
+            inventory.RemoveItem(item);
         }
 
-        return canCraft;
+        inventory.AddItem(outputItemData);
     }
 }

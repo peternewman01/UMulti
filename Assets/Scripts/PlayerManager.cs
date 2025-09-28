@@ -172,7 +172,6 @@ public class PlayerManager : NetworkBehaviour
         //if (weaponCollider == null)
         //    Debug.Log(weapon.transform.GetChild(2).name);
         controlPanel.invintory = inv;
-        inv.ui = controlPanel;
         controlPanel.gameObject.SetActive(false);
 
         Invoke("SpawningRaycast", 0.2f);

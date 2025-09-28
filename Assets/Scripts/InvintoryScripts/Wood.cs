@@ -1,7 +1,7 @@
 using UnityEngine;
 
 
-public class Wood : Object
+public class Wood : Entity
 {
     public static int ObjectID = -1;
     public static string ObjectName = "";

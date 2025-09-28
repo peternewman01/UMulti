@@ -30,7 +30,7 @@ public class ControlPanel : MonoBehaviour
         openSlots.Last().ui = this;
     }
 
-    public bool AddObjects(Object obj, int count)
+    public bool AddObjects(Entity obj, int count)
     {
         if(slotSpawnCount - targetSlot < count)
         {
@@ -48,7 +48,7 @@ public class ControlPanel : MonoBehaviour
         return true;
     }
 
-    public bool RemoveObjects(Object obj, int count)
+    public bool RemoveObjects(Entity obj, int count)
     {
         int currentlyFound = 0;
         foreach(Slot slot in filledSlots)

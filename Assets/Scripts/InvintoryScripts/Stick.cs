@@ -1,7 +1,7 @@
 using UnityEngine;
 
 
-public class Stick : Object
+public class Stick : Entity
 {
     public static int ObjectID = -1;
     public static string ObjectName = "";

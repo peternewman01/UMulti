@@ -1,7 +1,7 @@
 using Unity.Netcode;
 using UnityEngine;
 
-public class Totem : Object
+public class Totem : Entity
 {
     public static int ObjectID = -1;
     public static string ObjectName = "";
@@ -43,7 +43,7 @@ public class Totem : Object
         var netObj = spawnedObj.GetComponent<NetworkObject>();
         netObj.Spawn(true);
 
-        table.addTotemHolding(spawnedObj.GetComponent<Object>());
+        table.addTotemHolding(spawnedObj.GetComponent<Entity>());
         holding = spawnedObj.gameObject;
     }
 
@@ -69,7 +69,7 @@ public class Totem : Object
             Destroy(holding);
         }
 
-        table.removeTotemHolding(holding.GetComponent<Object>());
+        table.removeTotemHolding(holding.GetComponent<Entity>());
     }
 }
 
