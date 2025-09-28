@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 0}
+  m_Name: Rocks
+  m_EditorClassIdentifier: Assembly-CSharp::Resource
+  weightedPrefabs:
+  - prefab: {fileID: 8123802821930704265, guid: 0b6405c8a4e9ab24a8948490bc5d66c9, type: 3}
+    weight: 50
+  - prefab: {fileID: 1624423753916669083, guid: 1df31333d36453c4281b4d9387c7255d, type: 3}
+    weight: 25
+  - prefab: {fileID: 7733100026862656815, guid: ceaa6797543faef4391494a12cdbb35f, type: 3}
+    weight: 15
+  isNetworkObject: 0
+  spawningData:
+    density: 0.15
+    posOffset: 0.15
+    randomness: 0.2
+    maxSteepness: 90
+    minSteepness: 0
+    maxHeight: 1000
+    minHeight: -1000
