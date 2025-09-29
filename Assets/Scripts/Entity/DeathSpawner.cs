@@ -2,7 +2,7 @@ using Unity.Netcode;
 using UnityEngine;
 using static UnityEngine.UI.Image;
 
-public class DeathSpawner : Entity
+public class DeathSpawner : HurtableEntity
 {
     [SerializeField] private GameObject obj;
     [SerializeField] private int count;

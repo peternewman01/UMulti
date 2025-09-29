@@ -1250,7 +1250,10 @@ PrefabInstance:
     - {fileID: 3338161771502584737, guid: b191ecf0104d105419adf3b5696031d5, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 5491528118600474388, guid: b191ecf0104d105419adf3b5696031d5, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 274558605}
   m_SourcePrefab: {fileID: 100100000, guid: b191ecf0104d105419adf3b5696031d5, type: 3}
 --- !u!114 &274558600 stripped
 MonoBehaviour:
@@ -1285,11 +1288,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 50addbc28a4d25246b534e357e62d41f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!23 &274558604 stripped
-MeshRenderer:
-  m_CorrespondingSourceObject: {fileID: 1576220381721445606, guid: b191ecf0104d105419adf3b5696031d5, type: 3}
+--- !u!1 &274558603 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5491528118600474388, guid: b191ecf0104d105419adf3b5696031d5, type: 3}
   m_PrefabInstance: {fileID: 274558599}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &274558605
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 274558603}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 79ade3c0cca16f143810c1a75ddb0e4f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  size: 3
+  availableRecipes:
+  - {fileID: 11400000, guid: f08fc8366671d28489bab58c8b05eb79, type: 2}
 --- !u!1 &289628918
 GameObject:
   m_ObjectHideFlags: 0
@@ -2748,6 +2766,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 734928574}
+  - component: {fileID: 734928575}
   m_Layer: 0
   m_Name: ItemManager
   m_TagString: Untagged
@@ -2770,6 +2789,22 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &734928575
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 734928573}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c4a7b9eb0dd20694db1e32edd6a45f2c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  itemID:
+  - {fileID: 11400000, guid: ba63179f12be07446a2c73012b21c22b, type: 2}
+  - {fileID: 11400000, guid: f395d38b1cd4d2b47b4715db359d7d09, type: 2}
+  - {fileID: 11400000, guid: 67cfa0451cbe48b4daa8aabfb738b2ab, type: 2}
 --- !u!4 &742658269
 Transform:
   m_ObjectHideFlags: 0
@@ -5711,62 +5746,13 @@ MonoBehaviour:
   m_IsGlobal: 1
   fadeRadius: 0
   priority: 0
-  customPasses:
-  - rid: 1714194925185401092
-  - rid: 1714194925185401098
+  customPasses: []
   injectionPoint: 1
   m_TargetCamera: {fileID: 0}
   useTargetCamera: 0
   references:
     version: 2
-    RefIds:
-    - rid: 1714194925185401092
-      type: {class: CleanOutlineCustomPass, ns: CR, asm: Assembly-CSharp}
-      data:
-        m_Name: BlackOutline
-        enabled: 1
-        targetColorBuffer: 0
-        targetDepthBuffer: 0
-        clearFlags: 0
-        passFoldout: 0
-        m_Version: 0
-        m_DrawType: 0
-        m_LayerMask:
-          serializedVersion: 2
-          m_Bits: 512
-        m_DrawRenderers:
-        - {fileID: 274558604}
-        m_OutlineWidth: 1
-        m_NormalExclude: 0
-        m_OutlineColor: {r: 0, g: 0, b: 0, a: 1}
-        m_FullColorByDistance: 1
-        m_FullColorDistanceNear: 20
-        m_FullColorDistanceFar: 40
-        m_BlockType: 0
-        m_BlockColor: {r: 0.5, g: 0.5, b: 0.5, a: 0.5}
-    - rid: 1714194925185401098
-      type: {class: CleanOutlineCustomPass, ns: CR, asm: Assembly-CSharp}
-      data:
-        m_Name: GoldOutline
-        enabled: 1
-        targetColorBuffer: 0
-        targetDepthBuffer: 0
-        clearFlags: 0
-        passFoldout: 0
-        m_Version: 0
-        m_DrawType: 1
-        m_LayerMask:
-          serializedVersion: 2
-          m_Bits: 0
-        m_DrawRenderers: []
-        m_OutlineWidth: 1
-        m_NormalExclude: 0
-        m_OutlineColor: {r: 2.9960785, g: 2.0995681, b: 0, a: 1}
-        m_FullColorByDistance: 1
-        m_FullColorDistanceNear: 20
-        m_FullColorDistanceFar: 40
-        m_BlockType: 0
-        m_BlockColor: {r: 0.5, g: 0.5, b: 0.5, a: 0.5}
+    RefIds: []
 --- !u!4 &1417352570
 Transform:
   m_ObjectHideFlags: 0
@@ -8974,18 +8960,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
-  objectID: 0
-  objectName: 
-  Invintory: {fileID: 0}
-  playerInArea: 0
-  objectSprite: {fileID: 0}
-  TempRecipe:
-    targetInvintory: {fileID: 0}
-    target: {fileID: 0}
-    table: {fileID: 0}
-  tempTargetPrefab: {fileID: 9125502469920471631, guid: bfc9b1f46214f0a4da2e58088ae34812, type: 3}
-  totems: []
-  spawnPos: {fileID: 0}
+  chosenRecipeIndex: 0
 --- !u!135 &2055419005
 SphereCollider:
   m_ObjectHideFlags: 0

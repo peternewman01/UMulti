@@ -658,4 +658,6 @@ public class PlayerManager : NetworkBehaviour
     //}
 
     private void CanDash() { canDash = true; }
+
+    public Invintory GetInventory() => inv;
 }

@@ -30,7 +30,7 @@ public class ControlPanel : MonoBehaviour
         openSlots.Last().ui = this;
     }
 
-    public bool AddObjects(Entity obj, int count)
+    public bool AddObjects(Item obj, int count)
     {
         if(slotSpawnCount - targetSlot < count)
         {
@@ -39,7 +39,7 @@ public class ControlPanel : MonoBehaviour
 
         for(int i = 0; i < count; i++)
         {
-            openSlots.First().SetItem(obj.objectSprite, obj.objectName, obj.objectID);
+            openSlots.First().SetItem(obj.GetSprite(), obj.name, ItemManager.GetID(obj));
             filledSlots.Add(openSlots.First());
             openSlots.Remove(openSlots.First());    
             targetSlot++;
@@ -53,7 +53,7 @@ public class ControlPanel : MonoBehaviour
         int currentlyFound = 0;
         foreach(Slot slot in filledSlots)
         {
-            if(slot.itemText.text == obj.objectName)
+            if(slot.itemText.text == obj.name)
             {
                 slot.ResetItem();
                 currentlyFound++;

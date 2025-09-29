@@ -8,7 +8,7 @@ using System.Collections;
 
 
 [RequireComponent(typeof(PlayerInput))]
-public class Table : Entity
+public class Table : Interactable
 {
     CraftingInventory craftingRef;
     public int chosenRecipeIndex = 0;
@@ -17,7 +17,7 @@ public class Table : Entity
     {
         craftingRef = GetComponent<CraftingInventory>();
     }
-    public override void Interact()
+    public override void Interact(PlayerManager interacter)
     {
         RecipeData recipe = craftingRef.GetRecipe(chosenRecipeIndex);
 

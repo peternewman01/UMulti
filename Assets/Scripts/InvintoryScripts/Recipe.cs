@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
+[CreateAssetMenu(fileName = "new recipe", menuName = "Item/New Recipe")]
 public class RecipeData : ScriptableObject
 {
     [SerializeField] private ItemData[] requiredItems;
@@ -23,12 +24,7 @@ public class RecipeData : ScriptableObject
     {
         if (!CanInventoryCraft(inventory)) return false;
 
-        foreach (ItemData item in requiredItems)
-        {
-            inventory.RemoveItem(item);
-        }
-
-        inventory.AddItem(outputItemData);
+        CraftItemFromInventory(inventory);
         return true;
     }
 

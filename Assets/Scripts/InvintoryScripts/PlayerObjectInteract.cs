@@ -60,10 +60,9 @@ public class PlayerObjectInteract : MonoBehaviour
 
         if (playerManager.Interact)
         {
-            if (highlighted.TryGetComponent<Entity>(out var o))
+            if (highlighted.TryGetComponent<Interactable>(out var o))
             {
-                o.Invintory = this.GetComponent<Invintory>();
-                o.Interact();
+                o.Interact(playerManager);
             }
         }
 

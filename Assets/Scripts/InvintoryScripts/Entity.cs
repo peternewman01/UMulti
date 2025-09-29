@@ -7,44 +7,22 @@ using UnityEngine;
 using UnityEngine.UI;
 
 [RequireComponent(typeof(NetworkObject))]
-public abstract class Entity : NetworkBehaviour
+public class Entity : NetworkBehaviour
 {
-    private int objectID;
-    private string objectName;
-    [SerializeField] protected bool playerInArea = false;
+    //TODO: Spawn / despawn entity (networking)
+}
 
-    public Sprite objectSprite;
+public abstract class Interactable : Entity
+{
+    public abstract void Interact(PlayerManager interacter);
+}
 
-    public Entity() { }
+public class ItemEntity : Interactable
+{
+    public Item item;
 
-    public void pickup(Invintory invintory)
+    public override void Interact(PlayerManager interacter)
     {
-        invintory.AddItem(objectID, 1);
-        Destroy(gameObject);
+        interacter.GetInventory().AddItem(new ItemData(item, 1));
     }
-
-    public abstract void Interact();
-
-    private void Awake()
-    {
-        Type baseType = typeof(Entity);
-        var subTypes = Assembly.GetAssembly(baseType).GetTypes()
-            .Where(t => t.IsClass && !t.IsAbstract && t.IsSubclassOf(baseType));
-        
-        int id = 0;
-        foreach (Type type in subTypes)
-        {
-            if(this.GetType() == type)
-            {
-                objectID = id;
-                objectName = type.Name;
-            }
-            id++;
-        }
-
-        objectSprite = Resources.Load<Sprite>("ObjectThumbnails/BasicThumbnail");
-    }
-
-    public string getName() { return objectName; }
-    public int getID() { return objectID; }
 }
