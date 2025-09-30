@@ -19,7 +19,6 @@ public class HotbarSelector : MonoBehaviour
     {
         CacheOriginalPositions();
         ResetAllSlots();
-        SelectSlot(0);
     }
 
     void Update()
@@ -37,16 +36,55 @@ public class HotbarSelector : MonoBehaviour
         }
     }
 
-    private void CheckInput()
+    private void CheckInput() //note: programmers please fix my horrible designer code please
     {
-        for (int i = 0; i < 10; i++)
+        int slotIndex = -1;
+
+        if (Input.GetKeyDown(KeyCode.Alpha1))
         {
-            bool pressed = (i < 9) ? Input.GetKeyDown(KeyCode.Alpha1 + i) : Input.GetKeyDown(KeyCode.Alpha0);
-            if (pressed)
-            {
-                SelectSlot(i);
-                break;
-            }
+            slotIndex = 0;
+        }
+        else if (Input.GetKeyDown(KeyCode.Alpha2))
+        {
+            slotIndex = 1;
+        }
+        else if (Input.GetKeyDown(KeyCode.Alpha3))
+        {
+            slotIndex = 2;
+        }
+        else if (Input.GetKeyDown(KeyCode.Alpha4))
+        {
+            slotIndex = 3;
+        }
+        else if (Input.GetKeyDown(KeyCode.Alpha5))
+        {
+            slotIndex = 4;
+        }
+        else if (Input.GetKeyDown(KeyCode.Alpha6))
+        {
+            slotIndex = 5;
+        }
+        else if (Input.GetKeyDown(KeyCode.Alpha7))
+        {
+            slotIndex = 6;
+        }
+        else if (Input.GetKeyDown(KeyCode.Alpha8))
+        {
+            slotIndex = 7;
+        }
+        else if (Input.GetKeyDown(KeyCode.Alpha9))
+        {
+            slotIndex = 8;
+        }
+        else if (Input.GetKeyDown(KeyCode.Alpha0))
+        {
+            slotIndex = 9;
+        }
+
+        // Only call SelectSlot if we found something
+        if (slotIndex != -1)
+        {
+            SelectSlot(slotIndex);
         }
     }
 
