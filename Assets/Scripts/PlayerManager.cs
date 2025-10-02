@@ -97,6 +97,11 @@ public class PlayerManager : NetworkBehaviour
     private float swingTimer = 0f;
     private Quaternion swingStart;
     private Quaternion swingEnd;
+    private Vector3 initialWeaponLocalPos;
+    private Quaternion initialWeaponLocalRot;
+    private float lastSwingEndTime;
+    [SerializeField] private float resetDelay = 0.5f;
+    [SerializeField] private float resetSpeed = 5f;
 
     [SerializeField] float scrollSensitivity = 10f;
     float cameraDistance;
@@ -139,6 +144,8 @@ public class PlayerManager : NetworkBehaviour
     public override void OnNetworkSpawn()
     {
         ropeRestingLocalPos = RopeTops.localPosition;
+        initialWeaponLocalPos = weapon.localPosition;
+        initialWeaponLocalRot = weapon.localRotation;
         MainCanvas = FindFirstObjectByType<Canvas>();
         Cursor.lockState = CursorLockMode.None;
         Debug.Log("Player added!");
@@ -209,6 +216,7 @@ public class PlayerManager : NetworkBehaviour
         JumpCheck();
         DashCheck();
         CameraScroll();
+        ResetWeaponPositionIfIdle();
         UpdateSwing();
 
         if(rb.linearVelocity.magnitude >= 1f)
@@ -230,6 +238,7 @@ public class PlayerManager : NetworkBehaviour
             lookAtPoint.position = cameraTransform.position + cameraTransform.forward * maxLookDistance;
         }
 
+        //for rope physics and line renderer
         for (int i = 0; i < ropeLines.Count; i++)
         {
             var segments = ropeSegments[i];
@@ -468,10 +477,8 @@ public class PlayerManager : NetworkBehaviour
         swingTimer += Time.deltaTime;
         float t = swingTimer / swingDuration;
 
-        //interpolate weapon rotation
         weapon.rotation = Quaternion.Slerp(swingStart, swingEnd, t);
 
-        //keep weapon at a radius from player�s origin
         float distance = .2f;
         Vector3 dir = (weapon.rotation * Vector3.forward).normalized;
         weapon.position = transform.position + Vector3.up * heightOffset + dir * distance;
@@ -479,12 +486,22 @@ public class PlayerManager : NetworkBehaviour
 
         if (t >= .5f)
         {
-            //weapon.rotation = Quaternion.Slerp(swingEnd, idealHandRot, t); //not working rn, will try something else tomorrow
             weaponTrail.Clear();
             weaponTrail.enabled = false;
             weaponCollider.enabled = false;
-            print("weapon trail and collider disabled");
             isSwinging = false;
+            lastSwingEndTime = Time.time;
+        }
+    }
+
+    private void ResetWeaponPositionIfIdle()
+    {
+        if (weapon == null) return;
+
+        if (!isSwinging && Time.time - lastSwingEndTime >= resetDelay)
+        {
+            weapon.localPosition = Vector3.Lerp(weapon.localPosition, initialWeaponLocalPos, Time.deltaTime * resetSpeed);
+            weapon.localRotation = Quaternion.Slerp(weapon.localRotation, initialWeaponLocalRot, Time.deltaTime * resetSpeed);
         }
     }
 
