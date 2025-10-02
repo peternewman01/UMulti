@@ -1,0 +1,8 @@
+//NETWORK-TODO -- Transfer old networking to NetcodeConnector
+//REVIEW-author -- someone besides author review
+//COMMENT-TODO -- code needs to be commented
+//BUG -- suspected bug in code section
+//DC -- code segment may need to be decoupled
+//DC-Nope -- code segment was unable to be decoupled
+//EX -- segment might not need to have the access level it does
+//TEST -- code should be updated before build

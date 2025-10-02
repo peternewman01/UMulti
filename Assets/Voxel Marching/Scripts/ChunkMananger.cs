@@ -119,6 +119,7 @@ public class ChunkMananger : NetworkBehaviour
         }
     }
 
+    //NETWORK-TODO 
     [ServerRpc()]
     private void StartChunkLoadingServerRpc()
     {
@@ -256,32 +257,3 @@ public class ChunkMananger : NetworkBehaviour
 
 }
 
-public class ServerFunctions : NetworkManager
-{
-    [ServerRpc(RequireOwnership = false)]
-    public static void SpawnObjectServerRpc(MonoBehaviour prefab, out GameObject spawned)
-    {
-        if (prefab.GetComponent<NetworkObject>() == null) spawned = null;
-
-        spawned = Instantiate(prefab.gameObject);
-        spawned.GetComponent<NetworkObject>().Spawn();
-    }
-
-    [ServerRpc(RequireOwnership = false)]
-    public static void SpawnObjectServerRpc(GameObject prefab, out GameObject spawned)
-    {
-        if (prefab.GetComponent<NetworkObject>() == null) spawned = null;
-
-        spawned = Instantiate(prefab);
-        spawned.GetComponent<NetworkObject>().Spawn();
-    }
-
-    [ServerRpc(RequireOwnership = false)]
-    public static void SpawnObjectServerRpc(GameObject prefab)
-    {
-        if (prefab.GetComponent<NetworkObject>() == null) return;
-
-        GameObject spawned = Instantiate(prefab);
-        spawned.GetComponent<NetworkObject>().Spawn();
-    }
-}

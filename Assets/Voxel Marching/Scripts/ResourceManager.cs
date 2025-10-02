@@ -68,7 +68,7 @@ public class Resource : ScriptableObject
                 GameObject prefab = GetRandomPrefab();
                 if (isNetworkObject)
                 {
-                    ServerFunctions.SpawnObjectServerRpc(prefab, out spawned);
+                    NetcodeConnector.SpawnObjectServerRpc(prefab.GetComponent<NetworkObject>(), out spawned);
                 }
                 else
                 {
