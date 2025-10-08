@@ -2,72 +2,75 @@ using System.Collections.Generic;
 using System.Threading;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Splines;
 
 public class Invintory : MonoBehaviour
 {
-    public Dictionary<int, Unit> Stuff = new Dictionary<int, Unit>();
-    public ControlPanel ui;
+    public Dictionary<int, int> Stuff = new Dictionary<int, int>();
+    public uint size;
 
-    public void AddObject<T>(T obj, int count) where T : Object
+    public bool AddItem(int id, int count)
     {
-        if(!ui.AddObjects(obj, count))
-        {
-            return;
-        }
-
-        if (Stuff.ContainsKey(obj.getID()))
-        {
-            Stuff[obj.getID()].count += count;
-        }
-        else
-        {
-            Stuff.Add(obj.getID(), new Unit(obj, count));
-        }
-
-        Debug.Log("Player has " + Stuff[obj.getID()].count + " " + Stuff[obj.getID()].obj.getName());
-    }
-
-    public void RemoveObject<T>(T obj, int count) where T : Object
-    {
-        ui.RemoveObjects(obj, count);
-
-        if (Stuff.ContainsKey(obj.objectID))
-        {
-            Stuff[obj.objectID].count -= count;
-            if (Stuff[obj.objectID].count <= 0)
-            {
-                Stuff.Remove(obj.objectID);
-            }
-        }
-    }
-
-    public void RemoveObject(int id, int count)
-    {
-        ui.RemoveObjects(id, count);
+        if (Stuff.Count >= size) return false;
+        if(Stuff.TryAdd(id, count)) return true;
 
         if (Stuff.ContainsKey(id))
         {
-            Stuff[id].count -= count;
-            if (Stuff[id].count <= 0)
-            {
-                Stuff.Remove(id);
-            }
+            Stuff[id] += count;
+            return true;
         }
+
+        return false;
     }
 
-    public bool Has<T>(T obj, int count) where T : Object
+    public virtual bool AddItem(ItemData data)
     {
-        return Has(obj.getID(), count);
+        return AddItem(ItemManager.GetID(data.item), data.count);
+    }
+
+    public bool RemoveItem(int id, int count)
+    {
+        if(Stuff.ContainsKey(id))
+        {
+            if (Stuff[id] < count)
+                return false;
+
+            Stuff[id] -= count;
+
+            if (Stuff[id] == 0)
+                Stuff.Remove(id);
+
+            return true;
+        }
+
+        return false;
+    }
+
+    public virtual bool RemoveItem(ItemData data)
+    {
+        return RemoveItem(ItemManager.GetID(data.item), data.count);
+    }
+    public int RemoveAllOfItem(int id)
+    {
+        Stuff.Remove(id, out int value);
+        return value;
+    }
+
+    public virtual int RemoveAllOfItem(Item item)
+    {
+        return RemoveAllOfItem(ItemManager.GetID(item));
+    }
+
+    public virtual bool Has(ItemData data)
+    {
+        return Has(ItemManager.GetID(data.item), data.count);
     }
 
     public bool Has(int id, int count)
     {
-        if(!Stuff.ContainsKey(id))
-            return false;
+        if(Stuff.ContainsKey(id) && Stuff[id] < count)
+            return true;
 
-        if(Stuff[id].count < count)
-            return false;
-
-        return true;
+        return false;
     }
 }

@@ -16,7 +16,7 @@ public class StickHolding : MonoBehaviour
 
     private void Update()
     {
-        if(holdingSlot.isFilled() != wasHolding)
+/*        if(holdingSlot.isFilled() != wasHolding)
         {
             wasHolding = holdingSlot.isFilled();
 
@@ -30,6 +30,6 @@ public class StickHolding : MonoBehaviour
                 canHit = false;
                 stick.SetActive(false);
             }
-        }
+        }*/
     }
 }

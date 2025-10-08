@@ -8,7 +8,7 @@ using UnityEngine.AI;
 using static UnityEngine.UI.Image;
 
 [RequireComponent(typeof(NavMeshAgent))]
-public class NavEntity : Entity
+public class NavEntity : Entity, INavEntity
 {
     public NavMeshAgent agent;
     public Rigidbody rb;
@@ -32,7 +32,8 @@ public class NavEntity : Entity
 
     private void Update()
     {
-        transform.forward = agent.velocity;
+        if (agent.velocity.magnitude != 0)
+            transform.forward = agent.velocity;
 
         if (!wandering && !waiting)
         {
@@ -59,7 +60,7 @@ public class NavEntity : Entity
         bool hold = NavMesh.SamplePosition(wanderTarget, out NavMeshHit hit, wanderRadius, NavMesh.AllAreas);
         wanderTarget = hold ? hit.position : transform.position;
 
-        if(!agent.SetDestination(wanderTarget))
+        if (!agent.SetDestination(wanderTarget))
         {
             EnsureNavMeshSurface();
             agent.SetDestination(wanderTarget);

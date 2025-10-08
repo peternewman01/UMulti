@@ -1,8 +1,9 @@
 using Unity.Netcode;
 using UnityEngine;
 
-public class Totem : Object
+public class Totem : Interactable
 {
+    public Item neededItem;
     public static int ObjectID = -1;
     public static string ObjectName = "";
     private Table table;
@@ -12,14 +13,13 @@ public class Totem : Object
 
     private bool isHolding = false;
 
-
-    public override void Interact()
+    //TODO: grab players held item instead of trying to grab a specific item
+    public override void Interact(PlayerManager interacter)
     {
-        if (Invintory.Has(Wood.ObjectID, 1))
+        if (interacter.GetInventory().Has(ObjectID, 1))
         {
             RequestSpawnServerRpc(spawnPos.position);
-
-            Invintory.RemoveObject(Wood.ObjectID, 1);
+            interacter.GetInventory().RemoveItem(ObjectID, 1);
         }
     }
 
@@ -27,8 +27,7 @@ public class Totem : Object
     {
         if (ObjectID == -1)
         {
-            ObjectID = objectID;
-            ObjectName = objectName;
+            ObjectID = ItemManager.GetID(neededItem);
         }
 
         table = GetComponentInParent<Table>();
@@ -43,7 +42,7 @@ public class Totem : Object
         var netObj = spawnedObj.GetComponent<NetworkObject>();
         netObj.Spawn(true);
 
-        table.addTotemHolding(spawnedObj.GetComponent<Object>());
+        table.addTotemHolding(spawnedObj.GetComponent<Entity>());
         holding = spawnedObj.gameObject;
     }
 
@@ -69,7 +68,7 @@ public class Totem : Object
             Destroy(holding);
         }
 
-        table.removeTotemHolding(holding.GetComponent<Object>());
+        table.removeTotemHolding(holding.GetComponent<Entity>());
     }
 }
 

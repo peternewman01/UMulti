@@ -8,62 +8,37 @@ using System.Collections;
 
 
 [RequireComponent(typeof(PlayerInput))]
-public class Table : Object
+public class Table : Interactable
 {
-    public static int ObjectID = -1;
-    public static string ObjectName = "";
+    CraftingInventory craftingRef;
+    public int chosenRecipeIndex = 0;
 
-    public Recipe TempRecipe;
-    public Transform tempTargetPrefab;
-
-    public Dictionary<int, int> holding = new Dictionary<int, int>();
-    [SerializeField] private List<Totem> totems = new List<Totem>();
-    [SerializeField] private Transform spawnPos;
-
-    private void Start()
+    private void Awake()
     {
-        if (ObjectID == -1)
-        {
-            ObjectID = objectID;
-            ObjectName = objectName;
-        }
+        craftingRef = GetComponent<CraftingInventory>();
+    }
+    public override void Interact(PlayerManager interacter)
+    {
+        RecipeData recipe = craftingRef.GetRecipe(chosenRecipeIndex);
 
-        //temp version, will need to figure out recipies with ui
-        Recipe stick = new Recipe();
-        stick.recipe.Add((FindFirstObjectByType<Wood>().objectID, 3));
-
-        stick.target = tempTargetPrefab.GetComponent<Stick>();
-        TempRecipe = stick;
-        TempRecipe.table = this;
+        recipe.TryCraftItemFromInventory(craftingRef);
     }
 
-    public override void Interact()
+    public void addTotemHolding(Entity obj)
     {
-        if (TempRecipe.TryCraftTotems())
-        {
-            foreach (Totem totem in totems)
-            {
-                totem.killHolding();
-            }
-            Invoke("DelaySpawn", 0.1f);
-        }
-    }
-
-    public void addTotemHolding(Object obj)
-    {
-        if (holding.ContainsKey(obj.getID()))
+/*        if (holding.ContainsKey(obj.getID()))
         {
             holding[obj.getID()]++;
         }
         else
         {
             holding.Add(obj.getID(), 1);
-        }
+        }*/
     }
 
-    public void removeTotemHolding(Object obj)
+    public void removeTotemHolding(Entity obj)
     {
-        if (holding.ContainsKey(obj.getID()))
+/*        if (holding.ContainsKey(obj.getID()))
         {
             if(holding[obj.getID()] > 1)
             {
@@ -73,22 +48,22 @@ public class Table : Object
             {
                 holding.Remove(obj.getID());
             }
-        }
+        }*/
     }
 
     private void DelaySpawn()
     {
-        RequestSpawnServerRpc(spawnPos.position);
+/*        RequestSpawnServerRpc(spawnPos.position);*/
     }
 
 
     [ServerRpc()]
     private void RequestSpawnServerRpc(Vector3 spawnPosition)
     {
-        Transform spawnedObj = Instantiate(tempTargetPrefab);
+/*        Transform spawnedObj = Instantiate(tempTargetPrefab);
         spawnedObj.transform.position = spawnPosition;
     
         var netObj = spawnedObj.GetComponent<NetworkObject>();
-        netObj.Spawn(true);
+        netObj.Spawn(true);*/
     }
 }

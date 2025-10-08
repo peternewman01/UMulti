@@ -26,9 +26,10 @@ public abstract class MarchingAlgorithm : NetworkBehaviour
     private float terrainSurface;
     private List<Vector3> vertices = new();
     private List<int> triangles = new();
-    public Action TerrainPopulationComplete;
     public TerrainGeneration generation = null; // Set in the editor
 
+    public Action TerrainPopulationComplete;
+    public Action<Vector3, MarchingAlgorithm> MeshColliderUpdated;
     public override void OnNetworkSpawn()
     {
         base.OnNetworkSpawn();

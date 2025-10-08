@@ -1,9 +1,9 @@
 using UnityEngine;
 
 
-public class Stick : Object
+/*public class Stick : Interactable
 {
-    public static int ObjectID = -1;
+*//*    public static int ObjectID = -1;
     public static string ObjectName = "";
 
     private void Start()
@@ -14,9 +14,10 @@ public class Stick : Object
             ObjectName = objectName;
         }
     }
-    public override void Interact()
+    public override void Interact(PlayerManager interacter)
     {
-        Invintory.AddObject(this, 1);
+        interacter.GetInventory().AddItem(id, 1);
         Destroy(gameObject);
-    }
+    }*//*
 }
+*/

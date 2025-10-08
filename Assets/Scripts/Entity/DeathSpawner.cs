@@ -2,9 +2,9 @@ using Unity.Netcode;
 using UnityEngine;
 using static UnityEngine.UI.Image;
 
-public class DeathSpawner : Entity
+public class DeathSpawner : HurtableEntity
 {
-    [SerializeField] private GameObject obj;
+    [SerializeField] private NetworkObject obj;
     [SerializeField] private int count;
     [SerializeField] private float radius = 1;
     [Range(0f, 1f)] [SerializeField] private float spawnChance = 1;
@@ -49,13 +49,14 @@ public class DeathSpawner : Entity
                 randomSphere.y = 0f;
                 Vector3 pos = spawnPoint + randomSphere;
                 pos.y = spawnPoint.y + 0.8f;
-                RequestSpawnServerRpc(pos);
+                //RequestSpawnServerRpc(pos);
+                NetcodeConnector.SpawnObjectServerRpc(obj, pos);
                 hasSpawned = true;
             }
         }
     }
 
-    [ServerRpc]
+/*    [ServerRpc]
     public void RequestSpawnServerRpc(Vector3 spawnPosition)
     {
         Transform spawnedObj = Instantiate(obj.transform);
@@ -63,5 +64,5 @@ public class DeathSpawner : Entity
 
         var netObj = spawnedObj.GetComponent<NetworkObject>();
         netObj.Spawn(true);
-    }
+    }*/
 }

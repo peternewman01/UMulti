@@ -1,9 +1,9 @@
 using UnityEngine;
 
 
-public class Wood : Object
+/*public class Wood : Entity
 {
-    public static int ObjectID = -1;
+*//*    public static int ObjectID = -1;
     public static string ObjectName = "";
 
     private void Start()
@@ -15,9 +15,9 @@ public class Wood : Object
         }
     }
 
-    public override void Interact()
+    public override void Interact(PlayerObjectInteract interacter)
     {
-        Invintory.AddObject(this, 1);
+        interacter.GetComponent<Invintory>().AddItem(id, 1);
         Destroy(gameObject);
-    }
-}
+    }*//*
+}*/

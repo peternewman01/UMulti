@@ -1,5 +1,7 @@
 using NUnit;
 using System.Collections;
+using System.Collections.Generic;
+using System.Net;
 using Unity.Cinemachine;
 using Unity.Netcode;
 using Unity.VisualScripting;
@@ -83,6 +85,7 @@ public class PlayerManager : NetworkBehaviour
     [SerializeField] private Transform lookAtPoint;
     [SerializeField] private LayerMask aimLayers;
     [SerializeField] private Quaternion idealHandRot;
+    [SerializeField] private Transform movementTrails;
     float maxLookDistance = 100f;
     float heightOffset = 1.0f;
     private Transform currentSlash;
@@ -94,6 +97,11 @@ public class PlayerManager : NetworkBehaviour
     private float swingTimer = 0f;
     private Quaternion swingStart;
     private Quaternion swingEnd;
+    private Vector3 initialWeaponLocalPos;
+    private Quaternion initialWeaponLocalRot;
+    private float lastSwingEndTime;
+    [SerializeField] private float resetDelay = 0.5f;
+    [SerializeField] private float resetSpeed = 5f;
 
     [SerializeField] float scrollSensitivity = 10f;
     float cameraDistance;
@@ -101,6 +109,28 @@ public class PlayerManager : NetworkBehaviour
     [SerializeField] private CinemachineImpulseSource impulseSource; //recoil impulse
 
     public StickHolding holding;
+
+    [Header("Rope Setup")]
+    [SerializeField] private Transform[] ropeStarts;
+    [SerializeField] private Transform[] ropeEnds;
+    [SerializeField] private int segmentsPerRope = 10;
+    [SerializeField] private float segmentScale = 0.1f;
+    [SerializeField] private float springStrength = 100f;
+    [SerializeField] private float springDamping = 5f;
+    [SerializeField] private int splinePoints = 10;
+    [SerializeField] private Transform RopeTops;
+    [SerializeField] private float ropeTopsSpeed;
+
+    [Header("Visuals")]
+    [SerializeField] private Material ropeMaterial;
+    [SerializeField] private float ropeWidth = 0.05f;
+
+    private List<LineRenderer> ropeLines = new List<LineRenderer>();
+    private List<List<Transform>> ropeSegments = new List<List<Transform>>();
+    private List<SpringJoint> startJoints = new List<SpringJoint>();
+    private List<SpringJoint> endJoints = new List<SpringJoint>();
+    private Vector3 ropeRestingLocalPos;
+
     private void OnEnable()
     {
         InputActions.FindActionMap("Player").Enable();
@@ -113,6 +143,9 @@ public class PlayerManager : NetworkBehaviour
 
     public override void OnNetworkSpawn()
     {
+        ropeRestingLocalPos = RopeTops.localPosition;
+        initialWeaponLocalPos = weapon.localPosition;
+        initialWeaponLocalRot = weapon.localRotation;
         MainCanvas = FindFirstObjectByType<Canvas>();
         Cursor.lockState = CursorLockMode.None;
         Debug.Log("Player added!");
@@ -146,7 +179,6 @@ public class PlayerManager : NetworkBehaviour
         //if (weaponCollider == null)
         //    Debug.Log(weapon.transform.GetChild(2).name);
         controlPanel.invintory = inv;
-        inv.ui = controlPanel;
         controlPanel.gameObject.SetActive(false);
 
         Invoke("SpawningRaycast", 0.2f);
@@ -155,6 +187,16 @@ public class PlayerManager : NetworkBehaviour
         holding = GetComponent<StickHolding>();
         holding.holdingSlot = controlPanel.slotHolding;
 
+        if (ropeStarts.Length != ropeEnds.Length)
+        {
+            Debug.LogError("ropeStarts and ropeEnds must have the same length.");
+            return;
+        }
+
+        for (int i = 0; i < ropeStarts.Length; i++)
+        {
+            CreateRope(ropeStarts[i], ropeEnds[i]);
+        }
 
         controlPanel.gameObject.SetActive(false);
         Cursor.lockState = CursorLockMode.Locked;
@@ -174,7 +216,13 @@ public class PlayerManager : NetworkBehaviour
         JumpCheck();
         DashCheck();
         CameraScroll();
+        ResetWeaponPositionIfIdle();
         UpdateSwing();
+
+        if(rb.linearVelocity.magnitude >= 1f)
+            movementTrails.gameObject.SetActive(true);
+        else
+            movementTrails.gameObject.SetActive(false);
 
         Interact = interact.WasPressedThisFrame();
 
@@ -188,6 +236,50 @@ public class PlayerManager : NetworkBehaviour
         else
         {
             lookAtPoint.position = cameraTransform.position + cameraTransform.forward * maxLookDistance;
+        }
+
+        //for rope physics and line renderer
+        for (int i = 0; i < ropeLines.Count; i++)
+        {
+            var segments = ropeSegments[i];
+            List<Vector3> splinePositions = new List<Vector3>();
+
+            List<Vector3> controlPoints = new List<Vector3>();
+            controlPoints.Add(ropeStarts[i].position);
+            foreach (var seg in segments)
+                controlPoints.Add(seg.position);
+            controlPoints.Add(ropeEnds[i].position);
+
+            for (int j = 0; j < controlPoints.Count - 1; j++)
+            {
+                Vector3 p0 = j == 0 ? controlPoints[j] : controlPoints[j - 1];
+                Vector3 p1 = controlPoints[j];
+                Vector3 p2 = controlPoints[j + 1];
+                Vector3 p3 = (j + 2 < controlPoints.Count) ? controlPoints[j + 2] : controlPoints[j + 1];
+
+                for (int k = 0; k < splinePoints; k++)
+                {
+                    float t = k / (float)splinePoints;
+                    Vector3 point = 0.5f * (
+                        (2f * p1) +
+                        (-p0 + p2) * t +
+                        (2f * p0 - 5f * p1 + 4f * p2 - p3) * t * t +
+                        (-p0 + 3f * p1 - 3f * p2 + p3) * t * t * t
+                    );
+                    splinePositions.Add(point);
+                }
+            }
+
+            splinePositions.Add(controlPoints[^1]);
+
+            ropeLines[i].positionCount = splinePositions.Count;
+            ropeLines[i].SetPositions(splinePositions.ToArray());
+
+            if (startJoints[i] != null)
+                startJoints[i].connectedAnchor = ropeStarts[i].position;
+
+            if (endJoints[i] != null)
+                endJoints[i].connectedAnchor = ropeEnds[i].position;
         }
 
         if (invButton.WasPressedThisFrame())
@@ -238,6 +330,10 @@ public class PlayerManager : NetworkBehaviour
     private void Walking()
     {
         movementInput = move.ReadValue<Vector2>();
+
+        Vector3 targetOffset = new Vector3(movementInput.x, 0, movementInput.y) * ropeTopsSpeed;
+        Vector3 desiredLocalPos = ropeRestingLocalPos + targetOffset;
+        RopeTops.localPosition = Vector3.Lerp(RopeTops.localPosition, desiredLocalPos, Time.deltaTime * 5f);
 
         target = (cameraTransform.forward * movementInput.y + cameraTransform.right * movementInput.x);
         target.y = 0;
@@ -298,6 +394,7 @@ public class PlayerManager : NetworkBehaviour
         if(sprint.WasPressedThisFrame() && canDash)
         {
             canDash = false;
+
             anim.SetBool("IsIdleLong", false);
             lastWaitTime = Time.time;
             Invoke("CanDash", dashResetTime);
@@ -365,10 +462,10 @@ public class PlayerManager : NetworkBehaviour
 
         currentSlash = slashTransform;
 
-        // Use the slash’s orientation instead of the player’s
+        // Use the slashï¿½s orientation instead of the playerï¿½s
         baseRotation = currentSlash.rotation * Quaternion.Euler(axisOffset);
 
-        // define start and end around the slash’s up axis
+        // define start and end around the slashï¿½s up axis
         swingStart = baseRotation * Quaternion.AngleAxis(-swingAngle * .5f, swingAxis);
         swingEnd = baseRotation * Quaternion.AngleAxis(swingAngle * 1.1f, swingAxis);
     }
@@ -380,10 +477,8 @@ public class PlayerManager : NetworkBehaviour
         swingTimer += Time.deltaTime;
         float t = swingTimer / swingDuration;
 
-        //interpolate weapon rotation
         weapon.rotation = Quaternion.Slerp(swingStart, swingEnd, t);
 
-        //keep weapon at a radius from player’s origin
         float distance = .2f;
         Vector3 dir = (weapon.rotation * Vector3.forward).normalized;
         weapon.position = transform.position + Vector3.up * heightOffset + dir * distance;
@@ -391,12 +486,22 @@ public class PlayerManager : NetworkBehaviour
 
         if (t >= .5f)
         {
-            //weapon.rotation = Quaternion.Slerp(swingEnd, idealHandRot, t); //not working rn, will try something else tomorrow
             weaponTrail.Clear();
             weaponTrail.enabled = false;
             weaponCollider.enabled = false;
-            print("weapon trail and collider disabled");
             isSwinging = false;
+            lastSwingEndTime = Time.time;
+        }
+    }
+
+    private void ResetWeaponPositionIfIdle()
+    {
+        if (weapon == null) return;
+
+        if (!isSwinging && Time.time - lastSwingEndTime >= resetDelay)
+        {
+            weapon.localPosition = Vector3.Lerp(weapon.localPosition, initialWeaponLocalPos, Time.deltaTime * resetSpeed);
+            weapon.localRotation = Quaternion.Slerp(weapon.localRotation, initialWeaponLocalRot, Time.deltaTime * resetSpeed);
         }
     }
 
@@ -481,6 +586,83 @@ public class PlayerManager : NetworkBehaviour
         yield return new WaitForSeconds(delay);
         t.parent = null;
     }
+    private void CreateRope(Transform start, Transform end)
+    {
+        List<Transform> segments = new List<Transform>();
+
+        // Rope container to keep hierarchy clean
+        GameObject ropeContainer = new GameObject($"Rope_{ropeSegments.Count}");
+        //ropeContainer.transform.SetParent(transform);
+
+        Vector3 dir = (end.position - start.position).normalized;
+        float totalDistance = Vector3.Distance(start.position, end.position);
+        float spacing = totalDistance / (segmentsPerRope + 1);
+
+        Transform prev = null;
+
+        for (int i = 0; i < segmentsPerRope; i++)
+        {
+            Vector3 pos = start.position + dir * spacing * (i + 1);
+            GameObject seg = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            seg.transform.SetParent(ropeContainer.transform);
+            seg.transform.position = pos;
+            seg.transform.localScale = Vector3.one * segmentScale;
+            seg.GetComponent<Renderer>().enabled = false; // Hide the cube
+
+            Rigidbody rb = seg.AddComponent<Rigidbody>();
+            rb.mass = 0.01f;
+            rb.linearDamping = .4f;
+            rb.angularDamping = .1f;
+            rb.useGravity = false;
+
+            if (prev != null)
+            {
+                SpringJoint sj = seg.AddComponent<SpringJoint>();
+                sj.connectedBody = prev.GetComponent<Rigidbody>();
+                sj.spring = springStrength;
+                sj.damper = springDamping;
+                sj.maxDistance = segmentScale;
+                sj.minDistance = 0f;
+                sj.autoConfigureConnectedAnchor = true;
+            }
+
+            segments.Add(seg.transform);
+            prev = seg.transform;
+        }
+
+        // Connect first segment to start
+        SpringJoint firstJoint = segments[0].gameObject.AddComponent<SpringJoint>();
+        firstJoint.connectedBody = null;
+        firstJoint.connectedAnchor = start.position;
+        firstJoint.spring = springStrength;
+        firstJoint.damper = springDamping;
+        firstJoint.maxDistance = 1f;
+        firstJoint.minDistance = 0f;
+        firstJoint.autoConfigureConnectedAnchor = false;
+        startJoints.Add(firstJoint);
+
+        // Connect last segment to end
+        SpringJoint lastJoint = segments[^1].gameObject.AddComponent<SpringJoint>();
+        lastJoint.connectedBody = null;
+        lastJoint.connectedAnchor = end.position;
+        lastJoint.spring = springStrength;
+        lastJoint.damper = springDamping;
+        lastJoint.maxDistance = 1f;
+        lastJoint.minDistance = 0f;
+        lastJoint.autoConfigureConnectedAnchor = false;
+        endJoints.Add(lastJoint);
+
+        ropeSegments.Add(segments);
+
+        // Create line renderer
+        GameObject lrObj = new GameObject($"RopeLine_{ropeLines.Count}");
+        lrObj.transform.SetParent(ropeContainer.transform);
+        LineRenderer lr = lrObj.AddComponent<LineRenderer>();
+        lr.material = ropeMaterial;
+        lr.startWidth = ropeWidth;
+        lr.endWidth = ropeWidth;
+        ropeLines.Add(lr);
+    }
 
     //[Rpc(SendTo.ClientsAndHost)]
     //private void ClientAndHostRpc(int value, ulong sourceNetworkObjectId)
@@ -493,4 +675,6 @@ public class PlayerManager : NetworkBehaviour
     //}
 
     private void CanDash() { canDash = true; }
+
+    public Invintory GetInventory() => inv;
 }
