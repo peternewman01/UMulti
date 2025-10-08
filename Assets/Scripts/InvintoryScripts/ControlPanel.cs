@@ -2,6 +2,8 @@ using NUnit.Framework;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.UIElements;
+using static UnityEditor.PlayerSettings;
 
 public class ControlPanel : MonoBehaviour
 {
@@ -10,7 +12,11 @@ public class ControlPanel : MonoBehaviour
     public List<Slot> openSlots = new List<Slot>();
     public List<Slot> filledSlots = new List<Slot>();
 
+    public Dictionary<Vector2Int, Slot> allSlots = new Dictionary<Vector2Int, Slot>();
+
     [SerializeField] private int slotSpawnCount = 63;
+    [SerializeField] private int columns = 9;
+
     [SerializeField] private int targetSlot = 0;
 
     [Header("Player Stuff")]
@@ -23,11 +29,21 @@ public class ControlPanel : MonoBehaviour
     {
         for (int i = 0; i <  slotSpawnCount; i++)
         {
-            openSlots.Add(Instantiate(slot, startPosition).GetComponent<Slot>());
-            openSlots.Last().ui = this;
+            Slot s = Instantiate(slot, startPosition).GetComponent<Slot>();
+            s.ui = this;
+
+            int x = i % columns;
+            int y = i / columns;
+            Vector2Int pos = new Vector2Int(x, y);
+            s.pos = pos;
+
+            allSlots.Add(pos, s);
+            openSlots.Add(s);
         }
-        openSlots.Add(slotHolding);
-        openSlots.Last().ui = this;
+        allSlots.Add(-Vector2Int.one, slotHolding);
+        allSlots[-Vector2Int.one].ui = this;
+        allSlots[-Vector2Int.one].pos = -Vector2Int.one;
+        openSlots.Add(allSlots[-Vector2Int.one]);
     }
 
     public bool AddObjects(Object obj, int count)

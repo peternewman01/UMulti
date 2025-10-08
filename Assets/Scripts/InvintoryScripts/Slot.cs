@@ -2,13 +2,16 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using System;
 
+[Serializable]
 public class Slot : MonoBehaviour
 {
     public ControlPanel ui;
     public Image itemImage;
     public TMP_Text itemText;
     [SerializeField] private bool filled;
+    public Vector2Int pos;
 
     private float lastClickTime;
     private const float doubleClickThreshold = 0.25f;
