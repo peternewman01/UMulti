@@ -60,7 +60,7 @@ public class PlayerObjectInteract : MonoBehaviour
 
         if (playerManager.Interact)
         {
-            if (highlighted.TryGetComponent<Interactable>(out var o))
+            if (highlighted.TryGetComponent<UseEntity.Interactable>(out var o))
             {
                 o.Interact(playerManager);
             }
@@ -70,7 +70,7 @@ public class PlayerObjectInteract : MonoBehaviour
 
     private void OnTriggerEnter(Collider col)
     {
-        Entity obj = col.GetComponent<Entity>();
+        UseEntity.Entity obj = col.GetComponent<UseEntity.Entity>();
         if (obj)
         {
             Renderer r = col.GetComponent<Renderer>();
@@ -83,7 +83,7 @@ public class PlayerObjectInteract : MonoBehaviour
 
     private void OnTriggerExit(Collider col)
     {
-        Entity obj = col.GetComponent<Entity>();
+        UseEntity.Entity obj = col.GetComponent<UseEntity.Entity>();
         if (obj)
         {
             Renderer r = col.GetComponent<Renderer>();

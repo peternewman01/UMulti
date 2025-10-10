@@ -1,74 +1,65 @@
 using Unity.Netcode;
 using UnityEngine;
 
-public class Totem : Interactable
+namespace UseEntity
 {
-    public Item neededItem;
-    public static int ObjectID = -1;
-    public static string ObjectName = "";
-    private Table table;
-    public GameObject holding;
-    [SerializeField] private Transform spawnPos;
-    public Transform woodPrefab;
-
-    private bool isHolding = false;
-
-    //TODO: grab players held item instead of trying to grab a specific item
-    public override void Interact(PlayerManager interacter)
+    public class Totem : Interactable
     {
-        if (interacter.GetInventory().Has(ObjectID, 1))
-        {
-            RequestSpawnServerRpc(spawnPos.position);
-            interacter.GetInventory().RemoveItem(ObjectID, 1);
-        }
-    }
+        public Item heldItem;
+        public static string ObjectName = "";
+        private Table table;
+        public GameObject holding;
+        [SerializeField] private Transform spawnPos;
+        public Transform woodPrefab;
 
-    private void Start()
-    {
-        if (ObjectID == -1)
+        private bool isHolding = false;
+
+        //TODO: grab players held item instead of trying to grab a specific item
+        public override void Interact(PlayerManager interacter)
         {
-            ObjectID = ItemManager.GetID(neededItem);
+            if (interacter.GetInventory().Has(ItemManager.GetID(heldItem), 1))
+            {
+                NetcodeConnector.SpawnObjectServerRpc(heldItem.GetWorldPrefab(), spawnPos.position);
+                interacter.GetInventory().RemoveItem(new ItemData(heldItem, 1));
+            }
         }
 
-        table = GetComponentInParent<Table>();
-    }
-
-    [ServerRpc(RequireOwnership = false)]
-    public void RequestSpawnServerRpc(Vector3 spawnPosition)
-    {
-        Transform spawnedObj = Instantiate(woodPrefab);
-        spawnedObj.transform.position = spawnPosition;
-
-        var netObj = spawnedObj.GetComponent<NetworkObject>();
-        netObj.Spawn(true);
-
-        table.addTotemHolding(spawnedObj.GetComponent<Entity>());
-        holding = spawnedObj.gameObject;
-    }
-
-    [ServerRpc(RequireOwnership = false)]
-    public void RequestKillServerRpc(NetworkObjectReference objRef)
-    {
-        if (objRef.TryGet(out NetworkObject netObj))
+        private void Start()
         {
-            netObj.Despawn(true);
-        }
-    }
-
-    public void killHolding()
-    {
-        holding.SetActive(false);
-        var netObj = holding.GetComponent<NetworkObject>();
-        if (netObj != null)
-        {
-            RequestKillServerRpc(netObj);
-        }
-        else
-        {
-            Destroy(holding);
+            table = GetComponentInParent<Table>();
         }
 
-        table.removeTotemHolding(holding.GetComponent<Entity>());
+        [ServerRpc(RequireOwnership = false)]
+        public void RequestSpawnServerRpc(Vector3 spawnPosition)
+        {
+            Transform spawnedObj = Instantiate(woodPrefab);
+            spawnedObj.transform.position = spawnPosition;
+
+            var netObj = spawnedObj.GetComponent<NetworkObject>();
+            netObj.Spawn(true);
+
+            table.addTotemHolding(new ItemData(heldItem, 1));
+            holding = spawnedObj.gameObject;
+        }
+
+
+
+        public void killHolding()
+        {
+            holding.SetActive(false);
+            var netObj = holding.GetComponent<NetworkObject>();
+            if (netObj != null)
+            {
+                NetcodeConnector.RequestKillServerRpc(netObj);
+            }
+            else
+            {
+                Destroy(holding);
+            }
+
+            table.removeTotemHolding(new ItemData(heldItem, 1));
+        }
     }
 }
+
 

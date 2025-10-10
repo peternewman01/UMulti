@@ -12,4 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 0}
   m_Name: Stick
   m_EditorClassIdentifier: Assembly-CSharp::Item
-  sprite: {fileID: 21300000, guid: e066aaf55d239064091d735910fc8541, type: 3}
+  sprite: {fileID: 0}
+  worldPrefab: {fileID: 7033247571078061410, guid: bfc9b1f46214f0a4da2e58088ae34812, type: 3}

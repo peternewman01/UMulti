@@ -6,64 +6,43 @@ using System.Collections.Generic;
 using Unity.Netcode;
 using System.Collections;
 
-
-[RequireComponent(typeof(PlayerInput))]
-public class Table : Interactable
+namespace UseEntity
 {
-    CraftingInventory craftingRef;
-    public int chosenRecipeIndex = 0;
-
-    private void Awake()
+    [RequireComponent(typeof(PlayerInput))]
+    public class Table : Interactable
     {
-        craftingRef = GetComponent<CraftingInventory>();
-    }
-    public override void Interact(PlayerManager interacter)
-    {
-        RecipeData recipe = craftingRef.GetRecipe(chosenRecipeIndex);
+        private List<ItemData> heldItems;
+        private Totem[] totems;
 
-        recipe.TryCraftItemFromInventory(craftingRef);
-    }
-
-    public void addTotemHolding(Entity obj)
-    {
-/*        if (holding.ContainsKey(obj.getID()))
+        private void Awake()
         {
-            holding[obj.getID()]++;
+            totems = GetComponentsInChildren<Totem>();
         }
-        else
+        public override void Interact(PlayerManager interacter)
         {
-            holding.Add(obj.getID(), 1);
-        }*/
-    }
-
-    public void removeTotemHolding(Entity obj)
-    {
-/*        if (holding.ContainsKey(obj.getID()))
-        {
-            if(holding[obj.getID()] > 1)
+            if(RecipeManager.Instance.CraftRecipe(heldItems))
             {
-                holding[obj.getID()]--;
+                //BUG -- extra items on totems will be destroyed
+                foreach(Totem totem in totems)
+                {
+                    totem.killHolding();
+                }
             }
             else
             {
-                holding.Remove(obj.getID());
+                //TODO: indicate to player crafting failed
             }
-        }*/
-    }
+        }
 
-    private void DelaySpawn()
-    {
-/*        RequestSpawnServerRpc(spawnPos.position);*/
-    }
+        public void addTotemHolding(ItemData data)
+        {
+            heldItems.Add(data);
+        }
 
-
-    [ServerRpc()]
-    private void RequestSpawnServerRpc(Vector3 spawnPosition)
-    {
-/*        Transform spawnedObj = Instantiate(tempTargetPrefab);
-        spawnedObj.transform.position = spawnPosition;
-    
-        var netObj = spawnedObj.GetComponent<NetworkObject>();
-        netObj.Spawn(true);*/
+        public void removeTotemHolding(ItemData data)
+        {
+            heldItems.Remove(data);
+        }
     }
 }
+

@@ -6,23 +6,27 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
-[RequireComponent(typeof(NetworkObject))]
-public class Entity : NetworkBehaviour
-{
-    //TODO: Spawn / despawn entity (networking)
-}
-
-public abstract class Interactable : Entity
-{
-    public abstract void Interact(PlayerManager interacter);
-}
-
-public class ItemEntity : Interactable
-{
-    public Item item;
-
-    public override void Interact(PlayerManager interacter)
+namespace UseEntity {
+    [RequireComponent(typeof(NetworkObject))]
+    public class Entity : NetworkBehaviour
     {
-        interacter.GetInventory().AddItem(new ItemData(item, 1));
+        //TODO: Spawn / despawn entity (networking)
+    }
+
+    public abstract class Interactable : Entity
+    {
+        public abstract void Interact(PlayerManager interacter);
+    }
+
+    public class Grabbable : Interactable
+    {
+        public Item item;
+
+        public override void Interact(PlayerManager interacter)
+        {
+            interacter.GetInventory().AddItem(new ItemData(item, 1));
+        }
     }
 }
+
+

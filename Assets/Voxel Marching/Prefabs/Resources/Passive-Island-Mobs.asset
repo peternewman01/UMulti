@@ -10,17 +10,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 0}
-  m_Name: IslandPassives
+  m_Name: Passive-Island-Mobs
   m_EditorClassIdentifier: Assembly-CSharp::Resource
   weightedPrefabs:
   - prefab: {fileID: 4141666829644401968, guid: 11067b82e06cd3d41b5efc537ff30b29, type: 3}
     weight: 1
   isNetworkObject: 1
   spawningData:
-    density: 0.001
-    posOffset: 0.5
-    randomness: 0.2
+    density: 0.05
+    posOffset: 0
+    randomness: 0
     maxSteepness: 90
     minSteepness: 0
-    maxHeight: 1000
-    minHeight: -1000
+    maxHeight: 500
+    minHeight: 0

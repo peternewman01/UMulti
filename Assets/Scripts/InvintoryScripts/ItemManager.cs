@@ -1,4 +1,5 @@
 using System;
+using Unity.Netcode;
 using UnityEngine;
 
 public class ItemManager : MonoBehaviour
@@ -35,6 +36,7 @@ public class ItemManager : MonoBehaviour
 public class Item : ScriptableObject
 {
     [SerializeField] private Sprite sprite;
+    [SerializeField] private NetworkObject worldPrefab;
 
     private void Awake()
     {
@@ -43,6 +45,7 @@ public class Item : ScriptableObject
     }
 
     public Sprite GetSprite() => sprite;
+    public NetworkObject GetWorldPrefab() => worldPrefab;
 }
 
 [Serializable]

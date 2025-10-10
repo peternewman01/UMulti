@@ -64,7 +64,7 @@ public class ControlPanel : MonoBehaviour
         return true;
     }
 
-    public bool RemoveObjects(Entity obj, int count)
+    public bool RemoveObjects(UseEntity.Entity obj, int count)
     {
         int currentlyFound = 0;
         foreach(Slot slot in filledSlots)

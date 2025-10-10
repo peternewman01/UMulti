@@ -180,10 +180,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
-  hp:
-    m_InternalValue: 15
-  activate: 1
-  obj: {fileID: 1723330688389428828, guid: 955be55b38c17b14a8571ec1ce5ee34a, type: 3}
+  obj: {fileID: 0}
   count: 4
   radius: 1
   spawnChance: 0.5
@@ -201,9 +198,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
-  hp:
-    m_InternalValue: 10
-  activate: 1
   agent: {fileID: 0}
   rb: {fileID: 0}
   wanderRadius: 0

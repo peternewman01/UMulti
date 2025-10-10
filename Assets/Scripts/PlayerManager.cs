@@ -564,7 +564,7 @@ public class PlayerManager : NetworkBehaviour
 
         if(!holding.canHit)
         {
-            hurtEntities slashHurt = spawnedSlash.gameObject.GetComponent<hurtEntities>();
+            UseEntity.Damage slashHurt = spawnedSlash.gameObject.GetComponent<UseEntity.Damage>();
             slashHurt.setDamage(1);
         }
 

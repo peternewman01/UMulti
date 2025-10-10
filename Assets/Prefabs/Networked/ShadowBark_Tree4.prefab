@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 561116012554237007}
   - component: {fileID: 5745703948975035910}
   - component: {fileID: 3656936479026113371}
+  - component: {fileID: 6295157054032457800}
   m_Layer: 0
   m_Name: ShadowBark_Tree4
   m_TagString: Untagged
@@ -101,14 +102,27 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
-  hp:
-    m_InternalValue: 4
-  activate: 1
-  obj: {fileID: 8346321969232095038, guid: 798e03e2fd1847941b6f41951db7bdf4, type: 3}
+  obj: {fileID: 3003696136283523117, guid: 798e03e2fd1847941b6f41951db7bdf4, type: 3}
   count: 2
   radius: 1
   spawnChance: 1
   guaranteed: 0
+  offset: {x: 0, y: 1, z: 0}
+--- !u!114 &6295157054032457800
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 487047076839378032}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7e6b805b723d583428aa39cf768b51a9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ShowTopMostFoldoutHeaderGroup: 1
+  hp:
+    m_InternalValue: 5
 --- !u!1 &4723368885877934171
 GameObject:
   m_ObjectHideFlags: 0

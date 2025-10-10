@@ -37,4 +37,15 @@ public class RecipeData : ScriptableObject
 
         inventory.AddItem(outputItemData);
     }
+
+    public bool CanCraftFromDataList(List<ItemData> dataList)
+    {
+        foreach (ItemData item in requiredItems)
+        {
+            if (dataList.Contains(item)) continue;
+            return false;
+        }
+
+        return true;
+    }
 }
