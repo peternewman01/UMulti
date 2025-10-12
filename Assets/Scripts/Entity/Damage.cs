@@ -11,13 +11,14 @@ namespace UseEntity
         {
             if (col.gameObject.tag != "Player")
             {
-                if (col.gameObject.GetComponent< UseEntity.Health> () is Health entity)
+
+                if (col.gameObject.GetComponent<Health> () is Health entity)
                 {
-                    entity.HP -= damage;
+                    entity.Hurt(damage);
                 }
-                else if (col.gameObject.GetComponentInParent< UseEntity.Health> () is Health parentEntity)
+                else if (col.gameObject.GetComponentInParent<Health> () is Health parentEntity)
                 {
-                    parentEntity.HP -= damage;
+                    parentEntity.Hurt(damage);
                 }
             }
         }

@@ -1,23 +1,14 @@
 using UnityEngine;
 
 
-/*public class Wood : Entity
+namespace UseEntity
 {
-*//*    public static int ObjectID = -1;
-    public static string ObjectName = "";
-
-    private void Start()
+    public class Wood : Grabbable
     {
-        if(ObjectID == -1)
+        public override void Interact(PlayerManager interacter)
         {
-            ObjectID = objectID;
-            ObjectName = objectName;
+            interacter.GetInventory().AddItem(new ItemData(item, 1));
+            Destroy(gameObject);
         }
     }
-
-    public override void Interact(PlayerObjectInteract interacter)
-    {
-        interacter.GetComponent<Invintory>().AddItem(id, 1);
-        Destroy(gameObject);
-    }*//*
-}*/
+}

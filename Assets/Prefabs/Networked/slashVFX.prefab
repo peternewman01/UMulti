@@ -116,11 +116,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 1169051767809893461}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7756a407d12db9b43a3c28b33fe77ac6, type: 3}
+  m_Script: {fileID: 11500000, guid: 9b769153ebeb4d044811ae71f7cae2db, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
-  damage: 2
+  damage: 1
 --- !u!65 &2425373630201939201
 BoxCollider:
   m_ObjectHideFlags: 0

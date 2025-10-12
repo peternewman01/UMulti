@@ -5958,6 +5958,7 @@ GameObject:
   - component: {fileID: 8889824241053453272}
   - component: {fileID: 6953621338408064027}
   - component: {fileID: 1117286762680026606}
+  - component: {fileID: 8870932050372870260}
   m_Layer: 6
   m_Name: Player
   m_TagString: Player
@@ -6158,7 +6159,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 90299f6d5abd016449c5b0180de34a85, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ui: {fileID: 0}
+  size: 0
 --- !u!114 &4155171479499230009
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6287,6 +6288,27 @@ MonoBehaviour:
   canHit: 0
   wasHolding: 0
   stick: {fileID: 3175494475631461071}
+--- !u!135 &8870932050372870260
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5199031698185166006}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Radius: 5
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &5539076378555248688
 GameObject:
   m_ObjectHideFlags: 0

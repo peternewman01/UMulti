@@ -25,6 +25,8 @@ public class ControlPanel : MonoBehaviour
 
     public Slot slotHolding;
 
+    public bool run = false;
+
     private void Start()
     {
         for (int i = 0; i <  slotSpawnCount; i++)
@@ -44,6 +46,14 @@ public class ControlPanel : MonoBehaviour
         allSlots[-Vector2Int.one].ui = this;
         allSlots[-Vector2Int.one].pos = -Vector2Int.one;
         openSlots.Add(allSlots[-Vector2Int.one]);
+    }
+
+    private void Update()
+    {
+        if(run)
+        {
+            Debug.Log(CheckSlotAreaOnGrid(new Vector2Int(0, 0), Vector2Int.down) ? "area T" : "area F");
+        }
     }
 
     public bool AddObjects(Item obj, int count)
@@ -114,5 +124,35 @@ public class ControlPanel : MonoBehaviour
             return true;
         }
         return false;
+    }
+
+    public bool CheckSlotOnGrid(Vector2Int pos)
+    {
+        if(allSlots.TryGetValue(pos, out var slot))
+        {
+            if(openSlots.Contains(slot))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public bool CheckSlotAreaOnGrid(Vector2Int pos, Vector2Int slotArea)
+    {
+        for (int x = 0; x < slotArea.x; x++)
+        {
+            for (int y = 0; y < slotArea.y; y++)
+            {
+                Vector2Int checkPos = new Vector2Int(pos.x + x, pos.y + y);
+
+                if (!CheckSlotOnGrid(checkPos))
+                {
+                    return false;
+                }
+            }
+        }
+
+        return true;
     }
 }
