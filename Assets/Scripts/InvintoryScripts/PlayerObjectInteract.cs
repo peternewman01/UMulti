@@ -12,27 +12,26 @@ using UnityEngine.UIElements;
 public class PlayerObjectInteract : MonoBehaviour
 {
     [SerializeField] private PlayerManager playerManager;
-
     [SerializeField] private CustomPassVolume outlinePasses;
-    [SerializeField] private CleanOutlineCustomPass goldPass;
-
+    [SerializeField] private string outlinePassName;
     [SerializeField] private float searchRadius = 3f;
-
-    [SerializeField] private List<Renderer> objectRenderers = new List<Renderer>();
-
+    [SerializeField] private List<UseEntity.Interactable> nearbyInteractables = new List<UseEntity.Interactable>();
     [SerializeField] private SphereCollider pickupRadius;
+
+    private CleanOutlineCustomPass goldPass;
+    private Camera mainCameraRef ;
 
     private void Start()
     {
         playerManager = GetComponent<PlayerManager>();
-
+        mainCameraRef = Camera.main;
         outlinePasses = GameObject.FindFirstObjectByType<CustomPassVolume>();
 
         foreach (CustomPass cp in outlinePasses.customPasses)
         {
             if (cp is CleanOutlineCustomPass cleanPass)
             {
-                if (cp.name == "GoldOutline")
+                if (cp.name == outlinePassName) // why magic??
                 {
                     goldPass = cleanPass;
                 }
@@ -60,53 +59,57 @@ public class PlayerObjectInteract : MonoBehaviour
 
         if (playerManager.Interact)
         {
-            if (highlighted.TryGetComponent<UseEntity.Interactable>(out var o))
-            {
-                o.Interact(playerManager);
-            }
+            UseEntity.Interactable closestInteractable = GetClosestInteractable();
+            nearbyInteractables.Remove(closestInteractable);
+            closestInteractable.Interact(playerManager);
         }
 
     }
 
     private void OnTriggerEnter(Collider col)
     {
-        UseEntity.Entity obj = col.GetComponent<UseEntity.Entity>();
-        if (obj)
-        {
-            Renderer r = col.GetComponent<Renderer>();
-            if (!objectRenderers.Contains(r))
-            {
-                objectRenderers.Add(r);
-            }
-        }
+        UseEntity.Interactable obj = col.GetComponentInParent<UseEntity.Interactable>();
+        if (obj == null || nearbyInteractables.Contains(obj)) return;
+        nearbyInteractables.Add(obj);
     }
 
     private void OnTriggerExit(Collider col)
     {
-        UseEntity.Entity obj = col.GetComponent<UseEntity.Entity>();
-        if (obj)
+        UseEntity.Interactable obj = col.GetComponent<UseEntity.Interactable>();
+        if (obj == null || nearbyInteractables.Contains(obj)) return;
+        nearbyInteractables.Add(obj);
+    }
+
+    private UseEntity.Interactable GetClosestInteractable()
+    {
+        UseEntity.Interactable closestInteractable = null;
+        float closestValue = float.PositiveInfinity;
+        foreach(UseEntity.Interactable interactable in nearbyInteractables)
         {
-            Renderer r = col.GetComponent<Renderer>();
-            if (objectRenderers.Contains(r))
+            float distance = Vector3.Distance(interactable.transform.position, mainCameraRef.transform.position);
+            if (distance < closestValue && Vector3.Dot((interactable.transform.position - mainCameraRef.transform.position), mainCameraRef.transform.forward) > 0)
             {
-                objectRenderers.Remove(r);
+                closestInteractable = interactable;
+                closestValue = distance;
             }
         }
+
+        return closestInteractable;
     }
 
     private Renderer ClosestRendererToCameraForward()
     {
-        if (objectRenderers.Count > 0)
+/*        if (nearbyInteractables.Count > 0)
         {
             Camera cam = Camera.main;
             if (cam == null) return null;
 
             Renderer closestRenderer = null;
             float rDist = -1f;
-            Renderer removeHold = objectRenderers[0];
+            Renderer removeHold = nearbyInteractables[0];
             bool removeHoldSet = false;
 
-            foreach (Renderer r in objectRenderers)
+            foreach (Renderer r in nearbyInteractables)
             {
                 if (r)
                 {
@@ -127,10 +130,10 @@ public class PlayerObjectInteract : MonoBehaviour
             }
             if (removeHoldSet)
             {
-                objectRenderers.Remove(removeHold);
+                nearbyInteractables.Remove(removeHold);
             }
             return closestRenderer;
-        }
+        }*/
 
         return null;
     }

@@ -6214,11 +6214,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 15894fac3841f4044bdc85202c70a455, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerManager: {fileID: 0}
+  playerManager: {fileID: 4037244209529386161}
   outlinePasses: {fileID: 0}
+  outlinePassName: GoldOutline
   searchRadius: 6
   objectRenderers: []
-  pickupRadius: {fileID: 0}
+  pickupRadius: {fileID: 8870932050372870260}
 --- !u!114 &6953621338408064027
 MonoBehaviour:
   m_ObjectHideFlags: 0

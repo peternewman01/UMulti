@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 2801630526509492983}
   - component: {fileID: 8696059543524608753}
   - component: {fileID: 3003696136283523117}
-  - component: {fileID: 5316367674203908720}
+  - component: {fileID: 5875003905381316803}
   m_Layer: 9
   m_Name: Wood
   m_TagString: Untagged
@@ -165,7 +165,7 @@ MonoBehaviour:
   AutoObjectParentSync: 1
   SyncOwnerTransformWhenParented: 1
   AllowOwnerToParent: 0
---- !u!114 &5316367674203908720
+--- !u!114 &5875003905381316803
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -174,12 +174,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 8346321969232095038}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1607b4491b905694ca6f8fcd3d8db2fa, type: 3}
+  m_Script: {fileID: 11500000, guid: ad926ed455317994cb7540b43e682849, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
-  objectID: 1
-  objectName: Wood
-  Invintory: {fileID: 0}
-  playerInArea: 0
-  objectSprite: {fileID: 0}
+  item: {fileID: 11400000, guid: 81f57b3ed75c72b42886fcc093b03c14, type: 2}
