@@ -8558,6 +8558,7 @@ MonoBehaviour:
   fadeRadius: 0
   priority: 0
   customPasses:
+  - rid: 2657625467646378073
   - rid: 2657625446840008794
   injectionPoint: 1
   m_TargetCamera: {fileID: 0}
@@ -8575,19 +8576,42 @@ MonoBehaviour:
         clearFlags: 0
         passFoldout: 0
         m_Version: 0
-        m_DrawType: 0
+        m_DrawType: 1
         m_LayerMask:
           serializedVersion: 2
-          m_Bits: 0
+          m_Bits: 512
         m_DrawRenderers: []
         m_OutlineWidth: 1
         m_NormalExclude: 0
-        m_OutlineColor: {r: 1, g: 1, b: 1, a: 1}
+        m_OutlineColor: {r: 0.8549928, g: 0.5520116, b: 0.029556843, a: 1}
         m_FullColorByDistance: 1
         m_FullColorDistanceNear: 20
         m_FullColorDistanceFar: 40
         m_BlockType: 0
-        m_BlockColor: {r: 0.5, g: 0.5, b: 0.5, a: 0.5}
+        m_BlockColor: {r: 0.9339623, g: 0.7704335, b: 0.18943575, a: 1}
+    - rid: 2657625467646378073
+      type: {class: CleanOutlineCustomPass, ns: CR, asm: Assembly-CSharp}
+      data:
+        m_Name: BlackOutline
+        enabled: 1
+        targetColorBuffer: 0
+        targetDepthBuffer: 0
+        clearFlags: 0
+        passFoldout: 0
+        m_Version: 0
+        m_DrawType: 1
+        m_LayerMask:
+          serializedVersion: 2
+          m_Bits: 512
+        m_DrawRenderers: []
+        m_OutlineWidth: 1
+        m_NormalExclude: 0
+        m_OutlineColor: {r: 0, g: 0, b: 0, a: 1}
+        m_FullColorByDistance: 1
+        m_FullColorDistanceNear: 20
+        m_FullColorDistanceFar: 40
+        m_BlockType: 0
+        m_BlockColor: {r: 0, g: 0, b: 0, a: 0.5}
 --- !u!4 &1417352570
 Transform:
   m_ObjectHideFlags: 0
