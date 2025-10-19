@@ -7,11 +7,9 @@ using UnityEngine.Splines;
 public class Invintory : MonoBehaviour
 {
     public Dictionary<int, int> Stuff = new Dictionary<int, int>();
-    public uint size;
 
     public bool AddItem(int id, int count)
     {
-        if (Stuff.Count >= size) return false;
         if(Stuff.TryAdd(id, count)) return true;
 
         if (Stuff.ContainsKey(id))
