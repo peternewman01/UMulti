@@ -10,7 +10,6 @@ public class Slot : MonoBehaviour
 {
     public ControlPanel ui;
     public Image itemImage;
-    public TMP_Text itemText;
     [SerializeField] private bool filled;
     public Vector2Int pos;
 
@@ -28,8 +27,8 @@ public class Slot : MonoBehaviour
 
     private void Start()
     {;
-        itemImage = transform.GetChild(0).GetComponent<Image>();
-        itemText = transform.GetChild(2).GetComponent<TMP_Text>();
+        itemImage = GetComponent<Image>();
+/*        itemText = transform.GetChild(2).GetComponent<TMP_Text>();*/
 
         ResetItem();
     }
@@ -72,7 +71,7 @@ public class Slot : MonoBehaviour
             ui.filledSlots.Remove(MovingSlot);
             ui.filledSlots.Add(this);
 
-            this.SetItem(MovingSlot.itemImage.sprite, MovingSlot.itemText.text, objectID);
+            this.SetItem(MovingSlot, MovingSlot.itemImage.sprite, objectID);
             MovingSlot.ResetItem();
 
             MovingSlot = null;
@@ -93,7 +92,7 @@ public class Slot : MonoBehaviour
     { 
         itemImage.sprite = emptySprite;
         //itemImage.color = new Color(1, 1, 1, 1);
-        itemText.text = "";
+        //itemText.text = "";
         filled = false;
         SourceSlot = this;
 
@@ -104,7 +103,7 @@ public class Slot : MonoBehaviour
     {
         itemImage.sprite = image;
         //itemImage.color = new Color(1, 1, 1, 1);
-        itemText.text = name;
+        //itemText.text = name;
         filled = true;
         SourceSlot = this;
 
@@ -115,10 +114,10 @@ public class Slot : MonoBehaviour
 
     public void SetItem(Slot SourceSlot, Item obj)
     {
-        SetItem(SourceSlot, obj.GetSprite(), obj.name, ItemManager.GetID(obj));
+        SetItem(SourceSlot, obj.GetSprite(), ItemManager.GetID(obj));
     }
 
-    private void SetItem(Slot SourceSlot, Sprite image, string name, int id)
+    private void SetItem(Slot SourceSlot, Sprite image, /*string name,*/ int id)
     {
         this.SourceSlot = SourceSlot;
         filled = true;
@@ -128,12 +127,12 @@ public class Slot : MonoBehaviour
         {
             itemImage.sprite = image;
             //itemImage.color = new Color(1, 1, 1, 1);
-            itemText.text = name;
+            //itemText.text = name;
         }
         else
         {
             itemImage.sprite = null;
-            itemText.text = "";
+            //itemText.text = "";
         }
     }
 

@@ -108,17 +108,17 @@ public class ControlPanel : MonoBehaviour
         return true;
     }
 
-    public bool RemoveObjects(UseEntity.Entity obj, int count)
+    public bool RemoveObjects(Item obj, int count)
     {
         int currentlyFound = 0;
-        foreach(Slot slot in filledSlots)
+        foreach (Slot slot in filledSlots)
         {
-            if(slot.itemText.text == obj.name)
+            if (slot.getObjectID() == ItemManager.GetID(obj))
             {
                 slot.ResetItem();
                 currentlyFound++;
 
-                if(currentlyFound == count)
+                if (currentlyFound == count)
                 {
                     return true;
                 }
