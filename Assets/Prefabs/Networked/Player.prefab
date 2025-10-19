@@ -6159,7 +6159,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 90299f6d5abd016449c5b0180de34a85, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  size: 0
+  size: 50
 --- !u!114 &4155171479499230009
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6214,11 +6214,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 15894fac3841f4044bdc85202c70a455, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerManager: {fileID: 0}
+  playerManager: {fileID: 4037244209529386161}
   outlinePasses: {fileID: 0}
+  selectPassName: GoldOutline
+  inRangePassName: BlackOutline
   searchRadius: 6
-  objectRenderers: []
-  pickupRadius: {fileID: 0}
+  nearbyInteractables: []
+  pickupRadius: {fileID: 8870932050372870260}
 --- !u!114 &6953621338408064027
 MonoBehaviour:
   m_ObjectHideFlags: 0

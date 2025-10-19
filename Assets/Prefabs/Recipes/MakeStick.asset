@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1df683bf1fcf5d446a76f29ab1b51d3e, type: 3}
-  m_Name: R-MakeStick
+  m_Name: MakeStick
   m_EditorClassIdentifier: 
   requiredItems:
   - item: {fileID: 11400000, guid: 81f57b3ed75c72b42886fcc093b03c14, type: 2}

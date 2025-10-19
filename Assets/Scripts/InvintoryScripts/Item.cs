@@ -2,20 +2,22 @@ using System;
 using Unity.Netcode;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "new Item", menuName = "Item/New Item")]
+[CreateAssetMenu(fileName = "new item", menuName = "Item/New Item")]
 public class Item : ScriptableObject
 {
-    [SerializeField] private Sprite sprite;
-    [SerializeField] private NetworkObject worldPrefab;
+    [SerializeField] private Sprite inventorySprite;
+    [SerializeField] private float tileSize = 32;
+    [SerializeField] private GameObject worldPrefab;
 
-    private void Awake()
+    public Sprite GetSprite() => inventorySprite;
+    public NetworkObject GetWorldPrefab() => worldPrefab.GetComponent<NetworkObject>();
+
+    public Vector2Int GetInventorySize()
     {
-        if (sprite == null)
-            sprite = (Sprite)Resources.Load("ObjectThumbnails/BasicThumbnail");
-    }
+        if (inventorySprite == null) return Vector2Int.zero;
 
-    public Sprite GetSprite() => sprite;
-    public NetworkObject GetWorldPrefab() => worldPrefab;
+        return new Vector2Int(Mathf.FloorToInt(inventorySprite.rect.width / tileSize), Mathf.FloorToInt(inventorySprite.rect.height / tileSize));
+    }
 }
 
 [Serializable]
@@ -24,9 +26,9 @@ public struct ItemData
     public Item item;
     public int count;
 
-    public ItemData(Item item, int v) : this()
+    public ItemData(Item item, int count)
     {
         this.item = item;
-        count = v;
+        this.count = count;
     }
 }

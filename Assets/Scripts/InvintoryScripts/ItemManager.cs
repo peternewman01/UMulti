@@ -24,7 +24,7 @@ public class ItemManager : MonoBehaviour
     public static int GetID(Item item)
     {
         for (int index = 0; index < ids.Length; index++)
-        {
+    {
             if (ids[index] == item) return index;
         }
 

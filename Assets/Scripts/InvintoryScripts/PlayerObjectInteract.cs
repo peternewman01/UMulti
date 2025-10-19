@@ -12,30 +12,29 @@ using UnityEngine.UIElements;
 public class PlayerObjectInteract : MonoBehaviour
 {
     [SerializeField] private PlayerManager playerManager;
-
     [SerializeField] private CustomPassVolume outlinePasses;
-    [SerializeField] private CleanOutlineCustomPass goldPass;
-
+    [SerializeField] private string selectPassName;
+    [SerializeField] private string inRangePassName;
     [SerializeField] private float searchRadius = 3f;
-
-    [SerializeField] private List<Renderer> objectRenderers = new List<Renderer>();
-
     [SerializeField] private SphereCollider pickupRadius;
+
+    private List<UseEntity.Interactable> nearbyInteractables = new List<UseEntity.Interactable>();
+    private CleanOutlineCustomPass selectPass;
+    private CleanOutlineCustomPass inRangePass;
+    private Camera mainCameraRef ;
 
     private void Start()
     {
         playerManager = GetComponent<PlayerManager>();
-
-        outlinePasses = GameObject.FindFirstObjectByType<CustomPassVolume>();
+        mainCameraRef = Camera.main;
+        outlinePasses = FindFirstObjectByType<CustomPassVolume>();
 
         foreach (CustomPass cp in outlinePasses.customPasses)
         {
             if (cp is CleanOutlineCustomPass cleanPass)
             {
-                if (cp.name == "GoldOutline")
-                {
-                    goldPass = cleanPass;
-                }
+                if (cp.name == selectPassName) selectPass = cleanPass;
+                else if (cp.name == inRangePassName) inRangePass = cleanPass;
             }
         }
 
@@ -46,67 +45,74 @@ public class PlayerObjectInteract : MonoBehaviour
             pickupRadius.isTrigger = true;
         }
 
-
-        Renderer highlighted = ClosestRendererToCameraForward();
-        goldPass.m_DrawRenderers.Add(highlighted);
+        selectPass.m_DrawRenderers.Add(null);
 
     }
 
     void Update()
     {
-        Renderer highlighted = ClosestRendererToCameraForward();
+        UseEntity.Interactable closestInteractable = GetClosestInteractable();
+        if(closestInteractable == null)
+        {
+            selectPass.m_DrawRenderers[0] = null;
+            return;
+        }
 
-        goldPass.m_DrawRenderers[0] = highlighted;
-
+        selectPass.m_DrawRenderers[0] = closestInteractable.GetComponent<Renderer>();
         if (playerManager.Interact)
         {
-            if (highlighted.TryGetComponent<UseEntity.Interactable>(out var o))
-            {
-                o.Interact(playerManager);
-            }
+            nearbyInteractables.Remove(closestInteractable);
+            closestInteractable.Interact(playerManager);
         }
 
     }
 
     private void OnTriggerEnter(Collider col)
     {
-        UseEntity.Entity obj = col.GetComponent<UseEntity.Entity>();
-        if (obj)
-        {
-            Renderer r = col.GetComponent<Renderer>();
-            if (!objectRenderers.Contains(r))
-            {
-                objectRenderers.Add(r);
-            }
-        }
+        UseEntity.Interactable obj = col.GetComponentInParent<UseEntity.Interactable>();
+        if (obj == null || nearbyInteractables.Contains(obj)) return;
+        nearbyInteractables.Add(obj);
+        inRangePass.m_DrawRenderers.Add(obj.GetComponent<Renderer>());
     }
 
     private void OnTriggerExit(Collider col)
     {
-        UseEntity.Entity obj = col.GetComponent<UseEntity.Entity>();
-        if (obj)
-        {
-            Renderer r = col.GetComponent<Renderer>();
-            if (objectRenderers.Contains(r))
-            {
-                objectRenderers.Remove(r);
-            }
-        }
+        UseEntity.Interactable obj = col.GetComponent<UseEntity.Interactable>();
+        if (obj == null || !nearbyInteractables.Contains(obj)) return;
+        nearbyInteractables.Remove(obj);
+        inRangePass.m_DrawRenderers.Remove(obj.GetComponent<Renderer>());
     }
 
-    private Renderer ClosestRendererToCameraForward()
+    private UseEntity.Interactable GetClosestInteractable()
     {
-        if (objectRenderers.Count > 0)
+        UseEntity.Interactable closestInteractable = null;
+        float closestValue = -1;
+        foreach(UseEntity.Interactable interactable in nearbyInteractables)
+        {
+            float dot = Vector3.Dot((interactable.transform.position - mainCameraRef.transform.position).normalized, mainCameraRef.transform.forward);
+            if (closestValue < dot)
+            {
+                closestInteractable = interactable;
+                closestValue = dot;
+            }
+        }
+
+        return closestInteractable;
+    }
+
+    /*private Renderer ClosestRendererToCameraForward()
+    {
+        if (nearbyInteractables.Count > 0)
         {
             Camera cam = Camera.main;
             if (cam == null) return null;
 
             Renderer closestRenderer = null;
             float rDist = -1f;
-            Renderer removeHold = objectRenderers[0];
+            Renderer removeHold = nearbyInteractables[0];
             bool removeHoldSet = false;
 
-            foreach (Renderer r in objectRenderers)
+            foreach (Renderer r in nearbyInteractables)
             {
                 if (r)
                 {
@@ -127,12 +133,12 @@ public class PlayerObjectInteract : MonoBehaviour
             }
             if (removeHoldSet)
             {
-                objectRenderers.Remove(removeHold);
+                nearbyInteractables.Remove(removeHold);
             }
             return closestRenderer;
         }
 
         return null;
-    }
+    }*/
 
 }

@@ -1602,11 +1602,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 50addbc28a4d25246b534e357e62d41f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!23 &274558604 stripped
-MeshRenderer:
-  m_CorrespondingSourceObject: {fileID: 1576220381721445606, guid: b191ecf0104d105419adf3b5696031d5, type: 3}
-  m_PrefabInstance: {fileID: 274558599}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &289628918
 GameObject:
   m_ObjectHideFlags: 0
@@ -8563,39 +8558,15 @@ MonoBehaviour:
   fadeRadius: 0
   priority: 0
   customPasses:
-  - rid: 1714194925185401092
-  - rid: 1714194925185401098
+  - rid: 2657625467646378073
+  - rid: 2657625446840008794
   injectionPoint: 1
   m_TargetCamera: {fileID: 0}
   useTargetCamera: 0
   references:
     version: 2
     RefIds:
-    - rid: 1714194925185401092
-      type: {class: CleanOutlineCustomPass, ns: CR, asm: Assembly-CSharp}
-      data:
-        m_Name: BlackOutline
-        enabled: 1
-        targetColorBuffer: 0
-        targetDepthBuffer: 0
-        clearFlags: 0
-        passFoldout: 0
-        m_Version: 0
-        m_DrawType: 0
-        m_LayerMask:
-          serializedVersion: 2
-          m_Bits: 512
-        m_DrawRenderers:
-        - {fileID: 274558604}
-        m_OutlineWidth: 1
-        m_NormalExclude: 0
-        m_OutlineColor: {r: 0, g: 0, b: 0, a: 1}
-        m_FullColorByDistance: 1
-        m_FullColorDistanceNear: 20
-        m_FullColorDistanceFar: 40
-        m_BlockType: 0
-        m_BlockColor: {r: 0.5, g: 0.5, b: 0.5, a: 0.5}
-    - rid: 1714194925185401098
+    - rid: 2657625446840008794
       type: {class: CleanOutlineCustomPass, ns: CR, asm: Assembly-CSharp}
       data:
         m_Name: GoldOutline
@@ -8608,16 +8579,39 @@ MonoBehaviour:
         m_DrawType: 1
         m_LayerMask:
           serializedVersion: 2
-          m_Bits: 0
+          m_Bits: 512
         m_DrawRenderers: []
         m_OutlineWidth: 1
         m_NormalExclude: 0
-        m_OutlineColor: {r: 2.9960785, g: 2.0995681, b: 0, a: 1}
+        m_OutlineColor: {r: 0.8549928, g: 0.5520116, b: 0.029556843, a: 1}
         m_FullColorByDistance: 1
         m_FullColorDistanceNear: 20
         m_FullColorDistanceFar: 40
         m_BlockType: 0
-        m_BlockColor: {r: 0.5, g: 0.5, b: 0.5, a: 0.5}
+        m_BlockColor: {r: 0.9339623, g: 0.7704335, b: 0.18943575, a: 1}
+    - rid: 2657625467646378073
+      type: {class: CleanOutlineCustomPass, ns: CR, asm: Assembly-CSharp}
+      data:
+        m_Name: BlackOutline
+        enabled: 1
+        targetColorBuffer: 0
+        targetDepthBuffer: 0
+        clearFlags: 0
+        passFoldout: 0
+        m_Version: 0
+        m_DrawType: 1
+        m_LayerMask:
+          serializedVersion: 2
+          m_Bits: 512
+        m_DrawRenderers: []
+        m_OutlineWidth: 1
+        m_NormalExclude: 0
+        m_OutlineColor: {r: 0, g: 0, b: 0, a: 1}
+        m_FullColorByDistance: 1
+        m_FullColorDistanceNear: 20
+        m_FullColorDistanceFar: 40
+        m_BlockType: 0
+        m_BlockColor: {r: 0, g: 0, b: 0, a: 0.5}
 --- !u!4 &1417352570
 Transform:
   m_ObjectHideFlags: 0
@@ -9881,6 +9875,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1613755050}
   - component: {fileID: 1613755049}
+  - component: {fileID: 1613755051}
   m_Layer: 0
   m_Name: RecipeManager
   m_TagString: Untagged
@@ -9901,7 +9896,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   allRecipes:
-  - {fileID: 11400000, guid: f08fc8366671d28489bab58c8b05eb79, type: 2}
+  - {fileID: 11400000, guid: 7a791de8d87710c479812414c3269686, type: 2}
 --- !u!4 &1613755050
 Transform:
   m_ObjectHideFlags: 0
@@ -9917,6 +9912,21 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1613755051
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1613755048}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c4a7b9eb0dd20694db1e32edd6a45f2c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  itemID:
+  - {fileID: 11400000, guid: 81f57b3ed75c72b42886fcc093b03c14, type: 2}
+  - {fileID: 11400000, guid: f395d38b1cd4d2b47b4715db359d7d09, type: 2}
 --- !u!1 &1627388859
 GameObject:
   m_ObjectHideFlags: 0
