@@ -6,10 +6,18 @@ using UnityEngine;
 public class Item : ScriptableObject
 {
     [SerializeField] private Sprite inventorySprite;
+    [SerializeField] private float tileSize = 32;
     [SerializeField] private GameObject worldPrefab;
 
     public Sprite GetSprite() => inventorySprite;
     public NetworkObject GetWorldPrefab() => worldPrefab.GetComponent<NetworkObject>();
+
+    public Vector2Int GetInventorySize()
+    {
+        if (inventorySprite == null) return Vector2Int.zero;
+
+        return new Vector2Int(Mathf.FloorToInt(inventorySprite.rect.width / tileSize), Mathf.FloorToInt(inventorySprite.rect.height / tileSize));
+    }
 }
 
 [Serializable]
