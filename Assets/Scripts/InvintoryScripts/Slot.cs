@@ -90,11 +90,12 @@ public class Slot : MonoBehaviour
 
     public void ResetItem()
     {
-        gameObject.SetActive(true);
+        itemImage.enabled = true;
         itemImage.sprite = emptySprite;
         //itemImage.color = new Color(1, 1, 1, 1);
         filled = false;
         SourceSlot = this;
+        itemImage.SetNativeSize();
 
         objectID = -1;
 
@@ -102,6 +103,7 @@ public class Slot : MonoBehaviour
     public void SetItem(Sprite image, int id)
     {
         itemImage.sprite = image;
+        itemImage.SetNativeSize();
         //itemImage.color = new Color(1, 1, 1, 1);
         filled = true;
         SourceSlot = this;
@@ -125,12 +127,18 @@ public class Slot : MonoBehaviour
         if (this.SourceSlot == this)
         {
             itemImage.sprite = image;
+            itemImage.SetNativeSize();
             //itemImage.color = new Color(1, 1, 1, 1);
         }
         else
         {
-            gameObject.SetActive(false);
+            itemImage.enabled = false;
         }
+    }
+
+    public void SetSize(Vector2Int newSize)
+    {
+
     }
 
     public bool isFilled() {  return filled; } 

@@ -70,7 +70,7 @@ public class PlayerObjectInteract : MonoBehaviour
     private void OnTriggerEnter(Collider col)
     {
         UseEntity.Interactable obj = col.GetComponentInParent<UseEntity.Interactable>();
-        if (obj == null || nearbyInteractables.Contains(obj)) return;
+        if (obj == null) return;
         nearbyInteractables.Add(obj);
         inRangePass.m_DrawRenderers.Add(obj.GetComponent<Renderer>());
     }
@@ -78,7 +78,7 @@ public class PlayerObjectInteract : MonoBehaviour
     private void OnTriggerExit(Collider col)
     {
         UseEntity.Interactable obj = col.GetComponent<UseEntity.Interactable>();
-        if (obj == null || !nearbyInteractables.Contains(obj)) return;
+        if (obj == null) return;
         nearbyInteractables.Remove(obj);
         inRangePass.m_DrawRenderers.Remove(obj.GetComponent<Renderer>());
     }
@@ -87,11 +87,17 @@ public class PlayerObjectInteract : MonoBehaviour
     private UseEntity.Interactable GetClosestInteractable()
     {
         UseEntity.Interactable closestInteractable = null;
-        float closestValue = -1;
+        float closestValue = float.PositiveInfinity;
         foreach(UseEntity.Interactable interactable in nearbyInteractables)
         {
+            if(interactable == null)
+            {
+                nearbyInteractables.Remove(interactable);
+                continue;
+            }
+
             float dist = Vector3.Distance(interactable.transform.position, playerManager.transform.position);
-            if (closestValue < dist)
+            if (closestValue > dist)
             {
                 closestInteractable = interactable;
                 closestValue = dist;

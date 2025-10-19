@@ -79,9 +79,14 @@ public class ControlPanel : MonoBehaviour
                         if (allSlots.TryGetValue(new Vector2Int(sourceSlot.pos.x + x, sourceSlot.pos.y + y), out var slot))
                         {
                             slot.SetItem(sourceSlot, obj);
+                            filledSlots.Add(slot);
+                            openSlots.Remove(slot);
                         }
                     }
                 }
+
+                RectTransform sourceRect = sourceSlot.gameObject.GetComponent<RectTransform>();
+                sourceRect.localScale = new Vector2(slotArea.x, slotArea.y);
 
                 return true;
             }
