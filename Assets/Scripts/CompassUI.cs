@@ -37,7 +37,7 @@ public class CompassUI : MonoBehaviour
             xPos -= pixelsPer360; //shift so that -1000 to +1000 is valid range
 
         compassBar.localPosition = new Vector2(-xPos, compassBar.localPosition.y);
-        print(playerYaw + " UPDATING COMPASS " + xPos);
+        //print(playerYaw + " UPDATING COMPASS " + xPos);
     }
 
     void UpdateMarkers()

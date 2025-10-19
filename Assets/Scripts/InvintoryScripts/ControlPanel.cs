@@ -1,6 +1,7 @@
 using NUnit.Framework;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
 using static UnityEditor.PlayerSettings;
@@ -53,7 +54,39 @@ public class ControlPanel : MonoBehaviour
         if(run)
         {
             Debug.Log(CheckSlotAreaOnGrid(new Vector2Int(0, 0), Vector2Int.down) ? "area T" : "area F");
+            run = false;
         }
+    }
+
+    //size should stay pretty small, checking somwhere between 1 and 9 slots
+    public bool AddObjectOfSize(Item obj, Vector2Int slotArea)
+    {
+        Slot sourceSlot = null;
+        foreach (var item in openSlots)
+        {
+            if(CheckSlotAreaOnGrid(item.pos, slotArea))
+            {
+                sourceSlot = item;
+                break;
+            }
+        }
+
+        if (sourceSlot == null)
+            return false;
+
+        for (int x = 0; x < slotArea.x; x++)
+        {
+            for (int y = 0; y < slotArea.y; y++)
+            {
+                if (allSlots.TryGetValue(new Vector2Int(sourceSlot.pos.x + x, sourceSlot.pos.y + y), out var slot))
+                {
+                    slot.SetItem(sourceSlot, obj.GetSprite(), obj.name, ItemManager.GetID(obj));
+                }
+            }
+        }
+
+
+        return true;
     }
 
     public bool AddObjects(Item obj, int count)

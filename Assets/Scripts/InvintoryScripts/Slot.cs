@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using System;
+using UnityEngine.Rendering.HighDefinition;
 
 [Serializable]
 public class Slot : MonoBehaviour
@@ -21,6 +22,8 @@ public class Slot : MonoBehaviour
 
     public int objectID;
 
+    public Slot SourceSlot;
+
     private void Start()
     {;
         itemImage = transform.GetChild(0).GetComponent<Image>();
@@ -31,6 +34,15 @@ public class Slot : MonoBehaviour
 
     public void ClickSlot()
     {
+
+        if (SourceSlot == this)
+        {
+            Debug.Log("sourceSlot here");
+        }
+        else
+        {
+            Debug.Log("sourceSlot at " + SourceSlot.pos);
+        }
         float timeSinceLastClick = Time.time - lastClickTime;
 
         if (timeSinceLastClick <= doubleClickThreshold)
@@ -80,8 +92,11 @@ public class Slot : MonoBehaviour
         itemImage.color = new Color(1, 1, 1, 0);
         itemText.text = "";
         filled = false;
+        SourceSlot = this;
 
         objectID = -1;
+
+        //what we do here is set the slot image to the empty slot
     }
     public void SetItem(Sprite image, string name, int id)
     {
@@ -89,8 +104,30 @@ public class Slot : MonoBehaviour
         itemImage.color = new Color(1, 1, 1, 1);
         itemText.text = name;
         filled = true;
+        SourceSlot = this;
 
         objectID = id;
+
+        //set set to the SourceSlot Image
+    }
+    public void SetItem(Slot SourceSlot, Sprite image, string name, int id)
+    {
+        itemImage.sprite = image;
+        itemImage.color = new Color(1, 1, 1, 1);
+        itemText.text = name;
+        filled = true;
+        this.SourceSlot = SourceSlot;
+
+        objectID = id;
+
+        if(this.SourceSlot == this)
+        {
+            //set the SourceSlot Image
+        }
+        else
+        {
+            //set the slot image to nothing so the source slot can overlap
+        }
     }
 
     public bool isFilled() {  return filled; } 
