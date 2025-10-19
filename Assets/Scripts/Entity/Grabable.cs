@@ -10,8 +10,11 @@ namespace UseEntity
 
         public override void Interact(PlayerManager interacter)
         {
-            interacter.GetInventory().AddItem(new ItemData(item, 1));
-            NetcodeConnector.RequestKillServerRpc(GetComponent<NetworkObject>());
+            if (interacter.controlPanel.AddObjectOfSize(item))
+            {
+                interacter.GetInventory().AddItem(new ItemData(item, 1));
+                NetcodeConnector.RequestKillServerRpc(GetComponent<NetworkObject>());
+            }
         }
     }
 }

@@ -30,7 +30,7 @@ public class ControlPanel : MonoBehaviour
 
     private void Start()
     {
-        for (int i = 0; i <  slotSpawnCount; i++)
+            for (int i = 0; i <  slotSpawnCount; i++)
         {
             Slot s = Instantiate(slot, startPosition).GetComponent<Slot>();
             s.ui = this;
@@ -99,7 +99,7 @@ public class ControlPanel : MonoBehaviour
 
         for(int i = 0; i < count; i++)
         {
-            openSlots.First().SetItem(obj.GetSprite(), obj.name, ItemManager.GetID(obj));
+            openSlots.First().SetItem(obj.GetSprite(), ItemManager.GetID(obj));
             filledSlots.Add(openSlots.First());
             openSlots.Remove(openSlots.First());    
             targetSlot++;
@@ -107,21 +107,16 @@ public class ControlPanel : MonoBehaviour
 
         return true;
     }
-
-    public bool RemoveObjects(Item obj, int count)
+    
+    public bool RemoveObject(Item obj)
     {
         int currentlyFound = 0;
-        foreach (Slot slot in filledSlots)
+        foreach(Slot slot in filledSlots)
         {
-            if (slot.getObjectID() == ItemManager.GetID(obj))
+            if(slot.getObjectID() == ItemManager.GetID(obj))
             {
                 slot.ResetItem();
                 currentlyFound++;
-
-                if (currentlyFound == count)
-                {
-                    return true;
-                }
             }
         }
         return false;

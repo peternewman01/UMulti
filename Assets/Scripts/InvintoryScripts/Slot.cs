@@ -28,7 +28,6 @@ public class Slot : MonoBehaviour
     private void Start()
     {;
         itemImage = GetComponent<Image>();
-/*        itemText = transform.GetChild(2).GetComponent<TMP_Text>();*/
 
         ResetItem();
     }
@@ -59,6 +58,7 @@ public class Slot : MonoBehaviour
         lastClickTime = Time.time;
     }
 
+    //Wrong, this needs to be happening in the control pannel;
     private void OnSingleClick()
     {
         if (moving && MovingSlot && !filled)
@@ -89,21 +89,20 @@ public class Slot : MonoBehaviour
     }
 
     public void ResetItem()
-    { 
+    {
+        gameObject.SetActive(true);
         itemImage.sprite = emptySprite;
         //itemImage.color = new Color(1, 1, 1, 1);
-        //itemText.text = "";
         filled = false;
         SourceSlot = this;
 
         objectID = -1;
 
     }
-    public void SetItem(Sprite image, string name, int id)
+    public void SetItem(Sprite image, int id)
     {
         itemImage.sprite = image;
         //itemImage.color = new Color(1, 1, 1, 1);
-        //itemText.text = name;
         filled = true;
         SourceSlot = this;
 
@@ -117,7 +116,7 @@ public class Slot : MonoBehaviour
         SetItem(SourceSlot, obj.GetSprite(), ItemManager.GetID(obj));
     }
 
-    private void SetItem(Slot SourceSlot, Sprite image, /*string name,*/ int id)
+    private void SetItem(Slot SourceSlot, Sprite image, int id)
     {
         this.SourceSlot = SourceSlot;
         filled = true;
@@ -127,12 +126,10 @@ public class Slot : MonoBehaviour
         {
             itemImage.sprite = image;
             //itemImage.color = new Color(1, 1, 1, 1);
-            //itemText.text = name;
         }
         else
         {
-            itemImage.sprite = null;
-            //itemText.text = "";
+            gameObject.SetActive(false);
         }
     }
 

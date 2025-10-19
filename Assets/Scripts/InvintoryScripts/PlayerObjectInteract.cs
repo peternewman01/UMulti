@@ -90,7 +90,7 @@ public class PlayerObjectInteract : MonoBehaviour
         float closestValue = -1;
         foreach(UseEntity.Interactable interactable in nearbyInteractables)
         {
-            float dist = Vector3.Distance(interactable.transform.position, mainCameraRef.transform.position);
+            float dist = Vector3.Distance(interactable.transform.position, playerManager.transform.position);
             if (closestValue < dist)
             {
                 closestInteractable = interactable;
