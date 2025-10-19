@@ -16,8 +16,8 @@ public class PlayerManager : NetworkBehaviour
 {
     public InputActionAsset InputActions;
     public Canvas MainCanvas;
-    public GameObject ControlPanelPrefab;
-    [SerializeField] private ControlPanel controlPanel;
+    [SerializeField] private GameObject ControlPanelPrefab;
+    public ControlPanel controlPanel;
     [SerializeField] private Invintory inv;
 
 

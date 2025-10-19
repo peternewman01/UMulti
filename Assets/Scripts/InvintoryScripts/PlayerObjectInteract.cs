@@ -83,6 +83,7 @@ public class PlayerObjectInteract : MonoBehaviour
         inRangePass.m_DrawRenderers.Remove(obj.GetComponent<Renderer>());
     }
 
+    //TODO: make based on Physically closesest -h
     private UseEntity.Interactable GetClosestInteractable()
     {
         UseEntity.Interactable closestInteractable = null;

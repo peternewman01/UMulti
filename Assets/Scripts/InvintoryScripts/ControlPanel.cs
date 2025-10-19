@@ -58,35 +58,36 @@ public class ControlPanel : MonoBehaviour
         }
     }
 
-    //size should stay pretty small, checking somwhere between 1 and 9 slots
-    public bool AddObjectOfSize(Item obj, Vector2Int slotArea)
+    public bool AddObjectOfSize(Item obj)
     {
+        Vector2Int slotArea = obj.GetInventorySize();
+
+        if(slotArea == Vector2Int.zero) return false;
+
         Slot sourceSlot = null;
         foreach (var item in openSlots)
         {
             if(CheckSlotAreaOnGrid(item.pos, slotArea))
             {
                 sourceSlot = item;
-                break;
-            }
-        }
 
-        if (sourceSlot == null)
-            return false;
-
-        for (int x = 0; x < slotArea.x; x++)
-        {
-            for (int y = 0; y < slotArea.y; y++)
-            {
-                if (allSlots.TryGetValue(new Vector2Int(sourceSlot.pos.x + x, sourceSlot.pos.y + y), out var slot))
+                //size should stay pretty small, checking somwhere between 1 and 9 slots
+                for (int x = 0; x < slotArea.x; x++)
                 {
-                    slot.SetItem(sourceSlot, obj.GetSprite(), obj.name, ItemManager.GetID(obj));
+                    for (int y = 0; y < slotArea.y; y++)
+                    {
+                        if (allSlots.TryGetValue(new Vector2Int(sourceSlot.pos.x + x, sourceSlot.pos.y + y), out var slot))
+                        {
+                            slot.SetItem(sourceSlot, obj);
+                        }
+                    }
                 }
+
+                return true;
             }
         }
 
-
-        return true;
+        return false;
     }
 
     public bool AddObjects(Item obj, int count)
@@ -134,7 +135,7 @@ public class ControlPanel : MonoBehaviour
         int currentlyFound = 0;
         foreach (Slot slot in filledSlots)
         {
-            if (slot.objectID == id)
+            if (slot.getObjectID() == id)
             {
                 slot.ResetItem();
                 currentlyFound++;

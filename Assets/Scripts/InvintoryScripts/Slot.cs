@@ -18,11 +18,13 @@ public class Slot : MonoBehaviour
     private const float doubleClickThreshold = 0.25f;
 
     public static bool moving = false;
-    public static Slot MovingSlot;
+    private static Slot MovingSlot;
 
-    public int objectID;
+    private int objectID;
 
     public Slot SourceSlot;
+
+    [SerializeField] private Sprite emptySprite;
 
     private void Start()
     {;
@@ -43,6 +45,7 @@ public class Slot : MonoBehaviour
         {
             Debug.Log("sourceSlot at " + SourceSlot.pos);
         }
+
         float timeSinceLastClick = Time.time - lastClickTime;
 
         if (timeSinceLastClick <= doubleClickThreshold)
@@ -88,20 +91,19 @@ public class Slot : MonoBehaviour
 
     public void ResetItem()
     { 
-        itemImage.sprite = null;
-        itemImage.color = new Color(1, 1, 1, 0);
+        itemImage.sprite = emptySprite;
+        //itemImage.color = new Color(1, 1, 1, 1);
         itemText.text = "";
         filled = false;
         SourceSlot = this;
 
         objectID = -1;
 
-        //what we do here is set the slot image to the empty slot
     }
     public void SetItem(Sprite image, string name, int id)
     {
         itemImage.sprite = image;
-        itemImage.color = new Color(1, 1, 1, 1);
+        //itemImage.color = new Color(1, 1, 1, 1);
         itemText.text = name;
         filled = true;
         SourceSlot = this;
@@ -110,25 +112,32 @@ public class Slot : MonoBehaviour
 
         //set set to the SourceSlot Image
     }
-    public void SetItem(Slot SourceSlot, Sprite image, string name, int id)
-    {
-        itemImage.sprite = image;
-        itemImage.color = new Color(1, 1, 1, 1);
-        itemText.text = name;
-        filled = true;
-        this.SourceSlot = SourceSlot;
 
+    public void SetItem(Slot SourceSlot, Item obj)
+    {
+        SetItem(SourceSlot, obj.GetSprite(), obj.name, ItemManager.GetID(obj));
+    }
+
+    private void SetItem(Slot SourceSlot, Sprite image, string name, int id)
+    {
+        this.SourceSlot = SourceSlot;
+        filled = true;
         objectID = id;
 
-        if(this.SourceSlot == this)
+        if (this.SourceSlot == this)
         {
-            //set the SourceSlot Image
+            itemImage.sprite = image;
+            //itemImage.color = new Color(1, 1, 1, 1);
+            itemText.text = name;
         }
         else
         {
-            //set the slot image to nothing so the source slot can overlap
+            itemImage.sprite = null;
+            itemText.text = "";
         }
     }
 
     public bool isFilled() {  return filled; } 
+
+    public int getObjectID() { return objectID; }
 }
