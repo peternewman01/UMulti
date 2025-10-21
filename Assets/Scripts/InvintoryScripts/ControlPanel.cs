@@ -8,8 +8,8 @@ using static UnityEditor.PlayerSettings;
 
 public class ControlPanel : MonoBehaviour
 {
-    public GameObject slot;
-    public Transform startPosition;
+    [SerializeField] private GameObject slot;
+    [SerializeField] private Transform startPosition;
     public List<Slot> openSlots = new List<Slot>();
     public List<Slot> filledSlots = new List<Slot>();
 
@@ -26,7 +26,7 @@ public class ControlPanel : MonoBehaviour
 
     public Slot slotHolding;
 
-    public bool run = false;
+    public Slot MovingSlot;
 
     private void Start()
     {
@@ -49,16 +49,7 @@ public class ControlPanel : MonoBehaviour
         openSlots.Add(allSlots[-Vector2Int.one]);
     }
 
-    private void Update()
-    {
-        if(run)
-        {
-            Debug.Log(CheckSlotAreaOnGrid(new Vector2Int(0, 0), Vector2Int.down) ? "area T" : "area F");
-            run = false;
-        }
-    }
-
-    public bool AddObjectOfSize(Item obj)
+    public bool AddObject(Item obj)
     {
         Vector2Int slotArea = obj.GetInventorySize();
 
@@ -95,67 +86,16 @@ public class ControlPanel : MonoBehaviour
         return false;
     }
 
-    public bool AddObjects(Item obj, int count)
-    {
-        if(slotSpawnCount - targetSlot < count)
-        {
-            return false;
-        }
-
-        for(int i = 0; i < count; i++)
-        {
-            openSlots.First().SetItem(obj.GetSprite(), ItemManager.GetID(obj));
-            filledSlots.Add(openSlots.First());
-            openSlots.Remove(openSlots.First());    
-            targetSlot++;
-        }
-
-        return true;
-    }
-    
     public bool RemoveObject(Item obj)
     {
-        int currentlyFound = 0;
-        foreach(Slot slot in filledSlots)
-        {
-            if(slot.getObjectID() == ItemManager.GetID(obj))
-            {
-                slot.ResetItem();
-                currentlyFound++;
-            }
-        }
-        return false;
-    }
-
-    public bool RemoveObjects(int id, int count)
-    {
-        Slot[] removeSlots = new Slot[count];
-        int currentSlot = 0;
-
-        int currentlyFound = 0;
         foreach (Slot slot in filledSlots)
         {
-            if (slot.getObjectID() == id)
+            if (slot.getObjectID() == ItemManager.GetID(obj))
             {
                 slot.ResetItem();
-                currentlyFound++;
-
-                openSlots.Insert(0, slot);
-                removeSlots[currentSlot] = slot;
-                currentSlot++;
-
-                if (currentlyFound == count) break;
+                RectTransform removeSlot = MovingSlot.gameObject.GetComponent<RectTransform>();
+                removeSlot.localScale = new Vector2(MovingSlot.getSize().x, MovingSlot.getSize().y);
             }
-        }
-
-        foreach (Slot slot in removeSlots)
-        {
-            filledSlots.Remove(slot);
-        }
-
-        if (currentlyFound == count)
-        {
-            return true;
         }
         return false;
     }
@@ -188,5 +128,48 @@ public class ControlPanel : MonoBehaviour
         }
 
         return true;
+    }
+
+    public void SetMovingSlot(Slot slot)
+    {
+        MovingSlot = slot;
+    }
+
+    public bool MoveMovingSlotTo(Slot slot)
+    {
+        if(MovingSlot)
+        {
+            if (CheckSlotAreaOnGrid(slot.pos, MovingSlot.getSize()))
+            {
+                Slot sourceSlot = slot;
+                //size should stay pretty small, checking somwhere between 1 and 9 slots
+                for (int x = 0; x < MovingSlot.getSize().x; x++)
+                {
+                    for (int y = 0; y < MovingSlot.getSize().y; y++)
+                    {
+                        if (allSlots.TryGetValue(new Vector2Int(sourceSlot.pos.x + x, sourceSlot.pos.y + y), out var tempSlot))
+                        {
+                            tempSlot.SetItem(sourceSlot, ItemManager.GetItem(MovingSlot.getObjectID()));
+                            filledSlots.Add(tempSlot);
+                            openSlots.Remove(tempSlot);
+                        }
+                    }
+                }
+
+                RectTransform sourceRect = sourceSlot.gameObject.GetComponent<RectTransform>();
+                sourceRect.localScale = new Vector2(MovingSlot.getSize().x, MovingSlot.getSize().y);
+
+                MovingSlot.ResetItem();
+                sourceRect = MovingSlot.gameObject.GetComponent<RectTransform>();
+                sourceRect.localScale = new Vector2(MovingSlot.getSize().x, MovingSlot.getSize().y);
+
+
+
+
+                return true;
+            }
+        }
+        
+        return false;
     }
 }

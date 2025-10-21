@@ -198,9 +198,9 @@ public class PlayerManager : NetworkBehaviour
             CreateRope(ropeStarts[i], ropeEnds[i]);
         }
 
-        controlPanel.gameObject.SetActive(false);
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
+        controlPanel.gameObject.SetActive(true);
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
     }
 
     public override void OnNetworkDespawn()

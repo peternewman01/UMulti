@@ -12,12 +12,12 @@ public class Slot : MonoBehaviour
     public Image itemImage;
     [SerializeField] private bool filled;
     public Vector2Int pos;
+    [SerializeField] private Vector2Int slotSize;
 
     private float lastClickTime;
     private const float doubleClickThreshold = 0.25f;
 
     public static bool moving = false;
-    private static Slot MovingSlot;
 
     private int objectID;
 
@@ -32,36 +32,43 @@ public class Slot : MonoBehaviour
         ResetItem();
     }
 
+    private void Update()
+    {
+        if(SourceSlot.getSize() == Vector2Int.one)
+        {
+            ResetItem();
+        }
+    }
+
     public void ClickSlot()
     {
-
         if (SourceSlot == this)
         {
-            Debug.Log("sourceSlot here");
+            float timeSinceLastClick = Time.time - lastClickTime;
+
+            if (timeSinceLastClick <= doubleClickThreshold)
+            {
+                OnDoubleClick();
+            }
+            else
+            {
+                OnSingleClick();
+            }
+
+            lastClickTime = Time.time;
         }
         else
         {
-            Debug.Log("sourceSlot at " + SourceSlot.pos);
+            SourceSlot.ClickSlot();
         }
 
-        float timeSinceLastClick = Time.time - lastClickTime;
-
-        if (timeSinceLastClick <= doubleClickThreshold)
-        {
-            OnDoubleClick();
-        }
-        else
-        {
-            OnSingleClick();
-        }
-
-        lastClickTime = Time.time;
+        
     }
 
     //Wrong, this needs to be happening in the control pannel;
     private void OnSingleClick()
     {
-        if (moving && MovingSlot && !filled)
+        /*if (moving && MovingSlot && !filled)
         {
             MovingSlot.filled = false;
             filled = true;
@@ -80,7 +87,18 @@ public class Slot : MonoBehaviour
         {
             moving = true;
             MovingSlot = this;
+        }*/
+
+        if (ui.MovingSlot && !filled)
+        {
+            ui.MoveMovingSlotTo(this);
         }
+        else if (filled)
+        {
+            moving = true;
+            ui.SetMovingSlot(this);
+        }
+
     }
 
     private void OnDoubleClick()
@@ -96,33 +114,24 @@ public class Slot : MonoBehaviour
         filled = false;
         SourceSlot = this;
         itemImage.SetNativeSize();
+        slotSize = Vector2Int.one;
 
         objectID = -1;
 
+        ui.openSlots.Add(this);
+        ui.filledSlots.Remove(this);
     }
-    public void SetItem(Sprite image, int id)
-    {
-        itemImage.sprite = image;
-        itemImage.SetNativeSize();
-        //itemImage.color = new Color(1, 1, 1, 1);
-        filled = true;
-        SourceSlot = this;
-
-        objectID = id;
-
-        //set set to the SourceSlot Image
-    }
-
     public void SetItem(Slot SourceSlot, Item obj)
     {
-        SetItem(SourceSlot, obj.GetSprite(), ItemManager.GetID(obj));
+        SetItem(SourceSlot, obj.GetSprite(), obj.GetInventorySize(), ItemManager.GetID(obj));
     }
 
-    private void SetItem(Slot SourceSlot, Sprite image, int id)
+    private void SetItem(Slot SourceSlot, Sprite image, Vector2Int size, int id)
     {
         this.SourceSlot = SourceSlot;
         filled = true;
         objectID = id;
+        slotSize = size;
 
         if (this.SourceSlot == this)
         {
@@ -136,10 +145,7 @@ public class Slot : MonoBehaviour
         }
     }
 
-    public void SetSize(Vector2Int newSize)
-    {
-
-    }
+    public Vector2Int getSize() { return slotSize; }
 
     public bool isFilled() {  return filled; } 
 
