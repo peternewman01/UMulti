@@ -34,7 +34,7 @@ public class Slot : MonoBehaviour
 
     private void Update()
     {
-        if(SourceSlot.getSize() == Vector2Int.one)
+        if(SourceSlot.getSize() == Vector2Int.one || SourceSlot.SourceSlot != SourceSlot)
         {
             ResetItem();
         }
@@ -68,27 +68,6 @@ public class Slot : MonoBehaviour
     //Wrong, this needs to be happening in the control pannel;
     private void OnSingleClick()
     {
-        /*if (moving && MovingSlot && !filled)
-        {
-            MovingSlot.filled = false;
-            filled = true;
-
-            ui.openSlots.Add(MovingSlot);
-            ui.openSlots.Remove(this);
-            ui.filledSlots.Remove(MovingSlot);
-            ui.filledSlots.Add(this);
-
-            this.SetItem(MovingSlot, MovingSlot.itemImage.sprite, objectID);
-            MovingSlot.ResetItem();
-
-            MovingSlot = null;
-        }
-        else if(filled)
-        {
-            moving = true;
-            MovingSlot = this;
-        }*/
-
         if (ui.MovingSlot && !filled)
         {
             ui.MoveMovingSlotTo(this);
@@ -120,6 +99,10 @@ public class Slot : MonoBehaviour
 
         ui.openSlots.Add(this);
         ui.filledSlots.Remove(this);
+
+
+        RectTransform sourceRect = gameObject.GetComponent<RectTransform>();
+        sourceRect.localScale = new Vector2(slotSize.x, slotSize.y);
     }
     public void SetItem(Slot SourceSlot, Item obj)
     {

@@ -130,6 +130,15 @@ public class ControlPanel : MonoBehaviour
         return true;
     }
 
+    public bool PositionInSlotArea(Vector2Int startPos, Vector2Int checkPos, Vector2Int size)
+    {
+        if (size.x < 1 || size.y < 1)
+            return false;
+
+        return (checkPos.x >= startPos.x && checkPos.x < startPos.x + size.x) &&
+               (checkPos.y >= startPos.y && checkPos.y < startPos.y + size.y);
+    }
+
     public void SetMovingSlot(Slot slot)
     {
         MovingSlot = slot;
@@ -159,12 +168,16 @@ public class ControlPanel : MonoBehaviour
                 RectTransform sourceRect = sourceSlot.gameObject.GetComponent<RectTransform>();
                 sourceRect.localScale = new Vector2(MovingSlot.getSize().x, MovingSlot.getSize().y);
 
-                MovingSlot.ResetItem();
-                sourceRect = MovingSlot.gameObject.GetComponent<RectTransform>();
-                sourceRect.localScale = new Vector2(MovingSlot.getSize().x, MovingSlot.getSize().y);
+
+                if(!PositionInSlotArea(sourceSlot.pos, MovingSlot.pos, MovingSlot.getSize()))
+                {
+                    MovingSlot.ResetItem();
+                    sourceRect = MovingSlot.gameObject.GetComponent<RectTransform>();
+                    sourceRect.localScale = new Vector2(MovingSlot.getSize().x, MovingSlot.getSize().y);
+                }
 
 
-
+                MovingSlot = null;
 
                 return true;
             }
