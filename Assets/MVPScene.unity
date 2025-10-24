@@ -839,13 +839,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 157207112}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.38268343, y: 0, z: 0, w: 0.92387956}
+  m_LocalRotation: {x: 0.27059805, y: 0.6532815, z: -0.27059805, w: 0.6532815}
   m_LocalPosition: {x: 0, y: 10, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 45, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 45, y: 90, z: 0}
 --- !u!114 &157207115
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -903,10 +903,10 @@ MonoBehaviour:
   moonPhase: 0.2
   moonPhaseRotation: 0
   earthshine: 1
-  flareSize: 1
+  flareSize: 90
   flareTint: {r: 1, g: 1, b: 1, a: 1}
-  flareFalloff: 4
-  flareMultiplier: 1
+  flareFalloff: 120
+  flareMultiplier: 0.021
   surfaceTexture: {fileID: 0}
   surfaceTint: {r: 1, g: 1, b: 1, a: 1}
   m_Distance: 1.5e+11
@@ -1002,7 +1002,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   sunLight: {fileID: 157207113}
   timeOfDay: 0
-  dayDuration: 10
+  dayDuration: 50
   sunColorGradient:
     serializedVersion: 2
     key0: {r: 1, g: 0, b: 0.49574804, a: 1}
@@ -1018,9 +1018,9 @@ MonoBehaviour:
     ctime2: 3277
     ctime3: 5783
     ctime4: 10601
-    ctime5: 59174
-    ctime6: 64379
-    ctime7: 65535
+    ctime5: 56476
+    ctime6: 61680
+    ctime7: 63993
     atime0: 0
     atime1: 65535
     atime2: 0
@@ -1033,8 +1033,8 @@ MonoBehaviour:
     m_ColorSpace: -1
     m_NumColorKeys: 8
     m_NumAlphaKeys: 2
-  sunIntensity: 500
-  moonIntensityMultiplier: 0.1
+  sunIntensity: 130000
+  moonIntensityMultiplier: 0.00002
 --- !u!4 &173468612 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6704981672725469668, guid: 798e03e2fd1847941b6f41951db7bdf4, type: 3}

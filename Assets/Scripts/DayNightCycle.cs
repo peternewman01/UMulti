@@ -1,19 +1,19 @@
 using UnityEngine;
+using UnityEngine.Rendering;
+using UnityEngine.Rendering.HighDefinition;
 
 public class DayNightCycle : MonoBehaviour
 {
-    [Header("References")]
     public Light sunLight;
 
-    [Header("Settings")]
-    [Range(0, 180)] public float timeOfDay = 0f; // 0–360 full rotation
-    public float dayDuration = 120f; // seconds per full cycle
-    public Gradient sunColorGradient;
-    public float sunIntensity = 1f;
-    public float moonIntensityMultiplier = 0.33f;
+    [Range(0, 180)] public float timeOfDay = 0f; //0–180 full day, is passed to shader graph
+    [SerializeField] private float dayDuration = 120f; //seconds per full cycle, i think we should do 10 min days, but am open to persuasion, @ me lol
+    [SerializeField] private Gradient sunColorGradient;
+    [SerializeField] private float sunIntensity = 1f;
+    [SerializeField] private float moonIntensityMultiplier = 0.33f;
 
     private float rotationSpeed;
-    private bool isDay = true;
+    private bool isDay = true; //is also passed to shader graph
 
     void Start()
     {
@@ -44,25 +44,25 @@ public class DayNightCycle : MonoBehaviour
             timeOfDay -= 180f;
         }
 
-        // Rotate light according to time
+        //rotate light according to time
         sunLight.transform.localRotation = Quaternion.Euler(timeOfDay, 170f, 0);
 
-        // Intensity based on day/night
+        //intensity based on day/night
         float intensityMultiplier = 0f;
         Color lightColor = Color.white;
 
-        if (isDay) // Daytime: sunrise to sunset
+        if (isDay) //daytime: sunrise to sunset
         {
             intensityMultiplier = Mathf.Clamp01(Mathf.Sin(timeOfDay * Mathf.Deg2Rad));
-            lightColor = sunColorGradient.Evaluate(timeOfDay / 360f);
+            lightColor = sunColorGradient.Evaluate(timeOfDay / 180f);
         }
-        else // Nighttime: moonrise to moonset
+        else //nighttime: moonrise to moonset
         {
             float nightAngle = timeOfDay;
             intensityMultiplier = Mathf.Clamp01(Mathf.Sin(nightAngle * Mathf.Deg2Rad)) * moonIntensityMultiplier;
             lightColor = Color.Lerp(
-                new Color(0.6f, 0.7f, 1f),  // moonlight (cooler)
-                new Color(0.3f, 0.4f, 0.6f), // deep night
+                new Color(0.6f, 0.7f, 1f),  //moonlight(cooler color)
+                new Color(0.3f, 0.4f, 0.6f), //deep night
                 Mathf.Sin(nightAngle * Mathf.Deg2Rad)
             );
         }
