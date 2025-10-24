@@ -24,7 +24,7 @@ RenderSettings:
   m_AmbientEquatorColor: {r: 0.114, g: 0.125, b: 0.133, a: 1}
   m_AmbientGroundColor: {r: 0.047, g: 0.043, b: 0.035, a: 1}
   m_AmbientIntensity: 1
-  m_AmbientMode: 4
+  m_AmbientMode: 0
   m_SubtractiveShadowColor: {r: 0.42, g: 0.478, b: 0.627, a: 1}
   m_SkyboxMaterial: {fileID: 0}
   m_HaloStrength: 0.5
@@ -1570,6 +1570,10 @@ PrefabInstance:
       propertyPath: 'totems.Array.data[2]'
       value: 
       objectReference: {fileID: 274558600}
+    - target: {fileID: 8548914285155623681, guid: b191ecf0104d105419adf3b5696031d5, type: 3}
+      propertyPath: craftedItemSpawnPoint
+      value: 
+      objectReference: {fileID: 587365747}
     - target: {fileID: 8704289336133677219, guid: b191ecf0104d105419adf3b5696031d5, type: 3}
       propertyPath: m_LocalPosition.x
       value: 9.59
@@ -3717,6 +3721,11 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 798e03e2fd1847941b6f41951db7bdf4, type: 3}
+--- !u!4 &587365747 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 1044584760826724119, guid: b191ecf0104d105419adf3b5696031d5, type: 3}
+  m_PrefabInstance: {fileID: 274558599}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &590364792
 GameObject:
   m_ObjectHideFlags: 0
@@ -12821,6 +12830,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
+  craftedItemSpawnPoint: {fileID: 0}
 --- !u!135 &2055419005
 SphereCollider:
   m_ObjectHideFlags: 0

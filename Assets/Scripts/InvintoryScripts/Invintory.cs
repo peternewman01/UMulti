@@ -66,7 +66,7 @@ public class Invintory : MonoBehaviour
 
     public bool Has(int id, int count)
     {
-        if(Stuff.ContainsKey(id) && Stuff[id] < count)
+        if(Stuff.ContainsKey(id) && Stuff[id] >= count)
             return true;
 
         return false;

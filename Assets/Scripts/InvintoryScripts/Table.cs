@@ -11,18 +11,28 @@ namespace UseEntity
     [RequireComponent(typeof(PlayerInput))]
     public class Table : Interactable
     {
-        private List<ItemData> heldItems;
+        [SerializeField] private Transform craftedItemSpawnPoint;
+        private List<ItemData> heldItems = new();
         private Totem[] totems;
 
-        private void Awake()
+        private void Start()
         {
             totems = GetComponentsInChildren<Totem>();
+
+            //TEMP
+            ItemData[] requiredItemsForCraft = RecipeManager.Instance.GetRecipe(0).GetRequiredItems();
+            for (int i = 0; i < requiredItemsForCraft.Length; i++)
+            {
+                ItemData item = requiredItemsForCraft[i];
+                totems[i].SetRequestedItem(item);
+            }
         }
         public override void Interact(PlayerManager interacter)
         {
-            if(RecipeManager.Instance.CraftRecipe(heldItems))
+            if(RecipeManager.Instance.CraftRecipe(heldItems, out RecipeData recipe))
             {
                 //BUG -- extra items on totems will be destroyed
+                NetcodeConnector.SpawnObjectServerRpc(recipe.GetOutputItem().item.GetWorldPrefab(), craftedItemSpawnPoint.position, craftedItemSpawnPoint.rotation);
                 foreach(Totem totem in totems)
                 {
                     totem.killHolding();

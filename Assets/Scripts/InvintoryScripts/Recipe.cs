@@ -40,6 +40,7 @@ public class RecipeData : ScriptableObject
 
     public bool CanCraftFromDataList(List<ItemData> dataList)
     {
+        if (dataList == null) return false;
         foreach (ItemData item in requiredItems)
         {
             if (dataList.Contains(item)) continue;
@@ -48,4 +49,8 @@ public class RecipeData : ScriptableObject
 
         return true;
     }
+
+    //Accessors
+    public ItemData[] GetRequiredItems() => requiredItems;
+    public ItemData GetOutputItem() => outputItemData;
 }
