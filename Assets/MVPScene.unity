@@ -1002,7 +1002,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   sunLight: {fileID: 157207113}
   timeOfDay: 0
-  dayDuration: 50
+  dayDuration: 200
   sunColorGradient:
     serializedVersion: 2
     key0: {r: 1, g: 0, b: 0.49574804, a: 1}

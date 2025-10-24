@@ -45,7 +45,7 @@ public class DayNightCycle : MonoBehaviour
         }
 
         //rotate light according to time
-        sunLight.transform.localRotation = Quaternion.Euler(timeOfDay, 170f, 0);
+        sunLight.transform.localRotation = Quaternion.Euler(timeOfDay, 110f, 0);
 
         //intensity based on day/night
         float intensityMultiplier = 0f;
