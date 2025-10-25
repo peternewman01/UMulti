@@ -20,6 +20,6 @@ MonoBehaviour:
     mathType: 3
   yFluxuation: 24
   islandSpacing: 0
-  material: {fileID: 2100000, guid: 301b77c23f32bde478daba74d434e418, type: 2}
+  material: {fileID: 2100000, guid: d2ed45222af1b0c4f9261171eb104be8, type: 2}
   islandRadius: 20
   radiusFluxuation: 0
