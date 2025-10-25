@@ -20,6 +20,12 @@ MonoBehaviour:
     mathType: 3
   yFluxuation: 24
   islandSpacing: 0
-  material: {fileID: 2100000, guid: d2ed45222af1b0c4f9261171eb104be8, type: 2}
+  possibleMaterials:
+  - material: {fileID: 2100000, guid: 3850f3cfde19cf341905d6b90218c5fd, type: 2}
+    startHeight: 0
+  - material: {fileID: 2100000, guid: 8be93c215a9c92e40bebfce960cc72ff, type: 2}
+    startHeight: 38
+  - material: {fileID: 2100000, guid: e77750ce8838f1e438a2d3239f513dba, type: 2}
+    startHeight: 60
   islandRadius: 20
   radiusFluxuation: 0

@@ -24,7 +24,7 @@ RenderSettings:
   m_AmbientEquatorColor: {r: 0.114, g: 0.125, b: 0.133, a: 1}
   m_AmbientGroundColor: {r: 0.047, g: 0.043, b: 0.035, a: 1}
   m_AmbientIntensity: 1
-  m_AmbientMode: 4
+  m_AmbientMode: 0
   m_SubtractiveShadowColor: {r: 0.42, g: 0.478, b: 0.627, a: 1}
   m_SkyboxMaterial: {fileID: 0}
   m_HaloStrength: 0.5
@@ -10737,9 +10737,9 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   marchingAlgorithmPrefab: {fileID: 2150305323032263239, guid: 9c5ce2a33e0ba3542b8f5080e1939752, type: 3}
   subCubeSize: 6
-  subCubesPerChunk: 10
+  subCubesPerChunk: 16
   chunksPerFrame: 4
-  cubeSpacing: 1
+  cubeSpacing: 2
   stepHeightAngle: 25
 --- !u!4 &1772774570
 Transform:

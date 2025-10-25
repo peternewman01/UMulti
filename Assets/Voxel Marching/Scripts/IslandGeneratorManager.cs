@@ -17,8 +17,10 @@ public class IslandGeneratorManager : TerrainGeneration
         public int weight;
         public IslandGenerator generator;
     }
+
     //[SerializeField] private float islandSpacing = 64f;
     [SerializeField] private List<WeightedGenerator> possibleGenerators = new();
+    //[SerializeField] private HeightMaterials[] possibleMaterials;
     [SerializeField] private uint islandsToGenerate = 16;
     private List<IslandGenerator> instancedGenerators = new();
     private int totalWeight;
@@ -44,7 +46,7 @@ public class IslandGeneratorManager : TerrainGeneration
         instancedGenerators.Clear();
     }
 
-    private IslandGenerator[] GetAllIslandsAtPosition(Vector3 pos)
+    public IslandGenerator[] GetAllIslandsAtPosition(Vector3 pos)
     {
         List<IslandGenerator> generators = new();
         if (instancedGenerators.Count <= 0)
@@ -80,14 +82,6 @@ public class IslandGeneratorManager : TerrainGeneration
         return islandGenerator;
     }
 
-    private void GenerateRosourcesForIsland(Vector3 pos, MarchingAlgorithm algorithm)
-    {
-/*        foreach(ResourceGenerator generator in resourceGenerators)
-        {
-            generator.CustomNoise(pos, algorithm);
-        }*/
-    }
-
     public override float[] CustomNoise(Vector3 pos, MarchingAlgorithm algorithm)
     {
         List<float> values = new();
@@ -96,7 +90,6 @@ public class IslandGeneratorManager : TerrainGeneration
         {
             values.AddRange( generator.CustomNoise(pos, algorithm));
         }
-
         return /*values.Count > 0 ? */values.ToArray()/* : GetNearestIsland(pos).CustomNoise(pos, algorithm)*/;
     }
 
@@ -125,7 +118,7 @@ public class IslandGeneratorManager : TerrainGeneration
         newGenerator.SetCenter(FindViableCenter(newGenerator));
         instancedGenerators.Add(newGenerator);
 
-        //Populates frontier in chunk manager to only contain chunks that matter to 
+        //Populates frontier in chunk manager to only contain chunks that matter to
         ChunkMananger.Instance.AddChunksInRadiusAtPosition(newGenerator.GetCenter(), newGenerator.GetIslandMaxDistanceFromCenter() * 1.5f);
     }
 

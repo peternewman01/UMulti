@@ -27,6 +27,14 @@ public class NetcodeConnector : NetworkManager
     }
 
     [ServerRpc(RequireOwnership = false)]
+    public static void SpawnMarchingAlgorithmRpc(MarchingAlgorithm prefab, out MarchingAlgorithm spawned, Vector3 position, Vector2Int chunk, uint subCube)
+    {
+        spawned = Instantiate(prefab, position, Quaternion.identity);
+        spawned.InitChunkData(chunk, subCube);
+        spawned.GetComponent<NetworkObject>().Spawn();
+    }
+
+    [ServerRpc(RequireOwnership = false)]
     public static void RequestKillServerRpc(NetworkObjectReference objRef)
     {
         if (objRef.TryGet(out NetworkObject netObj))

@@ -171,14 +171,9 @@ public class ChunkMananger : NetworkBehaviour
 
         for (uint i = 0; i < subCubesPerChunk; i++)
         {
-            MarchingAlgorithm subChunk = Instantiate(marchingAlgorithmPrefab);
-            subChunk.name = GetChunkName(chunk) + "--SubChunk " + i;
-            subChunk.InitChunkData(chunk, i);
-            subChunk.GetComponent<NetworkObject>().Spawn();
-            subChunk.transform.parent = spawnedChunk.transform;
-            subChunk.transform.position = (ChunkToWorld(chunk) + new Vector3(0, i * subCubeSize, 0) * stepHeightAngle) * cubeSpacing;
-/*            if(IsOwner && subChunk.IsSpawned)
-                subChunk.GenerateIslandRpc();*/
+            NetcodeConnector.SpawnMarchingAlgorithmRpc(marchingAlgorithmPrefab, out MarchingAlgorithm spawned, (ChunkToWorld(chunk) + new Vector3(0, i * subCubeSize, 0) * stepHeightAngle) * cubeSpacing, chunk, i);
+            spawned.name = GetChunkName(chunk) + "--SubChunk " + i;
+            spawned.transform.parent = spawnedChunk.transform;
         }
 
         return subCubesPerChunk;

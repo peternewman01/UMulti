@@ -17,6 +17,7 @@ using UnityEngine;
 public abstract class MarchingAlgorithm : NetworkBehaviour
 {
     
+    public TerrainGeneration generation = null; // Set in the editor
     protected bool hasData = false;
     protected uint voxelArea;
     protected Vector2Int chunk;
@@ -26,7 +27,6 @@ public abstract class MarchingAlgorithm : NetworkBehaviour
     private float terrainSurface;
     private List<Vector3> vertices = new();
     private List<int> triangles = new();
-    public TerrainGeneration generation = null; // Set in the editor
 
     public Action TerrainPopulationComplete;
     public Action<Vector3, MarchingAlgorithm> MeshColliderUpdated;

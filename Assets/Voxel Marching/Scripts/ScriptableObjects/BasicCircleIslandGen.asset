@@ -18,8 +18,14 @@ MonoBehaviour:
   bottomPerlinMultipliers:
   - values: {x: 0.1, y: 24, z: 0.1}
     mathType: 3
-  yFluxuation: 16
+  yFluxuation: 30
   islandSpacing: 4
-  material: {fileID: 2100000, guid: d2ed45222af1b0c4f9261171eb104be8, type: 2}
+  possibleMaterials:
+  - material: {fileID: 2100000, guid: d2ed45222af1b0c4f9261171eb104be8, type: 2}
+    startHeight: 0
+  - material: {fileID: 2100000, guid: 301b77c23f32bde478daba74d434e418, type: 2}
+    startHeight: 42
+  - material: {fileID: 2100000, guid: e6438b2823a1935478ccd2999ac1694b, type: 2}
+    startHeight: 50
   islandRadius: 64
   radiusFluxuation: 4
