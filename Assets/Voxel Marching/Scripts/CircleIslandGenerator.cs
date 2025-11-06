@@ -42,6 +42,8 @@ public class CircleIslandGenerator : IslandGenerator
         {
             value[1] += CalcPerlin(perlinMultiplier, worldPos.x, worldPos.z, distance);
         }
+
+        algorithm.GetComponent<MeshRenderer>().material = GetMaterial(halfHeight);
         //Debug.Log($"values for chunk({chunk.x}, {chunk.y})-subPos({subPos.x}, {subPos.y}): (min:{value[0]}, max:{value[1]})");
         return value;
     }

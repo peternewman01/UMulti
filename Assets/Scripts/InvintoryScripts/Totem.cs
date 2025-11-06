@@ -5,23 +5,30 @@ namespace UseEntity
 {
     public class Totem : Interactable
     {
-        public Item heldItem;
         public static string ObjectName = "";
         private Table table;
-        public GameObject holding;
+        public NetworkObject holding;
         [SerializeField] private Transform spawnPos;
         public Transform woodPrefab;
+        private ItemData requestItem;
 
         private bool isHolding = false;
 
-        //TODO: grab players held item instead of trying to grab a specific item
+        //TODO: how do we wanna handle interacting with crafting interfaces and the totems?
         public override void Interact(PlayerManager interacter)
         {
-            if (interacter.GetInventory().Has(ItemManager.GetID(heldItem), 1))
+            if (interacter.GetInventory().Has(requestItem)) 
             {
-                NetcodeConnector.SpawnObjectServerRpc(heldItem.GetWorldPrefab(), spawnPos.position);
-                interacter.GetInventory().RemoveItem(new ItemData(heldItem, 1));
+                NetcodeConnector.SpawnObjectServerRpc(requestItem.item.GetWorldPrefab(), out holding, spawnPos.position);
+                holding.GetComponent<Rigidbody>().useGravity = false; //TEMP
+                interacter.GetInventory().RemoveItem(requestItem);
+                table.addTotemHolding(requestItem); 
             }
+        }
+
+        public void SetRequestedItem(ItemData data)
+        {
+            requestItem = data;
         }
 
         private void Start()
@@ -29,7 +36,7 @@ namespace UseEntity
             table = GetComponentInParent<Table>();
         }
 
-        [ServerRpc(RequireOwnership = false)]
+/*        [ServerRpc(RequireOwnership = false)]
         public void RequestSpawnServerRpc(Vector3 spawnPosition)
         {
             Transform spawnedObj = Instantiate(woodPrefab);
@@ -40,24 +47,16 @@ namespace UseEntity
 
             table.addTotemHolding(new ItemData(heldItem, 1));
             holding = spawnedObj.gameObject;
-        }
+        }*/
 
 
 
         public void killHolding()
         {
-            holding.SetActive(false);
-            var netObj = holding.GetComponent<NetworkObject>();
-            if (netObj != null)
-            {
-                NetcodeConnector.RequestKillServerRpc(netObj);
-            }
-            else
-            {
-                Destroy(holding);
-            }
+            if (holding == null) return;
 
-            table.removeTotemHolding(new ItemData(heldItem, 1));
+            NetcodeConnector.RequestKillServerRpc(holding);
+            table.removeTotemHolding(requestItem);
         }
     }
 }

@@ -758,6 +758,7 @@ GameObject:
   - component: {fileID: 157207114}
   - component: {fileID: 157207113}
   - component: {fileID: 157207115}
+  - component: {fileID: 157207116}
   m_Layer: 0
   m_Name: Sun
   m_TagString: Untagged
@@ -838,13 +839,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 157207112}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.38268343, y: 0, z: 0, w: 0.92387956}
+  m_LocalRotation: {x: 0.27059805, y: 0.6532815, z: -0.27059805, w: 0.6532815}
   m_LocalPosition: {x: 0, y: 10, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 45, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 45, y: 90, z: 0}
 --- !u!114 &157207115
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -902,10 +903,10 @@ MonoBehaviour:
   moonPhase: 0.2
   moonPhaseRotation: 0
   earthshine: 1
-  flareSize: 2
+  flareSize: 90
   flareTint: {r: 1, g: 1, b: 1, a: 1}
-  flareFalloff: 4
-  flareMultiplier: 1
+  flareFalloff: 120
+  flareMultiplier: 0.021
   surfaceTexture: {fileID: 0}
   surfaceTint: {r: 1, g: 1, b: 1, a: 1}
   m_Distance: 1.5e+11
@@ -987,6 +988,53 @@ MonoBehaviour:
   m_ObsoleteUseShadowQualitySettings: 0
   m_ObsoleteCustomShadowResolution: 512
   m_ObsoleteContactShadows: 0
+--- !u!114 &157207116
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 157207112}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 857107eb2c2ab2a46b58cdb684318eba, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sunLight: {fileID: 157207113}
+  timeOfDay: 0
+  dayDuration: 200
+  sunColorGradient:
+    serializedVersion: 2
+    key0: {r: 0, g: 0, b: 0, a: 1}
+    key1: {r: 1, g: 0.25034815, b: 0.19339621, a: 1}
+    key2: {r: 1, g: 0.755287, b: 0.504717, a: 0}
+    key3: {r: 1, g: 1, b: 1, a: 0}
+    key4: {r: 1, g: 0.9764151, b: 0.6462264, a: 0}
+    key5: {r: 1, g: 0.1273585, b: 0.14361666, a: 0}
+    key6: {r: 1, g: 0, b: 0.9712057, a: 0}
+    key7: {r: 0, g: 0, b: 0, a: 0}
+    ctime0: 193
+    ctime1: 2506
+    ctime2: 6746
+    ctime3: 31804
+    ctime4: 55127
+    ctime5: 60909
+    ctime6: 63993
+    ctime7: 65535
+    atime0: 0
+    atime1: 65535
+    atime2: 0
+    atime3: 0
+    atime4: 0
+    atime5: 0
+    atime6: 0
+    atime7: 0
+    m_Mode: 0
+    m_ColorSpace: -1
+    m_NumColorKeys: 8
+    m_NumAlphaKeys: 2
+  sunIntensity: 130000
+  moonIntensityMultiplier: 0.00002
 --- !u!4 &173468612 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6704981672725469668, guid: 798e03e2fd1847941b6f41951db7bdf4, type: 3}
@@ -1522,6 +1570,10 @@ PrefabInstance:
       propertyPath: 'totems.Array.data[2]'
       value: 
       objectReference: {fileID: 274558600}
+    - target: {fileID: 8548914285155623681, guid: b191ecf0104d105419adf3b5696031d5, type: 3}
+      propertyPath: craftedItemSpawnPoint
+      value: 
+      objectReference: {fileID: 587365747}
     - target: {fileID: 8704289336133677219, guid: b191ecf0104d105419adf3b5696031d5, type: 3}
       propertyPath: m_LocalPosition.x
       value: 9.59
@@ -3669,6 +3721,11 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 798e03e2fd1847941b6f41951db7bdf4, type: 3}
+--- !u!4 &587365747 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 1044584760826724119, guid: b191ecf0104d105419adf3b5696031d5, type: 3}
+  m_PrefabInstance: {fileID: 274558599}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &590364792
 GameObject:
   m_ObjectHideFlags: 0
@@ -7317,16 +7374,16 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5011904300596053217, guid: d7b169373decc8d4084cf5ae4cf41c55, type: 3}
       propertyPath: resourceGenerators.Array.size
-      value: 3
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5011904300596053217, guid: d7b169373decc8d4084cf5ae4cf41c55, type: 3}
       propertyPath: 'resourceGenerators.Array.data[0]'
       value: 
-      objectReference: {fileID: 11400000, guid: 3abb192beb4fad540946fd67806fbce4, type: 2}
+      objectReference: {fileID: 11400000, guid: a32fd9768de0fa34a819f02d33160849, type: 2}
     - target: {fileID: 5011904300596053217, guid: d7b169373decc8d4084cf5ae4cf41c55, type: 3}
       propertyPath: 'resourceGenerators.Array.data[1]'
       value: 
-      objectReference: {fileID: 11400000, guid: ed7676dde5a894643988a2ab9f9943fb, type: 2}
+      objectReference: {fileID: 11400000, guid: 74f99ebe8c26ab2488304e1042ea0551, type: 2}
     - target: {fileID: 5011904300596053217, guid: d7b169373decc8d4084cf5ae4cf41c55, type: 3}
       propertyPath: 'resourceGenerators.Array.data[2]'
       value: 
@@ -10680,10 +10737,10 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   marchingAlgorithmPrefab: {fileID: 2150305323032263239, guid: 9c5ce2a33e0ba3542b8f5080e1939752, type: 3}
   subCubeSize: 6
-  subCubesPerChunk: 10
+  subCubesPerChunk: 16
   chunksPerFrame: 4
-  cubeSpacing: 1
-  stepHeightAngle: 20
+  cubeSpacing: 2
+  stepHeightAngle: 25
 --- !u!4 &1772774570
 Transform:
   m_ObjectHideFlags: 0
@@ -12773,6 +12830,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
+  craftedItemSpawnPoint: {fileID: 0}
 --- !u!135 &2055419005
 SphereCollider:
   m_ObjectHideFlags: 0

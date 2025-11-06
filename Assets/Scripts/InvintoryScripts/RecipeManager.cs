@@ -34,11 +34,16 @@ public class RecipeManager : MonoBehaviour
         return false;
     }
 
-    public bool CraftRecipe(List<ItemData> data)
+    public bool CraftRecipe(List<ItemData> data, out RecipeData output)
     {
+        output = null;
         foreach(var recipe in allRecipes)
         {
-            if (recipe.CanCraftFromDataList(data)) return true;
+            if (recipe.CanCraftFromDataList(data))
+            {
+                output = recipe;
+                return true;
+            }
         }
 
         return false;

@@ -93,7 +93,7 @@ public class PlayerObjectInteract : MonoBehaviour
             if(interactable == null)
             {
                 nearbyInteractables.Remove(interactable);
-                continue;
+                break;
             }
 
             float dist = Vector3.Distance(interactable.transform.position, playerManager.transform.position);
