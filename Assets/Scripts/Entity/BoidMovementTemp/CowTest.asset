@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 60139834e966c1847be0baabb367f95d, type: 3}
+  m_Name: CowTest
+  m_EditorClassIdentifier: 
+  horizontalMovementSpeed: 10
+  forwardMovementSpeed: 0.15
+  minSpeed: 5
+  maxSpeed: 8
+  perceptionRadius: 10
+  seperationRadius: 2
+  maxSteerForce: 8
+  jumpVelocity: {x: 0, y: 8, z: 0}
+  alignmentWeight: 2
+  cohesionWeight: 1
+  seperationWeight: 2.5
+  inputWeight: 1.58
+  avoidanceWeight: 2
+  noiseWeight: 0.05
+  grouperWeight: 0.05
+  limitX: 5
+  deathAfterDropTime: 1.5

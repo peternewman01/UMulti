@@ -10683,7 +10683,7 @@ MonoBehaviour:
   subCubesPerChunk: 10
   chunksPerFrame: 4
   cubeSpacing: 1
-  stepHeightAngle: 25
+  stepHeightAngle: 20
 --- !u!4 &1772774570
 Transform:
   m_ObjectHideFlags: 0
