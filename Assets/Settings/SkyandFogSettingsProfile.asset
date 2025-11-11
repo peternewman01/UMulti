@@ -623,6 +623,94 @@ MonoBehaviour:
   directionalLightsOnly:
     m_OverrideState: 0
     m_Value: 0
+--- !u!114 &-3076307090862318107
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6e5eba45708d0ef4c807da064bb177fc, type: 3}
+  m_Name: CleanOutline
+  m_EditorClassIdentifier: 
+  active: 1
+  intensity:
+    m_OverrideState: 1
+    m_Value: 1
+  outlineThickness:
+    m_OverrideState: 1
+    m_Value: 1
+  outlineColor:
+    m_OverrideState: 1
+    m_Value: {r: 0, g: 0, b: 0, a: 1}
+  enableClosenessBoost:
+    m_OverrideState: 1
+    m_Value: 0
+  closenessBoostThickness:
+    m_OverrideState: 1
+    m_Value: 1
+  boostNear:
+    m_OverrideState: 1
+    m_Value: 0.001
+  boostFar:
+    m_OverrideState: 1
+    m_Value: 0.02
+  enableDistantFade:
+    m_OverrideState: 1
+    m_Value: 1
+  fadeNear:
+    m_OverrideState: 1
+    m_Value: 0.15
+  fadeFar:
+    m_OverrideState: 1
+    m_Value: 0.5
+  depthSampleType:
+    m_OverrideState: 1
+    m_Value: 0
+  nineTilesThreshold:
+    m_OverrideState: 0
+    m_Value: 0.28
+  nineTileBottomFix:
+    m_OverrideState: 0
+    m_Value: 0.003
+  depthThickness:
+    m_OverrideState: 1
+    m_Value: 1
+  outlineDepthMultiplier:
+    m_OverrideState: 1
+    m_Value: 1
+  outlineDepthBias:
+    m_OverrideState: 1
+    m_Value: 1
+  depthThreshold:
+    m_OverrideState: 0
+    m_Value: 0.1
+  enableNormalOutline:
+    m_OverrideState: 1
+    m_Value: 1
+  normalCheckDirection:
+    m_OverrideState: 1
+    m_Value: 0
+  normalThickness:
+    m_OverrideState: 1
+    m_Value: 1
+  outlineNormalMultiplier:
+    m_OverrideState: 1
+    m_Value: 1
+  outlineNormalBias:
+    m_OverrideState: 1
+    m_Value: 1
+  normalThreshold:
+    m_OverrideState: 1
+    m_Value: 0.2
+  debugMode:
+    m_OverrideState: 1
+    m_Value: 0
+  testHeight:
+    m_OverrideState: 1
+    m_Value: 0
 --- !u!114 &-2708521182114720897
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -684,12 +772,12 @@ MonoBehaviour:
   active: 1
   quality:
     m_OverrideState: 0
-    m_Value: 1
+    m_Value: 3
   focusMode:
     m_OverrideState: 1
     m_Value: 1
   focusDistance:
-    m_OverrideState: 0
+    m_OverrideState: 1
     m_Value: 10
   focusDistanceMode:
     m_OverrideState: 0
@@ -710,8 +798,8 @@ MonoBehaviour:
     m_OverrideState: 0
     m_Value: 5
   m_NearMaxBlur:
-    m_OverrideState: 0
-    m_Value: 4
+    m_OverrideState: 1
+    m_Value: 8
   m_FarSampleCount:
     m_OverrideState: 0
     m_Value: 7
@@ -757,6 +845,7 @@ MonoBehaviour:
   - {fileID: -963868110304521531}
   - {fileID: -7632410031815343700}
   - {fileID: -9115049126786012493}
+  - {fileID: -3076307090862318107}
 --- !u!114 &1142777632297148762
 MonoBehaviour:
   m_ObjectHideFlags: 3
