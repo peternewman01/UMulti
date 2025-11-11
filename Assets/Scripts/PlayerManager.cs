@@ -95,6 +95,8 @@ public class PlayerManager : NetworkBehaviour
     private bool isSwinging = false;
     private bool isSwingingbool = false;
     private float swingTimer = 0f;
+    [SerializeField] private float preslash = 0.15f;
+    [SerializeField] private float swingExponent = 2.5f;
     private Quaternion swingStart;
     private Quaternion swingEnd;
     private Vector3 initialWeaponLocalPos;
@@ -377,14 +379,17 @@ public class PlayerManager : NetworkBehaviour
         if(componentBase == null)
         {
             componentBase = cameraTransform.GetComponent<CinemachineCamera>().GetCinemachineComponent(CinemachineCore.Stage.Body);
+            Debug.Log(componentBase == null);
         }
+
 
         if(scrolling != 0)
         {
             cameraDistance = scrolling * scrollSensitivity;
-            if(componentBase is CinemachinePositionComposer)
+            if(componentBase is CinemachineOrbitalFollow)
             {
-                (componentBase as CinemachinePositionComposer).CameraDistance -= cameraDistance;
+                Debug.Log("scrooll: " + scrolling);
+                (componentBase as CinemachineOrbitalFollow).RadialAxis.Value -= cameraDistance;
             }
         }
     }
@@ -419,7 +424,6 @@ public class PlayerManager : NetworkBehaviour
             //return; 
         }
 
-
         if (cameraTransform == null) return;
 
         if (click.IsPressed()) //aim right click
@@ -452,21 +456,27 @@ public class PlayerManager : NetworkBehaviour
 
     private void StartSwing(Transform slashTransform)
     {
-        if (weapon == null) return;
+        if (weapon == null || isSwinging) return;
+        StartCoroutine(SwingRoutine(slashTransform));
+    }
 
+    private IEnumerator SwingRoutine(Transform slashTransform)
+    {
         isSwingingbool = false;
-        isSwinging = true;
+        isSwinging = false;
         weaponTrail.enabled = false;
+        weaponCollider.enabled = false;
+        currentSlash = slashTransform;
+
+        //wait before the slash starts (preslash)
+        yield return new WaitForSeconds(preslash);
+
+        isSwinging = true;
         weaponCollider.enabled = true;
         swingTimer = 0f;
 
-        currentSlash = slashTransform;
-
-        // Use the slash�s orientation instead of the player�s
         baseRotation = currentSlash.rotation * Quaternion.Euler(axisOffset);
-
-        // define start and end around the slash�s up axis
-        swingStart = baseRotation * Quaternion.AngleAxis(-swingAngle * .5f, swingAxis);
+        swingStart = baseRotation * Quaternion.AngleAxis(-swingAngle * 0.5f, swingAxis);
         swingEnd = baseRotation * Quaternion.AngleAxis(swingAngle * 1.1f, swingAxis);
     }
 
@@ -477,14 +487,20 @@ public class PlayerManager : NetworkBehaviour
         swingTimer += Time.deltaTime;
         float t = swingTimer / swingDuration;
 
+        //exponential easing curve (accelerate -> decelerate)
+        t = Mathf.Pow(t, swingExponent);
+        t = Mathf.Clamp01(t);
+
         weapon.rotation = Quaternion.Slerp(swingStart, swingEnd, t);
 
-        float distance = .2f;
+        float distance = 0.2f;
         Vector3 dir = (weapon.rotation * Vector3.forward).normalized;
         weapon.position = transform.position + Vector3.up * heightOffset + dir * distance;
-        weaponTrail.enabled = true;
 
-        if (t >= .5f)
+        //enable trail after motion starts
+        if (t > 0.05f) weaponTrail.enabled = true;
+
+        if (t >= 1f)
         {
             weaponTrail.Clear();
             weaponTrail.enabled = false;
@@ -493,6 +509,7 @@ public class PlayerManager : NetworkBehaviour
             lastSwingEndTime = Time.time;
         }
     }
+
 
     private void ResetWeaponPositionIfIdle()
     {
@@ -586,11 +603,11 @@ public class PlayerManager : NetworkBehaviour
         yield return new WaitForSeconds(delay);
         t.parent = null;
     }
+
     private void CreateRope(Transform start, Transform end)
     {
         List<Transform> segments = new List<Transform>();
 
-        // Rope container to keep hierarchy clean
         GameObject ropeContainer = new GameObject($"Rope_{ropeSegments.Count}");
         //ropeContainer.transform.SetParent(transform);
 
@@ -630,7 +647,7 @@ public class PlayerManager : NetworkBehaviour
             prev = seg.transform;
         }
 
-        // Connect first segment to start
+        //connect first segment to start
         SpringJoint firstJoint = segments[0].gameObject.AddComponent<SpringJoint>();
         firstJoint.connectedBody = null;
         firstJoint.connectedAnchor = start.position;
@@ -641,7 +658,7 @@ public class PlayerManager : NetworkBehaviour
         firstJoint.autoConfigureConnectedAnchor = false;
         startJoints.Add(firstJoint);
 
-        // Connect last segment to end
+        //connect last segment to end
         SpringJoint lastJoint = segments[^1].gameObject.AddComponent<SpringJoint>();
         lastJoint.connectedBody = null;
         lastJoint.connectedAnchor = end.position;
@@ -654,7 +671,7 @@ public class PlayerManager : NetworkBehaviour
 
         ropeSegments.Add(segments);
 
-        // Create line renderer
+        //create line renderer
         GameObject lrObj = new GameObject($"RopeLine_{ropeLines.Count}");
         lrObj.transform.SetParent(ropeContainer.transform);
         LineRenderer lr = lrObj.AddComponent<LineRenderer>();

@@ -6062,9 +6062,11 @@ MonoBehaviour:
     m_Bits: 919
   idealHandRot: {x: 0, y: 0, z: 0, w: 0}
   movementTrails: {fileID: 556795585975646423}
+  preslash: 0.15
+  swingExponent: 6
   resetDelay: 0.1
   resetSpeed: 5
-  scrollSensitivity: 10
+  scrollSensitivity: 200
   impulseSource: {fileID: 6953621338408064027}
   holding: {fileID: 0}
   ropeStarts:
@@ -6159,7 +6161,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 90299f6d5abd016449c5b0180de34a85, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  size: 50
 --- !u!114 &4155171479499230009
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6219,7 +6220,6 @@ MonoBehaviour:
   selectPassName: GoldOutline
   inRangePassName: BlackOutline
   searchRadius: 6
-  nearbyInteractables: []
   pickupRadius: {fileID: 8870932050372870260}
 --- !u!114 &6953621338408064027
 MonoBehaviour:

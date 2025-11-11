@@ -1011,15 +1011,15 @@ MonoBehaviour:
     key3: {r: 1, g: 1, b: 1, a: 0}
     key4: {r: 1, g: 0.9764151, b: 0.6462264, a: 0}
     key5: {r: 1, g: 0.1273585, b: 0.14361666, a: 0}
-    key6: {r: 1, g: 0, b: 0.9712057, a: 0}
+    key6: {r: 1, g: 0, b: 0.6190028, a: 0}
     key7: {r: 0, g: 0, b: 0, a: 0}
     ctime0: 193
     ctime1: 2506
     ctime2: 6746
     ctime3: 31804
-    ctime4: 55127
+    ctime4: 57825
     ctime5: 60909
-    ctime6: 63993
+    ctime6: 62644
     ctime7: 65535
     atime0: 0
     atime1: 65535
@@ -1208,67 +1208,6 @@ MonoBehaviour:
   m_MoveSpeed: 10
   m_MoveSpeedIncrement: 2.5
   m_Turbo: 10
---- !u!1001 &196983869
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: -8679921383154817045, guid: c2882849bb1c5884aa751f8cf2cce1fc, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 10.229935
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: c2882849bb1c5884aa751f8cf2cce1fc, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 48.00523
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: c2882849bb1c5884aa751f8cf2cce1fc, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: -17.689802
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: c2882849bb1c5884aa751f8cf2cce1fc, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: -0.031411074
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: c2882849bb1c5884aa751f8cf2cce1fc, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0.54960364
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: c2882849bb1c5884aa751f8cf2cce1fc, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: -0.3707236
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: c2882849bb1c5884aa751f8cf2cce1fc, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: -0.7480062
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: c2882849bb1c5884aa751f8cf2cce1fc, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: -396.096
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: c2882849bb1c5884aa751f8cf2cce1fc, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: -81.388
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: c2882849bb1c5884aa751f8cf2cce1fc, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 566.497
-      objectReference: {fileID: 0}
-    - target: {fileID: -7511558181221131132, guid: c2882849bb1c5884aa751f8cf2cce1fc, type: 3}
-      propertyPath: 'm_Materials.Array.data[0]'
-      value: 
-      objectReference: {fileID: 2100000, guid: 659ec7e867290b3439cbc59d8d5409d9, type: 2}
-    - target: {fileID: 919132149155446097, guid: c2882849bb1c5884aa751f8cf2cce1fc, type: 3}
-      propertyPath: m_Name
-      value: Pickaxe_T1
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: c2882849bb1c5884aa751f8cf2cce1fc, type: 3}
 --- !u!1 &210393381
 GameObject:
   m_ObjectHideFlags: 0
@@ -7291,6 +7230,7 @@ GameObject:
   - component: {fileID: 1153582232}
   - component: {fileID: 1153582231}
   - component: {fileID: 1153582233}
+  - component: {fileID: 1153582234}
   m_Layer: 0
   m_Name: FreeLook Camera
   m_TagString: Untagged
@@ -7513,7 +7453,7 @@ MonoBehaviour:
   RadialAxis:
     Value: 1
     Center: 1
-    Range: {x: 1, y: 1}
+    Range: {x: 0.3, y: 1.2}
     Wrap: 0
     Recentering:
       Enabled: 0
@@ -7628,6 +7568,37 @@ MonoBehaviour:
     FrequencyGain: 3
     Duration: 0.5
     m_NoiseOffsets: {x: 0, y: 0, z: 0}
+--- !u!114 &1153582234
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1153582224}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 886251e9a18ece04ea8e61686c173e1b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CameraDistance: 10
+  DeadZoneDepth: 0
+  Composition:
+    ScreenPosition: {x: 0, y: 0}
+    DeadZone:
+      Enabled: 0
+      Size: {x: 0.2, y: 0.2}
+    HardLimits:
+      Enabled: 0
+      Size: {x: 0.8, y: 0.8}
+      Offset: {x: 0, y: 0}
+  CenterOnActivate: 1
+  TargetOffset: {x: 0, y: 0, z: 0}
+  Damping: {x: 1, y: 1, z: 1}
+  Lookahead:
+    Enabled: 0
+    Time: 0
+    Smoothing: 0
+    IgnoreY: 0
 --- !u!4 &1165261400
 Transform:
   m_ObjectHideFlags: 0
@@ -14170,4 +14141,3 @@ SceneRoots:
   - {fileID: 274558599}
   - {fileID: 1240920977}
   - {fileID: 1613755050}
-  - {fileID: 196983869}
