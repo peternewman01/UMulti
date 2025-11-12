@@ -24,6 +24,8 @@ public class RecipeManager : MonoBehaviour
         return possibleRecipes;
     }
 
+    public List<RecipeData> GetAllRecipes() => allRecipes;
+
     public bool CraftRecipe(Invintory invintory)
     {
         foreach(var recipe in allRecipes)
