@@ -13,6 +13,11 @@ public class RecipeShow : MonoBehaviour
 
     private void Awake()
     {
+        //Show();
+    }
+
+    public void Show()
+    {
         title.text = recipe.GetOutputItem().item.name;
 
         if(recipe != null)
@@ -64,5 +69,10 @@ public class RecipeShow : MonoBehaviour
 
             list.text = temp;
         }
+    }
+
+    public void SetRecipe(RecipeData recipe)
+    {
+        this.recipe = recipe;
     }
 }
