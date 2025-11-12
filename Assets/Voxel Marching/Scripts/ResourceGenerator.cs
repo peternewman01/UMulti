@@ -44,6 +44,7 @@ namespace UnityEngine
                     }
 
                     spawned.transform.position = pos;
+                    spawned.transform.rotation = Quaternion.Euler(0f, Random.Range(0f, 360f), 0f);
                     spawned.transform.parent = ChunkMananger.Instance.ResourceParent.transform;
                 }
             }
