@@ -8,12 +8,6 @@
         },
         {
             "m_Id": "8ba4cbaec0654441824f73cc724a6fb6"
-        },
-        {
-            "m_Id": "f8d14a74ee384ccba8c06f2038bc9187"
-        },
-        {
-            "m_Id": "58606e4cfd8b40d4b8007a1f7beed5c8"
         }
     ],
     "m_Keywords": [],
@@ -1361,7 +1355,7 @@
     "m_Hidden": false,
     "m_ShaderOutputName": "Vector1_AEE7F28E",
     "m_StageCapability": 3,
-    "m_Value": 25.0,
+    "m_Value": 50.0,
     "m_DefaultValue": 0.0,
     "m_Labels": []
 }
@@ -3693,37 +3687,6 @@
 
 {
     "m_SGVersion": 0,
-    "m_Type": "UnityEditor.ShaderGraph.Internal.Texture2DShaderProperty",
-    "m_ObjectId": "58606e4cfd8b40d4b8007a1f7beed5c8",
-    "m_Guid": {
-        "m_GuidSerialized": "a73c7530-3f75-44fb-9af9-0a6f41901040"
-    },
-    "m_Name": "Grass",
-    "m_DefaultRefNameVersion": 1,
-    "m_RefNameGeneratedByDisplayName": "Grass",
-    "m_DefaultReferenceName": "_Grass",
-    "m_OverrideReferenceName": "",
-    "m_GeneratePropertyBlock": true,
-    "m_UseCustomSlotLabel": false,
-    "m_CustomSlotLabel": "",
-    "m_DismissedVersion": 0,
-    "m_Precision": 0,
-    "overrideHLSLDeclaration": false,
-    "hlslDeclarationOverride": 0,
-    "m_Hidden": false,
-    "m_Value": {
-        "m_SerializedTexture": "",
-        "m_Guid": ""
-    },
-    "isMainTexture": false,
-    "useTilingAndOffset": false,
-    "useTexelSize": true,
-    "m_Modifiable": true,
-    "m_DefaultType": 0
-}
-
-{
-    "m_SGVersion": 0,
     "m_Type": "UnityEditor.ShaderGraph.MultiplyNode",
     "m_ObjectId": "590a21aefb7c4447b35166264f14cfc9",
     "m_Group": {
@@ -4048,10 +4011,10 @@
         "m_Expanded": true,
         "m_Position": {
             "serializedVersion": "2",
-            "x": -1694.0001220703125,
-            "y": -748.0000610351563,
+            "x": -1686.0001220703125,
+            "y": -174.00003051757813,
             "width": 208.0,
-            "height": 360.0000305175781
+            "height": 360.00006103515627
         }
     },
     "m_Slots": [
@@ -4384,12 +4347,6 @@
         },
         {
             "m_Id": "8ba4cbaec0654441824f73cc724a6fb6"
-        },
-        {
-            "m_Id": "f8d14a74ee384ccba8c06f2038bc9187"
-        },
-        {
-            "m_Id": "58606e4cfd8b40d4b8007a1f7beed5c8"
         }
     ]
 }
@@ -6151,7 +6108,7 @@
     "m_Hidden": false,
     "m_ShaderOutputName": "CellDensity",
     "m_StageCapability": 3,
-    "m_Value": 7.909999847412109,
+    "m_Value": 13.40999984741211,
     "m_DefaultValue": 5.0,
     "m_Labels": []
 }
@@ -7573,37 +7530,6 @@
 
 {
     "m_SGVersion": 0,
-    "m_Type": "UnityEditor.ShaderGraph.Internal.Texture2DShaderProperty",
-    "m_ObjectId": "f8d14a74ee384ccba8c06f2038bc9187",
-    "m_Guid": {
-        "m_GuidSerialized": "3e6ffa92-3644-407b-8e32-530d6558a0af"
-    },
-    "m_Name": "Stone",
-    "m_DefaultRefNameVersion": 1,
-    "m_RefNameGeneratedByDisplayName": "Stone",
-    "m_DefaultReferenceName": "_Stone",
-    "m_OverrideReferenceName": "",
-    "m_GeneratePropertyBlock": true,
-    "m_UseCustomSlotLabel": false,
-    "m_CustomSlotLabel": "",
-    "m_DismissedVersion": 0,
-    "m_Precision": 0,
-    "overrideHLSLDeclaration": false,
-    "hlslDeclarationOverride": 0,
-    "m_Hidden": false,
-    "m_Value": {
-        "m_SerializedTexture": "",
-        "m_Guid": ""
-    },
-    "isMainTexture": false,
-    "useTilingAndOffset": false,
-    "useTexelSize": true,
-    "m_Modifiable": true,
-    "m_DefaultType": 0
-}
-
-{
-    "m_SGVersion": 0,
     "m_Type": "UnityEditor.ShaderGraph.DynamicVectorMaterialSlot",
     "m_ObjectId": "f9d9b2dd58794e8db0bddc028794726c",
     "m_Id": 1,
@@ -7721,33 +7647,33 @@
     "m_Value": {
         "serializedVersion": "2",
         "key0": {
-            "r": 0.0,
-            "g": 0.6698113083839417,
-            "b": 0.0223870687186718,
+            "r": 0.7169811725616455,
+            "g": 0.6502171158790588,
+            "b": 0.49038806557655337,
             "a": 1.0
         },
         "key1": {
-            "r": 0.18304944038391114,
-            "g": 1.0,
-            "b": 0.0,
+            "r": 1.0,
+            "g": 0.8549703359603882,
+            "b": 0.5801886916160584,
             "a": 1.0
         },
         "key2": {
-            "r": 0.5051897764205933,
-            "g": 1.0,
-            "b": 0.0,
+            "r": 0.6566341519355774,
+            "g": 0.7264150977134705,
+            "b": 0.2295745611190796,
             "a": 0.0
         },
         "key3": {
-            "r": 0.7209311723709106,
-            "g": 1.0,
-            "b": 0.0,
+            "r": 0.9245283007621765,
+            "g": 0.7224694490432739,
+            "b": 0.5538448095321655,
             "a": 0.0
         },
         "key4": {
-            "r": 0.0,
-            "g": 0.0,
-            "b": 0.0,
+            "r": 0.9245283007621765,
+            "g": 0.7224694490432739,
+            "b": 0.5538448095321655,
             "a": 0.0
         },
         "key5": {
@@ -7770,9 +7696,9 @@
         },
         "ctime0": 0,
         "ctime1": 7132,
-        "ctime2": 52814,
+        "ctime2": 53006,
         "ctime3": 65535,
-        "ctime4": 0,
+        "ctime4": 65535,
         "ctime5": 0,
         "ctime6": 0,
         "ctime7": 0,

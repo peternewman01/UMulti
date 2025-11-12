@@ -6062,11 +6062,15 @@ MonoBehaviour:
     m_Bits: 919
   idealHandRot: {x: 0, y: 0, z: 0, w: 0}
   movementTrails: {fileID: 556795585975646423}
+  cinemachineCam: {fileID: 0}
+  fovIncrease: -5
+  fovDuration: 0.4
+  fovSkew: 0.95
   preslash: 0.15
   swingExponent: 6
   resetDelay: 0.1
   resetSpeed: 5
-  scrollSensitivity: 200
+  scrollSensitivity: 0.001
   impulseSource: {fileID: 6953621338408064027}
   holding: {fileID: 0}
   ropeStarts:

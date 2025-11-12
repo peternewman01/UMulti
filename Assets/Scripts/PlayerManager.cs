@@ -86,6 +86,12 @@ public class PlayerManager : NetworkBehaviour
     [SerializeField] private LayerMask aimLayers;
     [SerializeField] private Quaternion idealHandRot;
     [SerializeField] private Transform movementTrails;
+    [SerializeField] private CinemachineCamera cinemachineCam;
+    [SerializeField] private float fovIncrease = 10f;
+    [SerializeField] private float fovDuration = 0.4f;
+    [SerializeField, Range(-1f, 1f)] private float fovSkew = .5f; //negative = skew left (faster rise), positive = skew right (slower rise)
+    private Coroutine fovRoutine;
+    private float defaultFOV = 90f;
     float maxLookDistance = 100f;
     float heightOffset = 1.0f;
     private Transform currentSlash;
@@ -203,6 +209,11 @@ public class PlayerManager : NetworkBehaviour
         controlPanel.gameObject.SetActive(true);
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
+    }
+
+    public void GotCamera()
+    {
+        cinemachineCam = cameraTransform.GetComponent<CinemachineCamera>();
     }
 
     public override void OnNetworkDespawn()
@@ -457,6 +468,15 @@ public class PlayerManager : NetworkBehaviour
     private void StartSwing(Transform slashTransform)
     {
         if (weapon == null || isSwinging) return;
+        Debug.Log(IsOwner + " + " + cinemachineCam != null);
+
+        if (IsOwner && cinemachineCam != null)
+        {
+            Debug.Log("AOHWO");
+            if (fovRoutine != null) StopCoroutine(fovRoutine);
+            Debug.Log("A1992191");
+            fovRoutine = StartCoroutine(SlashFOVEffect());
+        }
         StartCoroutine(SwingRoutine(slashTransform));
     }
 
@@ -558,7 +578,7 @@ public class PlayerManager : NetworkBehaviour
 
         var rb = spawnedBoolet.GetComponent<Rigidbody>();
         rb.AddForce(shootDirection.normalized * 5000f);
-        
+
         Destroy(spawnedBoolet.gameObject, 3);
         Destroy(spawnedPinnacle.gameObject, 2);
     }
@@ -690,6 +710,29 @@ public class PlayerManager : NetworkBehaviour
     //        ServerOnlyRpc(value + 1, sourceNetworkObjectId);
     //    }
     //}
+
+    private IEnumerator SlashFOVEffect()
+    {
+        float elapsed = 0f;
+        float halfTime = fovDuration * 0.5f;
+
+        while (elapsed < fovDuration)
+        {
+            elapsed += Time.deltaTime;
+            float t = Mathf.Clamp01(elapsed / fovDuration);
+
+            //apply skew (parabola skewed to left/right)
+            float skew = Mathf.Pow(t, 1f + fovSkew * 2f); // -1 = fast rise, +1 = slow rise
+
+            float parabola = 4f * skew * (1f - skew);
+            float fovValue = defaultFOV + parabola * fovIncrease;
+
+            cinemachineCam.Lens.FieldOfView = fovValue;
+            yield return null;
+        }
+
+        cinemachineCam.Lens.FieldOfView = defaultFOV;
+    }
 
     private void CanDash() { canDash = true; }
 

@@ -15,7 +15,7 @@ public class FindPlayer : NetworkBehaviour
         //TODO: This seems easy to mess up in editor setup -- improve editor experience
         freeLookCam = transform.GetComponent<CinemachineCamera>();
         cp = transform.parent.GetComponent<CameraPointer>();
-        aimCam = cp.aimCam;
+        //aimCam = cp.aimCam;
     }
 
     private void Start()
@@ -36,11 +36,13 @@ public class FindPlayer : NetworkBehaviour
                     //if(aimCam != null) obj.GetComponent<PlayerManager>().aimCamTransform = aimCam.transform;
                     Transform target = obj.transform.Find("CameraTrackingTarget");
 
+                    obj.GetComponent<PlayerManager>().GotCamera();
+
                     //Debug.Log(obj.name + " added");
                     if (freeLookCam != null)
                     {
                         freeLookCam.Target.TrackingTarget = target;
-                        if (aimCam != null) aimCam.Target.TrackingTarget = target;
+                        //if (aimCam != null) aimCam.Target.TrackingTarget = target;
                         yield break; // Done
                     }
                 }
