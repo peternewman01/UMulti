@@ -12,6 +12,7 @@ public class ShowAllRecipies : MonoBehaviour
     private void Start()
     {
         recipeManager = FindFirstObjectByType<RecipeManager>();
+        cp = GetComponentInParent<ControlPanel>();
 
         int count = 0;
         foreach(RecipeData recipe in recipeManager.GetAllRecipes())
