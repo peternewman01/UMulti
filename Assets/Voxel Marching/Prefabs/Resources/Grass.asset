@@ -28,3 +28,6 @@ MonoBehaviour:
     minSteepness: 0
     maxHeight: 500
     minHeight: -50
+  layersForSpawning:
+    serializedVersion: 2
+    m_Bits: 1727

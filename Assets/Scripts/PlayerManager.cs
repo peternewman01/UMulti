@@ -8,6 +8,7 @@ using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Animations;
+using UnityEngine.Animations.Rigging;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
 using UnityEngine.Windows;
@@ -48,6 +49,10 @@ public class PlayerManager : NetworkBehaviour
 
     private Vector3 camForward;
     private Vector3 camRight;
+
+    [Header("IK Animations")]
+    [SerializeField] private MultiAimConstraint headConstraint;
+    [SerializeField] private MultiAimConstraint bodyConstraint;
 
     [Header("Boolet")]
     [SerializeField] private Transform boolet;
@@ -138,6 +143,7 @@ public class PlayerManager : NetworkBehaviour
     private List<SpringJoint> startJoints = new List<SpringJoint>();
     private List<SpringJoint> endJoints = new List<SpringJoint>();
     private Vector3 ropeRestingLocalPos;
+    private Vector3 lastMovementDirection = Vector3.forward;
 
     private void OnEnable()
     {
@@ -352,9 +358,22 @@ public class PlayerManager : NetworkBehaviour
         target.y = 0;
         target.Normalize();
 
-        Vector3 pass = target * walkingSpeed + new Vector3(0, rb.linearVelocity.y, 0);
-        rb.linearVelocity = Vector3.Lerp(rb.linearVelocity, pass, Time.unscaledDeltaTime * 5);
+        Vector3 horizontalVelocity = target * walkingSpeed;
+        Vector3 newVelocity = new Vector3(horizontalVelocity.x, rb.linearVelocity.y, horizontalVelocity.z);
 
+        if (movementInput.sqrMagnitude > 0.01f)
+        {
+            float castDistance = (horizontalVelocity.magnitude * Time.deltaTime) + 0.1f;
+            Vector3 castOrigin = transform.position + Vector3.up * 1f;
+
+            if (Physics.Raycast(castOrigin, horizontalVelocity.normalized, castDistance))
+            {
+                newVelocity.x = 0f;
+                newVelocity.z = 0f;
+            }
+        }
+
+        rb.linearVelocity = Vector3.Lerp(rb.linearVelocity, newVelocity, Time.unscaledDeltaTime * 5);
 
         if (cameraTransform.gameObject.activeSelf)
         {
@@ -370,7 +389,6 @@ public class PlayerManager : NetworkBehaviour
             }
         }
 
-
         if (Time.time - lastWaitTime >= waitCooldown)
         {
             anim.SetBool("IsIdleLong", true);
@@ -381,7 +399,12 @@ public class PlayerManager : NetworkBehaviour
         {
             Vector3 hold = rb.linearVelocity;
             hold.y = 0;
+            lastMovementDirection = hold;
             transform.forward = hold;
+        }
+        else
+        {
+            transform.forward = lastMovementDirection;
         }
     }
 

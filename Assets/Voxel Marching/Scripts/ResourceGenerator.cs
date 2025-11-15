@@ -11,6 +11,7 @@ namespace UnityEngine
         [SerializeField] private List<WeightedPrefab> weightedPrefabs;
         [SerializeField] private bool isNetworkObject;
         [SerializeField] private FitnessData spawningData;
+        [SerializeField] private LayerMask layersForSpawning;
         private int totalWeight = 0;
 
         private void OnValidate()
@@ -27,7 +28,7 @@ namespace UnityEngine
             pos.y = ChunkMananger.Instance.GetChunkHeight() * ChunkMananger.Instance.GetSpacing();
             pos.x += UnityEngine.Random.Range(-spawningData.posOffset, spawningData.posOffset);
             pos.z += Random.Range(-spawningData.posOffset, spawningData.posOffset);
-            if (Physics.Raycast(new Ray(pos, Vector3.down), out RaycastHit hitData, 10000, ~LayerMask.NameToLayer("Ground")))
+            if (Physics.Raycast(new Ray(pos, Vector3.down), out RaycastHit hitData, 10000, layersForSpawning))
             {
                 if (ResourceFitness(pos.x, pos.z, hitData) > (1 - spawningData.density))
                 {

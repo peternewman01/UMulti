@@ -6040,6 +6040,8 @@ MonoBehaviour:
   dashResetTime: 0.6
   dashUpScale: 0.1
   cameraTransform: {fileID: 0}
+  headConstraint: {fileID: 7932537254177616294}
+  bodyConstraint: {fileID: 4920868763278166832}
   boolet: {fileID: 3979177002529581571, guid: 6bb168c71521e1e458ea8fab8d1354bb, type: 3}
   pinnacle: {fileID: 7575054346606955214, guid: a1e7cac4fcd01914a9fb0fc62bd77f4a, type: 3}
   slash: {fileID: 1863424066443970522, guid: 2eecaf86587799e46a7d5aa0ddea1fe2, type: 3}
