@@ -1,4 +1,4 @@
-using NUnit;
+﻿using NUnit;
 using System.Collections;
 using System.Collections.Generic;
 using System.Net;
@@ -53,6 +53,9 @@ public class PlayerManager : NetworkBehaviour
     [Header("IK Animations")]
     [SerializeField] private MultiAimConstraint headConstraint;
     [SerializeField] private MultiAimConstraint bodyConstraint;
+    [SerializeField] private float lookSwitchHalfAngle = 90f;
+    private int cameraSourceIndex = 1;
+    private RigBuilder rigBuilder;
 
     [Header("Boolet")]
     [SerializeField] private Transform boolet;
@@ -215,6 +218,53 @@ public class PlayerManager : NetworkBehaviour
         controlPanel.gameObject.SetActive(true);
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
+
+
+        if (Camera.main != null)
+        {
+            //add camera transform as a second source for headConstraint and bodyConstrait
+            if (headConstraint != null)
+            {
+                var sourceHead = headConstraint.data.sourceObjects;
+                if (sourceHead.Count <= cameraSourceIndex)
+                {
+                    sourceHead.Add(new WeightedTransform(Camera.main.transform, 0f));
+                }
+                else
+                {
+                    //replace existing index 1 with cameraTransform (keep weight at 0)
+                    sourceHead[cameraSourceIndex] = new WeightedTransform(Camera.main.transform, 0f);
+                }
+                headConstraint.data.sourceObjects = sourceHead;
+            }
+
+            if (bodyConstraint != null)
+            {
+                var sourceBody = bodyConstraint.data.sourceObjects;
+                if (sourceBody.Count <= cameraSourceIndex)
+                {
+                    sourceBody.Add(new WeightedTransform(Camera.main.transform, 0f));
+                }
+                else
+                {
+                    sourceBody[cameraSourceIndex] = new WeightedTransform(Camera.main.transform, 0f);
+                }
+                bodyConstraint.data.sourceObjects = sourceBody;
+            }
+            rigBuilder = transform.Find("lilCultist3").GetComponent<RigBuilder>();
+            if (rigBuilder == null)
+                Debug.Log("NOOO RIG BUILDER");
+
+            if (rigBuilder != null)
+            {
+                //rebuild the rig so the MultiAimConstraints pick up the new sources
+                rigBuilder.Build();
+            }
+        }
+        else
+        {
+            Debug.Log("091870982 - " + Camera.allCamerasCount);
+        }
     }
 
     public void GotCamera()
@@ -237,8 +287,9 @@ public class PlayerManager : NetworkBehaviour
         CameraScroll();
         ResetWeaponPositionIfIdle();
         UpdateSwing();
+        CheckCameraViews();
 
-        if(rb.linearVelocity.magnitude >= 1f)
+        if (rb.linearVelocity.magnitude >= 1f)
             movementTrails.gameObject.SetActive(true);
         else
             movementTrails.gameObject.SetActive(false);
@@ -413,7 +464,6 @@ public class PlayerManager : NetworkBehaviour
         if(componentBase == null)
         {
             componentBase = cameraTransform.GetComponent<CinemachineCamera>().GetCinemachineComponent(CinemachineCore.Stage.Body);
-            Debug.Log(componentBase == null);
         }
 
 
@@ -422,7 +472,6 @@ public class PlayerManager : NetworkBehaviour
             cameraDistance = scrolling * scrollSensitivity;
             if(componentBase is CinemachineOrbitalFollow)
             {
-                Debug.Log("scrooll: " + scrolling);
                 (componentBase as CinemachineOrbitalFollow).RadialAxis.Value -= cameraDistance;
             }
         }
@@ -491,13 +540,10 @@ public class PlayerManager : NetworkBehaviour
     private void StartSwing(Transform slashTransform)
     {
         if (weapon == null || isSwinging) return;
-        Debug.Log(IsOwner + " + " + cinemachineCam != null);
 
         if (IsOwner && cinemachineCam != null)
         {
-            Debug.Log("AOHWO");
             if (fovRoutine != null) StopCoroutine(fovRoutine);
-            Debug.Log("A1992191");
             fovRoutine = StartCoroutine(SlashFOVEffect());
         }
         StartCoroutine(SwingRoutine(slashTransform));
@@ -667,7 +713,7 @@ public class PlayerManager : NetworkBehaviour
             seg.transform.SetParent(ropeContainer.transform);
             seg.transform.position = pos;
             seg.transform.localScale = Vector3.one * segmentScale;
-            seg.GetComponent<Renderer>().enabled = false; // Hide the cube
+            seg.GetComponent<Renderer>().enabled = false; //hide the cube
 
             Rigidbody rb = seg.AddComponent<Rigidbody>();
             rb.mass = 0.01f;
@@ -755,6 +801,65 @@ public class PlayerManager : NetworkBehaviour
         }
 
         cinemachineCam.Lens.FieldOfView = defaultFOV;
+    }
+
+    private void CheckCameraViews()
+    {
+        if (cameraTransform != null && (headConstraint != null || bodyConstraint != null))
+        {
+            Vector3 camForwardXZ = cameraTransform.forward;
+            camForwardXZ.y = 0f;
+            if (camForwardXZ.sqrMagnitude < 0.0001f)
+                camForwardXZ = cameraTransform.position - transform.position;
+            camForwardXZ.Normalize();
+
+            Vector3 playerForwardXZ = transform.forward;
+            playerForwardXZ.y = 0f;
+            playerForwardXZ.Normalize();
+
+            float angle = Vector3.SignedAngle(playerForwardXZ, camForwardXZ, Vector3.up);
+            bool cameraWithinRange = Mathf.Abs(angle) <= lookSwitchHalfAngle;
+
+            if (cameraWithinRange)
+            {
+                if (headConstraint != null)
+                {
+                    SetConstraintSourceWeight(headConstraint, 0, 1f);
+                    SetConstraintSourceWeight(headConstraint, cameraSourceIndex, 0f);
+                }
+                if (bodyConstraint != null)
+                {
+                    SetConstraintSourceWeight(bodyConstraint, 0, 1f);
+                    SetConstraintSourceWeight(bodyConstraint, cameraSourceIndex, 0f);
+                }
+            }
+            else
+            {
+                if (headConstraint != null)
+                {
+                    SetConstraintSourceWeight(headConstraint, 0, 0f);
+                    SetConstraintSourceWeight(headConstraint, cameraSourceIndex, 1f);
+                }
+                if (bodyConstraint != null)
+                {
+                    SetConstraintSourceWeight(bodyConstraint, 0, 0f);
+                    SetConstraintSourceWeight(bodyConstraint, cameraSourceIndex, 1f);
+                }
+            }
+        }
+    }
+
+
+    private void SetConstraintSourceWeight(MultiAimConstraint constraint, int sourceIndex, float weight)
+    {
+        if (constraint == null) return;
+        var sources = constraint.data.sourceObjects;
+        if (sourceIndex < 0 || sourceIndex >= sources.Count) return;
+
+        var wt = sources[sourceIndex];
+        wt.weight = Mathf.Clamp01(weight);
+        sources[sourceIndex] = wt;
+        constraint.data.sourceObjects = sources;
     }
 
     private void CanDash() { canDash = true; }

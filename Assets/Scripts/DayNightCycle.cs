@@ -59,7 +59,7 @@ public class DayNightCycle : MonoBehaviour
         else //nighttime: moonrise to moonset
         {
             float nightAngle = timeOfDay;
-            intensityMultiplier = Mathf.Clamp01(Mathf.Sin(nightAngle * Mathf.Deg2Rad)) * moonIntensityMultiplier;
+            intensityMultiplier = (1f - Mathf.Clamp01(Mathf.Sin(nightAngle * Mathf.Deg2Rad))) * moonIntensityMultiplier;
             lightColor = Color.Lerp(
                 new Color(0.6f, 0.7f, 1f),  //moonlight(cooler color)
                 new Color(0.3f, 0.4f, 0.6f), //deep night
