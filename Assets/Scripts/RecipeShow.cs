@@ -10,6 +10,13 @@ public class RecipeShow : MonoBehaviour
     [SerializeField] private TMP_Text list;
     [SerializeField] private Image image;
     [SerializeField] private RecipeData recipe;
+    [SerializeField] private Image background;
+    public ShowAllRecipies sar;
+    public bool selected;
+
+    [Header("Button Colors")]
+    [SerializeField] private Color basicColor;
+    [SerializeField] private Color selectedColor;
 
     private void Awake()
     {
@@ -71,8 +78,16 @@ public class RecipeShow : MonoBehaviour
         }
     }
 
+    public void SelectRecipe()
+    {
+        sar.SelectRecipe(this);
+    }
+
+
     public void SetRecipe(RecipeData recipe)
     {
         this.recipe = recipe;
     }
+
+    public RecipeData GetRecipe() => this.recipe;
 }
