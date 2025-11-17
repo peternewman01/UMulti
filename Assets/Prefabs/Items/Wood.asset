@@ -12,5 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e1cde84be524a90449a726e050558ed8, type: 3}
   m_Name: Wood
   m_EditorClassIdentifier: 
-  inventorySprite: {fileID: 21300000, guid: dab7d99fe4d7d38499c7b268b2ee7909, type: 3}
+  inventorySprite: {fileID: 21300000, guid: 677c106984823564081098612af1c647, type: 3}
   worldPrefab: {fileID: 8346321969232095038, guid: 798e03e2fd1847941b6f41951db7bdf4, type: 3}

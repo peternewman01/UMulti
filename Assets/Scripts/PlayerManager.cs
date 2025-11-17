@@ -54,8 +54,14 @@ public class PlayerManager : NetworkBehaviour
     [SerializeField] private MultiAimConstraint headConstraint;
     [SerializeField] private MultiAimConstraint bodyConstraint;
     [SerializeField] private float lookSwitchHalfAngle = 90f;
+    [SerializeField] float lookSmoothSpeed = 10f;
+    [SerializeField] float weightLerpSpeed = 6f;
+    float targetForwardWeight = 1f;
+    float targetCameraWeight = 0f;
     private int cameraSourceIndex = 1;
     private RigBuilder rigBuilder;
+    private Vector3 lookTargetVelocity;
+    private Vector3 desiredLookPos;
 
     [Header("Boolet")]
     [SerializeField] private Transform boolet;
@@ -253,7 +259,7 @@ public class PlayerManager : NetworkBehaviour
             }
             rigBuilder = transform.Find("lilCultist3").GetComponent<RigBuilder>();
             if (rigBuilder == null)
-                Debug.Log("NOOO RIG BUILDER");
+                Debug.Log("NOOO RIG BUILDER :W");
 
             if (rigBuilder != null)
             {
@@ -263,7 +269,7 @@ public class PlayerManager : NetworkBehaviour
         }
         else
         {
-            Debug.Log("091870982 - " + Camera.allCamerasCount);
+            Debug.Log("ERROR: 091870982 - " + Camera.allCamerasCount);
         }
     }
 
@@ -288,6 +294,7 @@ public class PlayerManager : NetworkBehaviour
         ResetWeaponPositionIfIdle();
         UpdateSwing();
         CheckCameraViews();
+        SmoothUpdateConstraintWeights();
 
         if (rb.linearVelocity.magnitude >= 1f)
             movementTrails.gameObject.SetActive(true);
@@ -301,12 +308,14 @@ public class PlayerManager : NetworkBehaviour
         //for torso ik target
         if (Physics.Raycast(cameraTransform.position, cameraTransform.forward, out RaycastHit hit, maxLookDistance, aimLayers))
         {
-            lookAtPoint.position = hit.point;
+            desiredLookPos = hit.point;
         }
         else
         {
-            lookAtPoint.position = cameraTransform.position + cameraTransform.forward * maxLookDistance;
+            desiredLookPos = cameraTransform.position + cameraTransform.forward * maxLookDistance;
         }
+
+        lookAtPoint.position = Vector3.Lerp(lookAtPoint.position, desiredLookPos, Time.deltaTime * lookSmoothSpeed);
 
         //for rope physics and line renderer
         for (int i = 0; i < ropeLines.Count; i++)
@@ -803,62 +812,59 @@ public class PlayerManager : NetworkBehaviour
         cinemachineCam.Lens.FieldOfView = defaultFOV;
     }
 
+
     private void CheckCameraViews()
     {
-        if (cameraTransform != null && (headConstraint != null || bodyConstraint != null))
+        if (cameraTransform == null || (headConstraint == null && bodyConstraint == null))
+            return;
+
+        Vector3 camForwardXZ = cameraTransform.forward;
+        camForwardXZ.y = 0f;
+        if (camForwardXZ.sqrMagnitude < 0.001f)
+            camForwardXZ = cameraTransform.position - transform.position;
+        camForwardXZ.Normalize();
+
+        Vector3 playerForwardXZ = transform.forward;
+        playerForwardXZ.y = 0f;
+        playerForwardXZ.Normalize();
+
+        float angle = Vector3.SignedAngle(playerForwardXZ, camForwardXZ, Vector3.up);
+
+        bool inRange = Mathf.Abs(angle) <= lookSwitchHalfAngle;
+
+        // Instead of snapping weights here, simply set new targets
+        if (inRange)
         {
-            Vector3 camForwardXZ = cameraTransform.forward;
-            camForwardXZ.y = 0f;
-            if (camForwardXZ.sqrMagnitude < 0.0001f)
-                camForwardXZ = cameraTransform.position - transform.position;
-            camForwardXZ.Normalize();
-
-            Vector3 playerForwardXZ = transform.forward;
-            playerForwardXZ.y = 0f;
-            playerForwardXZ.Normalize();
-
-            float angle = Vector3.SignedAngle(playerForwardXZ, camForwardXZ, Vector3.up);
-            bool cameraWithinRange = Mathf.Abs(angle) <= lookSwitchHalfAngle;
-
-            if (cameraWithinRange)
-            {
-                if (headConstraint != null)
-                {
-                    SetConstraintSourceWeight(headConstraint, 0, 1f);
-                    SetConstraintSourceWeight(headConstraint, cameraSourceIndex, 0f);
-                }
-                if (bodyConstraint != null)
-                {
-                    SetConstraintSourceWeight(bodyConstraint, 0, 1f);
-                    SetConstraintSourceWeight(bodyConstraint, cameraSourceIndex, 0f);
-                }
-            }
-            else
-            {
-                if (headConstraint != null)
-                {
-                    SetConstraintSourceWeight(headConstraint, 0, 0f);
-                    SetConstraintSourceWeight(headConstraint, cameraSourceIndex, 1f);
-                }
-                if (bodyConstraint != null)
-                {
-                    SetConstraintSourceWeight(bodyConstraint, 0, 0f);
-                    SetConstraintSourceWeight(bodyConstraint, cameraSourceIndex, 1f);
-                }
-            }
+            targetForwardWeight = 1f;
+            targetCameraWeight = 0f;
+        }
+        else
+        {
+            targetForwardWeight = 0f;
+            targetCameraWeight = 1f;
         }
     }
 
+    private void SmoothUpdateConstraintWeights()
+    {
+        UpdateConstraintWeightSmooth(headConstraint);
+        UpdateConstraintWeightSmooth(bodyConstraint);
+    }
 
-    private void SetConstraintSourceWeight(MultiAimConstraint constraint, int sourceIndex, float weight)
+    private void UpdateConstraintWeightSmooth(MultiAimConstraint constraint)
     {
         if (constraint == null) return;
-        var sources = constraint.data.sourceObjects;
-        if (sourceIndex < 0 || sourceIndex >= sources.Count) return;
 
-        var wt = sources[sourceIndex];
-        wt.weight = Mathf.Clamp01(weight);
-        sources[sourceIndex] = wt;
+        var sources = constraint.data.sourceObjects;
+
+        var srcForward = sources[0];
+        var srcCamera = sources[cameraSourceIndex];
+
+        srcForward.weight = Mathf.Lerp(srcForward.weight, targetForwardWeight, Time.deltaTime * weightLerpSpeed);
+        srcCamera.weight = Mathf.Lerp(srcCamera.weight, targetCameraWeight, Time.deltaTime * weightLerpSpeed);
+
+        sources[0] = srcForward;
+        sources[cameraSourceIndex] = srcCamera;
         constraint.data.sourceObjects = sources;
     }
 
