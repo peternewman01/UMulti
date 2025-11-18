@@ -1,0 +1,33 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 95d5d0177eff4af4ba8b60ce0239499e, type: 3}
+  m_Name: Godleaf Tree
+  m_EditorClassIdentifier: 
+  weightedPrefabs:
+  - prefab: {fileID: 3245228849349106259, guid: 73e64eb63673fe040aba97ba586da7d5, type: 3}
+    weight: 1
+  - prefab: {fileID: 6758087893537374941, guid: feb6eabfbc80726468454cc5c72ad1a9, type: 3}
+    weight: 1
+  isNetworkObject: 1
+  spawningData:
+    floorValue: 0.323
+    powScaling: 2.2
+    density: 0.391
+    posOffset: 0.15
+    randomness: 0.1
+    maxSteepness: 90
+    minSteepness: 0
+    maxHeight: 500
+    minHeight: -50
+  layersForSpawning:
+    serializedVersion: 2
+    m_Bits: 1983
