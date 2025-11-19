@@ -22,9 +22,22 @@ public class CraftingShow : MonoBehaviour
 
         ScaleSetImage(mainImage, r.GetOutputItem().item.GetSprite());
         ItemData[] rqItems = r.GetRequiredItems();
+        int savei = 4;
         for (int i = 0; i < rqItems.Length; i++)
         {
-            ScaleSetImage(slotImages[i], rqItems[i].item.GetSprite());
+            if(i < 4)
+            {
+                ScaleSetImage(slotImages[i], rqItems[i].item.GetSprite());
+            }
+            savei = i;
+        }
+        if(savei < 3)
+        {
+
+            for (int i = savei+1; i < slotImages.Count; i++)
+            {
+                slotImages[i].gameObject.SetActive(false);
+            }
         }
     }
 

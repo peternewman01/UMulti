@@ -51,26 +51,43 @@ public class RecipeShow : MonoBehaviour
             ItemData[] requiredItems = recipe.GetRequiredItems();
             for (int i = 0; i < requiredItems.Count(); i++)
             {
-                allItemData.Add(requiredItems[i]);
                 if(allItemData.Count() <= 0)
                 {
-                    //allItemData.Add(requiredItems[i]);
+                    allItemData.Add(requiredItems[i]);
+                    currentItemCount = 1;
                 }
-                if(allItemData.Last().item == requiredItems[i].item)
+                else
                 {
-                    currentItemCount += allItemData.Last().count;
-                }
-                if(i == requiredItems.Count() -1 || allItemData.Last().item != requiredItems[i].item)
-                {
-                    if (temp == "")
+                    if(allItemData.Last().item == requiredItems[i].item)
                     {
-                        temp = currentItemCount + " " + allItemData.Last().item.name;
+                        currentItemCount += allItemData.Last().count;
                     }
-                    else
+                    if(allItemData.Last().item != requiredItems[i].item)
                     {
-                        temp += ", " + currentItemCount + " " + allItemData.Last().item.name;
+                        if (temp == "")
+                        {
+                            temp = "Requires: " + currentItemCount + " " + allItemData.Last().item.name;
+                        }
+                        else
+                        {
+                            temp += ", \n" + currentItemCount + " " + allItemData.Last().item.name;
+                        }
+
+                        allItemData.Add(requiredItems[i]);
+                        currentItemCount = requiredItems[i].count;
                     }
-                    currentItemCount = requiredItems[i].count;
+
+                    if(i == requiredItems.Count() - 1)
+                    {
+                        if (temp == "")
+                        {
+                            temp = "Requires: " + currentItemCount + " " + allItemData.Last().item.name;
+                        }
+                        else
+                        {
+                            temp += ", \n" + currentItemCount + " " + allItemData.Last().item.name;
+                        }
+                    }
                 }
             }
 
