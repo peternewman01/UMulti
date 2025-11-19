@@ -13,7 +13,8 @@ namespace UseEntity
             if (interacter.controlPanel.AddObject(item))
             {
                 interacter.GetInventory().AddItem(new ItemData(item, 1));
-                NetcodeConnector.RequestKillServerRpc(GetComponent<NetworkObject>());
+                NetworkObject no = GetComponent<NetworkObject>();
+                NetcodeConnector.RequestKillServerRpc(new NetworkObjectReference(no));
             }
         }
     }

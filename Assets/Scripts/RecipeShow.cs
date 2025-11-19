@@ -51,9 +51,10 @@ public class RecipeShow : MonoBehaviour
             ItemData[] requiredItems = recipe.GetRequiredItems();
             for (int i = 0; i < requiredItems.Count(); i++)
             {
+                allItemData.Add(requiredItems[i]);
                 if(allItemData.Count() <= 0)
                 {
-                    allItemData.Add(requiredItems[i]);
+                    //allItemData.Add(requiredItems[i]);
                 }
                 if(allItemData.Last().item == requiredItems[i].item)
                 {
@@ -71,7 +72,6 @@ public class RecipeShow : MonoBehaviour
                     }
                     currentItemCount = requiredItems[i].count;
                 }
-                allItemData.Add(requiredItems[i]);
             }
 
             list.text = temp;

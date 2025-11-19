@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1df683bf1fcf5d446a76f29ab1b51d3e, type: 3}
+  m_Name: StickRecipe
+  m_EditorClassIdentifier: 
+  requiredItems:
+  - item: {fileID: 11400000, guid: 81f57b3ed75c72b42886fcc093b03c14, type: 2}
+    count: 1
+  - item: {fileID: 11400000, guid: 81f57b3ed75c72b42886fcc093b03c14, type: 2}
+    count: 1
+  - item: {fileID: 11400000, guid: 81f57b3ed75c72b42886fcc093b03c14, type: 2}
+    count: 1
+  outputItemData:
+    item: {fileID: 11400000, guid: f395d38b1cd4d2b47b4715db359d7d09, type: 2}
+    count: 1
