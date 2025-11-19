@@ -37,6 +37,7 @@ public class PlayerManager : NetworkBehaviour
     private InputAction sprint;
     private InputAction interact;
     private InputAction attack;
+    private InputAction heavyAttack;
     private InputAction click;
     private InputAction jump;
     private InputAction scroll;
@@ -70,7 +71,7 @@ public class PlayerManager : NetworkBehaviour
 
     private Animator anim;
 
-    private bool canShoot = true;
+    public float abilityIndex = -1; //-1 = no ability selected
     private float lastShotTime = 0f;
     private float shootCooldown = 0.2f;
 
@@ -128,7 +129,9 @@ public class PlayerManager : NetworkBehaviour
     [SerializeField] float scrollSensitivity = 10f;
     float cameraDistance;
     CinemachineComponentBase componentBase;
-    [SerializeField] private CinemachineImpulseSource impulseSource; //recoil impulse
+    [SerializeField] private CinemachineImpulseSource impulseSource;
+
+    private HotbarSelector hotbar;
 
     public StickHolding holding;
 
@@ -170,6 +173,8 @@ public class PlayerManager : NetworkBehaviour
         initialWeaponLocalPos = weapon.localPosition;
         initialWeaponLocalRot = weapon.localRotation;
         MainCanvas = FindFirstObjectByType<Canvas>();
+        hotbar = MainCanvas.transform.Find("Hotbar").GetComponent<HotbarSelector>();
+        hotbar.player = this;
         Cursor.lockState = CursorLockMode.None;
         Debug.Log("Player added!");
 
@@ -186,7 +191,24 @@ public class PlayerManager : NetworkBehaviour
         look = InputSystem.actions.FindAction("Look");
         sprint = InputSystem.actions.FindAction("Sprint");
         interact = InputSystem.actions.FindAction("Interact");
-        attack = InputSystem.actions.FindAction("Attack");
+        Cursor.lockState = CursorLockMode.None;
+        Debug.Log("Player added!");
+
+        if (!IsOwner)
+        {
+            //GetComponent<PlayerInput>().enabled = false;
+        }
+        else
+        {
+            anim = transform.Find("lilCultist3").GetComponent<Animator>();
+        }
+
+        move = InputSystem.actions.FindAction("Move");
+        look = InputSystem.actions.FindAction("Look");
+        sprint = InputSystem.actions.FindAction("Sprint");
+        interact = InputSystem.actions.FindAction("Interact");
+        attack = InputSystem.actions.FindAction("Attack"); //light attack
+        heavyAttack = InputSystem.actions.FindAction("Heavy"); //heavy attack
         click = InputSystem.actions.FindAction("Click");
         jump = InputSystem.actions.FindAction("Jump");
         scroll = InputSystem.actions.FindAction("Scroll");
@@ -498,12 +520,12 @@ public class PlayerManager : NetworkBehaviour
 
             Vector3 dashDirection = transform.forward + Vector3.up * dashUpScale;
             rb.AddForce(dashDirection.normalized * dashForce);
-            anim.SetBool("IsKnockedOver", true);
-            Invoke("KnockOverReset", 1);
+            //anim.SetBool("IsKnockedOver", true);
+            //Invoke("KnockOverReset", 1);
         }
     }
 
-    //temporary knockdown animation location
+    //temporary knockdown animation location - will be replaced with dash anim cancel, DO NOT DELETE
     private void KnockOverReset()
     {
         anim.SetBool("IsKnockedOver", false);
@@ -518,23 +540,25 @@ public class PlayerManager : NetworkBehaviour
 
         if (cameraTransform == null) return;
 
-        if (click.IsPressed()) //aim right click
-        {
-            lastWaitTime = Time.time;
-            anim.SetBool("IsIdleLong", false);
+        //if (click.IsPressed()) //aim right click
+        //{
+        //    lastWaitTime = Time.time;
+        //    anim.SetBool("IsIdleLong", false);
 
-            canShoot = true;
-        }
-        else
-        {
-            canShoot = false;
-        }
+        //    canShoot = true;
+        //}
+        //else
+        //{
+        //    canShoot = false;
+        //}
 
-        if (attack.WasPressedThisFrame() && canShoot && Time.time - lastShotTime >= shootCooldown)
+        if (attack.WasPressedThisFrame() && abilityIndex != -1 && Time.time - lastShotTime >= shootCooldown)
         {
             lastShotTime = Time.time;
 
             CameraShakeManager.instance.CameraShake(impulseSource, .1f); //recoil
+
+            hotbar.TriggerAbility();
             RequestShootServerRpc(transform.position + Vector3.up, transform.forward);
         }
         else if (attack.WasPressedThisFrame() && Time.time - lastShotTime >= shootCooldown)
@@ -542,11 +566,18 @@ public class PlayerManager : NetworkBehaviour
             lastShotTime = Time.time;
 
             anim.SetBool("IsIdleLong", false);
-            RequestSlashServerRpc(transform.position + Vector3.up, -transform.right);
+            RequestSlashServerRpc(transform.position + Vector3.up, -transform.right, true);
+        }
+        else if (heavyAttack.WasPressedThisFrame() && Time.time - lastShotTime >= shootCooldown)
+        {
+            lastShotTime = Time.time;
+
+            anim.SetBool("IsIdleLong", false);
+            RequestSlashServerRpc(transform.position + Vector3.up, -transform.right, false);
         }
     }
 
-    private void StartSwing(Transform slashTransform)
+    private void StartLightSwing(Transform slashTransform)
     {
         if (weapon == null || isSwinging) return;
 
@@ -555,10 +586,28 @@ public class PlayerManager : NetworkBehaviour
             if (fovRoutine != null) StopCoroutine(fovRoutine);
             fovRoutine = StartCoroutine(SlashFOVEffect());
         }
-        StartCoroutine(SwingRoutine(slashTransform));
+        if(movementInput.sqrMagnitude < 0.0001f)
+            StartCoroutine(SwingRoutine(slashTransform, true, false));
+        else //is moving
+            StartCoroutine(SwingRoutine(slashTransform, true, true));
     }
 
-    private IEnumerator SwingRoutine(Transform slashTransform)
+    private void StartHeavySwing(Transform slashTransform)
+    {
+        if (weapon == null || isSwinging) return;
+
+        if (IsOwner && cinemachineCam != null)
+        {
+            if (fovRoutine != null) StopCoroutine(fovRoutine);
+            fovRoutine = StartCoroutine(SlashFOVEffect());
+        }
+        if (movementInput.sqrMagnitude < 0.0001f)
+            StartCoroutine(SwingRoutine(slashTransform, false, false));
+        else
+            StartCoroutine(SwingRoutine(slashTransform, false, true));
+    }
+
+    private IEnumerator SwingRoutine(Transform slashTransform, bool isLightAttack, bool isMoving)
     {
         isSwingingbool = false;
         isSwinging = false;
@@ -662,7 +711,7 @@ public class PlayerManager : NetworkBehaviour
     }
 
     [Rpc(SendTo.ClientsAndHost)]
-    private void RequestSlashServerRpc(Vector3 spawnPosition, Vector3 shootDirection)
+    private void RequestSlashServerRpc(Vector3 spawnPosition, Vector3 shootDirection, bool isLight)
     {
         weaponTrail.Clear();
         weaponTrail.enabled = false;
@@ -693,7 +742,10 @@ public class PlayerManager : NetworkBehaviour
         //weaponTrail.enabled = true;
         print("weapontrail started");
 
-        StartSwing(spawnedSlash);
+        if (isLight)
+            StartLightSwing(spawnedSlash);
+        else
+            StartHeavySwing(spawnedSlash);
     }
 
     private IEnumerator UnparentAfterDelay(Transform t, Transform p, float delay)
