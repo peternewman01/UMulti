@@ -917,13 +917,13 @@ MonoBehaviour:
     m_Value: 0
   compensation:
     m_OverrideState: 1
-    m_Value: 1.5
+    m_Value: 15
   limitMin:
     m_OverrideState: 1
-    m_Value: -0.7
+    m_Value: -2.9959514
   limitMax:
     m_OverrideState: 1
-    m_Value: 15
+    m_Value: 13.651822
   curveMap:
     m_OverrideState: 0
     m_Value:
@@ -951,33 +951,33 @@ MonoBehaviour:
       m_PostInfinity: 2
       m_RotationOrder: 4
   limitMinCurveMap:
-    m_OverrideState: 0
+    m_OverrideState: 1
     m_Value:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
-        time: -10
-        value: -12
-        inSlope: 0
-        outSlope: 1
+        time: -10.5
+        value: 4.9999847
+        inSlope: 0.27428818
+        outSlope: 0.27428818
         tangentMode: 0
         weightedMode: 0
         inWeight: 0
-        outWeight: 0
+        outWeight: 0.20920502
       - serializedVersion: 3
-        time: 20
-        value: 18
-        inSlope: 1
-        outSlope: 0
+        time: 19.375
+        value: 19.714285
+        inSlope: 0.542857
+        outSlope: 0.542857
         tangentMode: 0
         weightedMode: 0
-        inWeight: 0
+        inWeight: 0.16736402
         outWeight: 0
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
   limitMaxCurveMap:
-    m_OverrideState: 0
+    m_OverrideState: 1
     m_Value:
       serializedVersion: 2
       m_Curve:
@@ -1006,20 +1006,20 @@ MonoBehaviour:
     m_OverrideState: 0
     m_Value: 0
   adaptationSpeedDarkToLight:
-    m_OverrideState: 0
+    m_OverrideState: 1
     m_Value: 3
   adaptationSpeedLightToDark:
-    m_OverrideState: 0
+    m_OverrideState: 1
     m_Value: 1
   weightTextureMask:
     m_OverrideState: 0
     m_Value: {fileID: 0}
   histogramPercentages:
     m_OverrideState: 0
-    m_Value: {x: 40, y: 90}
+    m_Value: {x: 0, y: 3.391529}
   histogramUseCurveRemapping:
-    m_OverrideState: 0
-    m_Value: 0
+    m_OverrideState: 1
+    m_Value: 1
   targetMidGray:
     m_OverrideState: 0
     m_Value: 0

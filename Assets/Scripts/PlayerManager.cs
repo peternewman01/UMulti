@@ -20,7 +20,7 @@ public class PlayerManager : NetworkBehaviour
     [SerializeField] private GameObject ControlPanelPrefab;
     [HideInInspector] public ControlPanel controlPanel;
     [SerializeField] private Invintory inv;
-
+    private Transform spawnedSlash;
 
     [Header("Movement")]
     [SerializeField] private Rigidbody rb;
@@ -102,10 +102,17 @@ public class PlayerManager : NetworkBehaviour
     [SerializeField] private Quaternion idealHandRot;
     [SerializeField] private Transform movementTrails;
     [SerializeField] private CinemachineCamera cinemachineCam;
+    //in future use weapon holding item def for these vals
     [SerializeField] private float fovIncrease = 10f;
     [SerializeField] private float fovDuration = 0.4f;
     [SerializeField, Range(-1f, 1f)] private float fovSkew = .5f; //negative = skew left (faster rise), positive = skew right (slower rise)
-    private Coroutine fovRoutine;
+
+    private float fovIncreaseBase;
+    private float fovDurationBase;
+    private float fovSkewBase;
+
+    private Coroutine fovRoutineLight;
+    private Coroutine fovRoutineHeavy;
     private float defaultFOV = 90f;
     float maxLookDistance = 100f;
     float heightOffset = 1.0f;
@@ -169,6 +176,9 @@ public class PlayerManager : NetworkBehaviour
 
     public override void OnNetworkSpawn()
     {
+        fovDurationBase = fovDuration;
+        fovIncreaseBase = fovIncrease;
+        fovSkewBase = fovSkew;
         ropeRestingLocalPos = RopeTops.localPosition;
         initialWeaponLocalPos = weapon.localPosition;
         initialWeaponLocalRot = weapon.localRotation;
@@ -540,18 +550,6 @@ public class PlayerManager : NetworkBehaviour
 
         if (cameraTransform == null) return;
 
-        //if (click.IsPressed()) //aim right click
-        //{
-        //    lastWaitTime = Time.time;
-        //    anim.SetBool("IsIdleLong", false);
-
-        //    canShoot = true;
-        //}
-        //else
-        //{
-        //    canShoot = false;
-        //}
-
         if (attack.WasPressedThisFrame() && abilityIndex != -1 && Time.time - lastShotTime >= shootCooldown)
         {
             lastShotTime = Time.time;
@@ -561,19 +559,19 @@ public class PlayerManager : NetworkBehaviour
             hotbar.TriggerAbility();
             RequestShootServerRpc(transform.position + Vector3.up, transform.forward);
         }
-        else if (attack.WasPressedThisFrame() && Time.time - lastShotTime >= shootCooldown)
+        else if (attack.WasPressedThisFrame() && Time.time - lastShotTime >= shootCooldown && !isSwinging)
         {
             lastShotTime = Time.time;
 
             anim.SetBool("IsIdleLong", false);
-            RequestSlashServerRpc(transform.position + Vector3.up, -transform.right, true);
+            StartLightSwing(spawnedSlash);
         }
-        else if (heavyAttack.WasPressedThisFrame() && Time.time - lastShotTime >= shootCooldown)
+        else if (heavyAttack.WasPressedThisFrame() && Time.time - lastShotTime >= shootCooldown && !isSwinging)
         {
             lastShotTime = Time.time;
 
             anim.SetBool("IsIdleLong", false);
-            RequestSlashServerRpc(transform.position + Vector3.up, -transform.right, false);
+            StartHeavySwing(spawnedSlash);
         }
     }
 
@@ -583,8 +581,11 @@ public class PlayerManager : NetworkBehaviour
 
         if (IsOwner && cinemachineCam != null)
         {
-            if (fovRoutine != null) StopCoroutine(fovRoutine);
-            fovRoutine = StartCoroutine(SlashFOVEffect());
+            if (fovRoutineLight != null) StopCoroutine(fovRoutineLight);
+            //in future get from weapon holding item def
+            fovIncrease = fovIncreaseBase;
+            fovDuration = fovDurationBase;
+            fovRoutineLight = StartCoroutine(SlashFOVEffect());
         }
         if(movementInput.sqrMagnitude < 0.0001f)
             StartCoroutine(SwingRoutine(slashTransform, true, false));
@@ -594,58 +595,95 @@ public class PlayerManager : NetworkBehaviour
 
     private void StartHeavySwing(Transform slashTransform)
     {
+        Debug.Log("weapon: " + (weapon == null) + ", isSwinging: " + isSwinging);
         if (weapon == null || isSwinging) return;
+
+        Debug.Log("IsOwner: " + IsOwner + ", cinemachineCam: " + (cinemachineCam != null));
 
         if (IsOwner && cinemachineCam != null)
         {
-            if (fovRoutine != null) StopCoroutine(fovRoutine);
-            fovRoutine = StartCoroutine(SlashFOVEffect());
+            if (fovRoutineHeavy != null) StopCoroutine(fovRoutineHeavy);
+            //in future get from weapon holding item def
+            fovIncrease = fovIncreaseBase * 2;
+            fovDuration = fovDurationBase * 2;
+            fovRoutineHeavy = StartCoroutine(SlashFOVEffect());
         }
-        if (movementInput.sqrMagnitude < 0.0001f)
+        if (movementInput.magnitude < 0.0001f)
             StartCoroutine(SwingRoutine(slashTransform, false, false));
         else
             StartCoroutine(SwingRoutine(slashTransform, false, true));
     }
 
+
     private IEnumerator SwingRoutine(Transform slashTransform, bool isLightAttack, bool isMoving)
     {
-        isSwingingbool = false;
-        isSwinging = false;
+        isSwinging = true;
+        isSwingingbool = true;
         weaponTrail.enabled = false;
         weaponCollider.enabled = false;
+
+        float actualPreslash = isLightAttack ? preslash : preslash * 2f;
+
+        if (isMoving)
+            actualPreslash *= 2f;
+
+        yield return new WaitForSeconds(actualPreslash);
+        
+        if(isMoving)
+            rb.linearVelocity = new Vector3(0, rb.linearVelocity.y, 0);
+
+        Debug.Log("Slashing");
+
+        if(isLightAttack)
+            RequestSlashServerRpc(transform.position + Vector3.up, -transform.right, true);
+        else
+            RequestSlashServerRpc(transform.position + Vector3.up, -transform.right, false);
+
         currentSlash = slashTransform;
 
-        //wait before the slash starts (preslash)
-        yield return new WaitForSeconds(preslash);
+        float swingScale = isLightAttack ? 1f : 1.3f;
 
-        isSwinging = true;
-        weaponCollider.enabled = true;
+        swingDuration = swingDuration * swingScale * (isLightAttack ? 1f : 1.3f);
+
         swingTimer = 0f;
+        weaponCollider.enabled = true;
 
         baseRotation = currentSlash.rotation * Quaternion.Euler(axisOffset);
-        swingStart = baseRotation * Quaternion.AngleAxis(-swingAngle * 0.5f, swingAxis);
-        swingEnd = baseRotation * Quaternion.AngleAxis(swingAngle * 1.1f, swingAxis);
+
+        if (!isLightAttack)
+        {
+            swingStart = baseRotation * Quaternion.AngleAxis(-90f, Vector3.right);
+            swingEnd = baseRotation * Quaternion.AngleAxis(90f, Vector3.right);
+        }
+        else
+        {
+            swingStart = baseRotation * Quaternion.AngleAxis(-swingAngle * 0.5f, swingAxis);
+            swingEnd = baseRotation * Quaternion.AngleAxis(swingAngle * 1.1f, swingAxis);
+        }
     }
+
 
     private void UpdateSwing()
     {
-        if (!isSwinging || weapon == null || currentSlash == null) return;
+        if (!isSwinging || weapon == null) return;
 
         swingTimer += Time.deltaTime;
-        float t = swingTimer / swingDuration;
-
-        //exponential easing curve (accelerate -> decelerate)
+        float t = Mathf.Clamp01(swingTimer / swingDuration);
         t = Mathf.Pow(t, swingExponent);
-        t = Mathf.Clamp01(t);
 
         weapon.rotation = Quaternion.Slerp(swingStart, swingEnd, t);
 
-        float distance = 0.2f;
         Vector3 dir = (weapon.rotation * Vector3.forward).normalized;
-        weapon.position = transform.position + Vector3.up * heightOffset + dir * distance;
+        weapon.position = transform.position + Vector3.up * heightOffset + dir * 0.2f;
 
-        //enable trail after motion starts
-        if (t > 0.05f) weaponTrail.enabled = true;
+        // Only move player from swing acceleration IF they were moving when swing started
+        if (isSwingingbool && movementInput.sqrMagnitude > 0.01f)
+        {
+            rb.AddForce(transform.forward * dashForce * 0.1f, ForceMode.Acceleration);
+        }
+
+        if (t > 0.05f)
+            weaponTrail.enabled = true;
 
         if (t >= 1f)
         {
@@ -653,6 +691,7 @@ public class PlayerManager : NetworkBehaviour
             weaponTrail.enabled = false;
             weaponCollider.enabled = false;
             isSwinging = false;
+            isSwingingbool = false;
             lastSwingEndTime = Time.time;
         }
     }
@@ -715,13 +754,12 @@ public class PlayerManager : NetworkBehaviour
     {
         weaponTrail.Clear();
         weaponTrail.enabled = false;
-        print("weapon trail disabled");
         Transform p = transform.parent;
 
         float forwardOffset = .5f;
         Vector3 spawnOffset = transform.forward * forwardOffset;
 
-        Transform spawnedSlash = Instantiate(slash);
+        spawnedSlash = Instantiate(slash);
         spawnedSlash.transform.position = spawnPosition + spawnOffset;
         spawnedSlash.transform.rotation = Quaternion.LookRotation(shootDirection);
         spawnedSlash.transform.Rotate(Random.Range(-90f, 90f), 0f, 0f);
@@ -740,7 +778,6 @@ public class PlayerManager : NetworkBehaviour
         Destroy(spawnedSlash.gameObject, .5f);
 
         //weaponTrail.enabled = true;
-        print("weapontrail started");
 
         if (isLight)
             StartLightSwing(spawnedSlash);
@@ -845,6 +882,8 @@ public class PlayerManager : NetworkBehaviour
     {
         float elapsed = 0f;
         float halfTime = fovDuration * 0.5f;
+
+        cinemachineCam.Lens.FieldOfView = defaultFOV;
 
         while (elapsed < fovDuration)
         {
