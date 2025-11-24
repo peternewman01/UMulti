@@ -4,6 +4,7 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using System;
 using UnityEngine.Rendering.HighDefinition;
+using UnityEngine.Splines;
 
 [Serializable]
 public class Slot : MonoBehaviour
@@ -24,6 +25,7 @@ public class Slot : MonoBehaviour
     public Slot SourceSlot;
 
     [SerializeField] private Sprite emptySprite;
+    [SerializeField] private bool uiSlot = false;
 
     private void Start()
     {;
@@ -97,8 +99,11 @@ public class Slot : MonoBehaviour
 
         objectID = -1;
 
-        ui.openSlots.Add(this);
-        ui.filledSlots.Remove(this);
+        if(!ui.openSlots.Contains(this))
+        {
+            ui.openSlots.Add(this);
+            ui.filledSlots.Remove(this);
+        }
 
 
         RectTransform sourceRect = gameObject.GetComponent<RectTransform>();
@@ -118,13 +123,40 @@ public class Slot : MonoBehaviour
 
         if (this.SourceSlot == this)
         {
-            itemImage.sprite = image;
-            itemImage.SetNativeSize();
+            if(uiSlot)
+            {
+                ScaleSetImage(itemImage, image);
+            }
+            else
+            {
+                itemImage.sprite = image;
+                itemImage.SetNativeSize();
+            }
             //itemImage.color = new Color(1, 1, 1, 1);
         }
         else
         {
             itemImage.enabled = false;
+        }
+    }
+    public void ScaleSetImage(Image target, Sprite newImage)
+    {
+        if (!target.gameObject.active)
+        {
+            target.gameObject.SetActive(true);
+        }
+        target.sprite = newImage;
+        target.SetNativeSize();
+        Vector2 size = target.rectTransform.sizeDelta;
+
+        // Find how much we need to scale
+        float maxSize = 100f;
+        float scale = Mathf.Min(maxSize / target.rectTransform.sizeDelta.x, maxSize / target.rectTransform.sizeDelta.y);
+
+        // If scaling would shrink it
+        if (scale != 1f)
+        {
+            target.rectTransform.sizeDelta = size * scale;
         }
     }
 
@@ -133,4 +165,6 @@ public class Slot : MonoBehaviour
     public bool isFilled() {  return filled; } 
 
     public int getObjectID() { return objectID; }
+
+    public bool isUiSlot() { return uiSlot; }
 }

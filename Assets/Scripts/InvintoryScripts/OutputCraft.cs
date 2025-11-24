@@ -1,16 +1,19 @@
 using UnityEngine;
+using UseEntity;
 
 public class OutputCraft : MonoBehaviour
 {
     [SerializeField] private ShowAllRecipies sar;
+    [SerializeField] private Table ritualArea;
 
     public void Craft()
     {
         if (sar != null)
         {
-            if (sar.getSelectedRecipe() != null)
+            RecipeShow selected = sar.getSelectedRecipe();
+            if (selected != null)
             {
-                Debug.Log("Craft!");
+                selected.GetRecipe().TryCraftItemFromInventory(sar.getControlPanel().invintory);
             }
             else
             {

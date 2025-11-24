@@ -131,7 +131,7 @@ GameObject:
   - component: {fileID: 5982389291497039704}
   - component: {fileID: 5930374038275493916}
   - component: {fileID: 7033247571078061410}
-  - component: {fileID: 6164809854223954391}
+  - component: {fileID: 2236935332797814430}
   m_Layer: 9
   m_Name: Stick
   m_TagString: Untagged
@@ -284,7 +284,7 @@ MonoBehaviour:
   AutoObjectParentSync: 1
   SyncOwnerTransformWhenParented: 1
   AllowOwnerToParent: 0
---- !u!114 &6164809854223954391
+--- !u!114 &2236935332797814430
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -293,8 +293,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 9125502469920471631}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9b769153ebeb4d044811ae71f7cae2db, type: 3}
+  m_Script: {fileID: 11500000, guid: ad926ed455317994cb7540b43e682849, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
-  damage: 1
+  item: {fileID: 11400000, guid: f395d38b1cd4d2b47b4715db359d7d09, type: 2}

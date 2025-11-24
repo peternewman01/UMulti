@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: Pickaxe
   m_EditorClassIdentifier: 
   inventorySprite: {fileID: 21300000, guid: 63751c08c5495d143a122d539609af57, type: 3}
-  worldPrefab: {fileID: 9125502469920471631, guid: bfc9b1f46214f0a4da2e58088ae34812, type: 3}
+  worldPrefab: {fileID: 8935281231668874894, guid: 9a0294035e2d89a45a4caba72eeaf316, type: 3}

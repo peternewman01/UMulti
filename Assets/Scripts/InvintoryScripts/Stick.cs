@@ -1,9 +1,9 @@
 using UnityEngine;
 
 
-/*public class Stick : Interactable
+public class Stick : MonoBehaviour
 {
-*//*    public static int ObjectID = -1;
+    /*    public static int ObjectID = -1;
     public static string ObjectName = "";
 
     private void Start()
@@ -18,6 +18,13 @@ using UnityEngine;
     {
         interacter.GetInventory().AddItem(id, 1);
         Destroy(gameObject);
-    }*//*
+    }*/
+
+    [SerializeField] private int objectID;
+    [SerializeField] private Item stickItem;
+
+    private void Start()
+    {
+        objectID = ItemManager.GetID(stickItem);
+    }
 }
-*/

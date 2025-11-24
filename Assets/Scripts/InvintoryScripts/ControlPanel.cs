@@ -30,7 +30,12 @@ public class ControlPanel : MonoBehaviour
 
     private void Start()
     {
-            for (int i = 0; i <  slotSpawnCount; i++)
+        if(invintory != null)
+        {
+            invintory.SetControlPannel(this);
+        }
+
+        for (int i = 0; i <  slotSpawnCount; i++)
         {
             Slot s = Instantiate(slot, startPosition).GetComponent<Slot>();
             s.ui = this;
@@ -93,13 +98,39 @@ public class ControlPanel : MonoBehaviour
             if (slot.getObjectID() == ItemManager.GetID(obj))
             {
                 slot.ResetItem();
-                RectTransform removeSlot = MovingSlot.gameObject.GetComponent<RectTransform>();
-                removeSlot.localScale = new Vector2(MovingSlot.getSize().x, MovingSlot.getSize().y);
+                return true;
             }
         }
         return false;
     }
-
+    public bool RemoveObject(Item obj, out Slot SourceSlot)
+    {
+        foreach (Slot slot in filledSlots)
+        {
+            if (slot.getObjectID() == ItemManager.GetID(obj))
+            {
+                SourceSlot = slot.SourceSlot;
+                slot.ResetItem();
+                return true;
+            }
+        }
+        SourceSlot = null;
+        return false;
+    }
+    public bool RemoveObject(Item obj, List<Slot> removedSlots, out Slot SourceSlot)
+    {
+        foreach (Slot slot in filledSlots)
+        {
+            if (slot.getObjectID() == ItemManager.GetID(obj) && !removedSlots.Contains(slot.SourceSlot))
+            {
+                SourceSlot = slot.SourceSlot;
+                slot.ResetItem();
+                return true;
+            }
+        }
+        SourceSlot = null;
+        return false;
+    }
     public bool CheckSlotOnGrid(Vector2Int pos)
     {
         if(allSlots.TryGetValue(pos, out var slot))
@@ -180,6 +211,24 @@ public class ControlPanel : MonoBehaviour
                 MovingSlot = null;
 
                 return true;
+            }
+
+            if(slot.isUiSlot())
+            {
+                Slot sourceSlot = slot;
+                //size should stay pretty small, checking somwhere between 1 and 9 slots
+                if (allSlots.TryGetValue(new Vector2Int(sourceSlot.pos.x, sourceSlot.pos.y), out var tempSlot))
+                {
+                    tempSlot.SetItem(sourceSlot, ItemManager.GetItem(MovingSlot.getObjectID()));
+                    filledSlots.Add(tempSlot);
+                    openSlots.Remove(tempSlot);
+
+                    RectTransform sourceRect = sourceSlot.gameObject.GetComponent<RectTransform>();
+
+                    MovingSlot.ResetItem();
+                    sourceRect = MovingSlot.gameObject.GetComponent<RectTransform>();
+                    sourceRect.localScale = new Vector2(MovingSlot.getSize().x, MovingSlot.getSize().y);
+                }
             }
         }
         

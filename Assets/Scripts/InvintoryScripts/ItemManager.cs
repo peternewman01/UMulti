@@ -20,7 +20,11 @@ public class ItemManager : MonoBehaviour
         }
     }
 
-    public static Item GetItem(int id) => ids[id];
+    public static Item GetItem(int id)
+    {
+        if(id != -1) return ids[id];
+        else return null;
+    }
     public static int GetID(Item item)
     {
         for (int index = 0; index < ids.Length; index++)

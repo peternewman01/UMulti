@@ -37,7 +37,8 @@ namespace UnityEngine
                     GameObject prefab = GetRandomPrefab();
                     if (isNetworkObject)
                     {
-                        NetcodeConnector.SpawnObjectServerRpc(prefab.GetComponent<NetworkObject>(), out spawned);
+                        NetworkObject hold = prefab.GetComponent<NetworkObject>();
+                        NetcodeConnector.SpawnObjectServerRpc(hold, out spawned);
                     }
                     else
                     {

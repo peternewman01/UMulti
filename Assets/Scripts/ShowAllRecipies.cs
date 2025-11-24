@@ -47,4 +47,5 @@ public class ShowAllRecipies : MonoBehaviour
     }
 
     public RecipeShow getSelectedRecipe() => selectedRecipe;
+    public ControlPanel getControlPanel() => cp;
 }

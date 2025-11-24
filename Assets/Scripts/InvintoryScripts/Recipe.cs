@@ -1,6 +1,8 @@
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
+using System.Xml;
+using Unity.Netcode;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "new recipe", menuName = "Item/New Recipe")]
@@ -11,12 +13,36 @@ public class RecipeData : ScriptableObject
 
     public bool CanInventoryCraft(Invintory inventory)
     {
+        int currentCount = 0;
+        int currentID = -1;
         foreach (ItemData item in requiredItems)
         {
-            if (inventory.Has(item)) continue;
+            int hold = ItemManager.GetID(item.item);
+            if (currentID == hold || currentID == -1)
+            {
+                currentID = hold;
+                currentCount += item.count;
+                continue;
+            }
+            else if(currentID != hold)
+            {
+                if (inventory.Has(currentID, currentCount))
+                {
+                    currentID = hold;
+                    currentCount += item.count;
+                    continue;
+                }
+            }
             return false;
         }
-
+        
+        if(currentID != -1)
+        {
+            if (!inventory.Has(currentID, currentCount))
+            {
+                return false;
+            }
+        }
         return true;
     }
 
@@ -28,14 +54,39 @@ public class RecipeData : ScriptableObject
         return true;
     }
 
+    //TODO Give Back Items if there isnt enough room in invintory?
     public void CraftItemFromInventory(Invintory inventory)
     {
+        int currentCount = 0;
+        int currentID = -1;
+        List<Slot> removedSlots = new List<Slot>();
         foreach (ItemData item in requiredItems)
         {
-            inventory.RemoveItem(item);
+            int hold = ItemManager.GetID(item.item);
+            if (currentID == hold || currentID == -1)
+            {
+                currentID = hold;
+                currentCount += item.count;
+                continue;
+            }
+            else if (currentID != hold)
+            {
+                inventory.RemoveItem(currentID, currentCount);
+            }
         }
 
-        inventory.AddItem(outputItemData);
+        if (currentID != -1)
+        {
+            if (inventory.Has(currentID, currentCount))
+            {
+                inventory.RemoveItem(currentID, currentCount);
+            }
+        }
+
+        if (inventory.GetControlPanel().AddObject(outputItemData.item))
+        {
+            inventory.AddItem(outputItemData);
+        }
     }
 
     public bool CanCraftFromDataList(List<ItemData> dataList)
