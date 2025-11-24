@@ -107,6 +107,7 @@ public class PlayerManager : NetworkBehaviour
     [SerializeField] private float fovDuration = 0.4f;
     [SerializeField, Range(-1f, 1f)] private float fovSkew = .5f; //negative = skew left (faster rise), positive = skew right (slower rise)
 
+    private float duration;
     private float fovIncreaseBase;
     private float fovDurationBase;
     private float fovSkewBase;
@@ -122,6 +123,11 @@ public class PlayerManager : NetworkBehaviour
 
     private bool isSwinging = false;
     private bool isSwingingbool = false;
+    private bool swingInProgress = false;
+
+    private float baseSwingDuration;
+
+    private bool once = true;
     private float swingTimer = 0f;
     [SerializeField] private float preslash = 0.15f;
     [SerializeField] private float swingExponent = 2.5f;
@@ -178,6 +184,7 @@ public class PlayerManager : NetworkBehaviour
     {
         fovDurationBase = fovDuration;
         fovIncreaseBase = fovIncrease;
+        baseSwingDuration = swingDuration;
         fovSkewBase = fovSkew;
         ropeRestingLocalPos = RopeTops.localPosition;
         initialWeaponLocalPos = weapon.localPosition;
@@ -559,25 +566,26 @@ public class PlayerManager : NetworkBehaviour
             hotbar.TriggerAbility();
             RequestShootServerRpc(transform.position + Vector3.up, transform.forward);
         }
-        else if (attack.WasPressedThisFrame() && Time.time - lastShotTime >= shootCooldown && !isSwinging)
+        else if (attack.WasPressedThisFrame() && Time.time - lastShotTime >= shootCooldown && !swingInProgress)
         {
+            swingInProgress = true;
             lastShotTime = Time.time;
-
             anim.SetBool("IsIdleLong", false);
             StartLightSwing(spawnedSlash);
         }
-        else if (heavyAttack.WasPressedThisFrame() && Time.time - lastShotTime >= shootCooldown && !isSwinging)
+        else if (heavyAttack.WasPressedThisFrame() && Time.time - lastShotTime >= shootCooldown && !swingInProgress)
         {
+            swingInProgress = true;
             lastShotTime = Time.time;
-
             anim.SetBool("IsIdleLong", false);
             StartHeavySwing(spawnedSlash);
         }
+
     }
 
     private void StartLightSwing(Transform slashTransform)
     {
-        if (weapon == null || isSwinging) return;
+        if (weapon == null) return;
 
         if (IsOwner && cinemachineCam != null)
         {
@@ -587,18 +595,22 @@ public class PlayerManager : NetworkBehaviour
             fovDuration = fovDurationBase;
             fovRoutineLight = StartCoroutine(SlashFOVEffect());
         }
-        if(movementInput.sqrMagnitude < 0.0001f)
-            StartCoroutine(SwingRoutine(slashTransform, true, false));
-        else //is moving
-            StartCoroutine(SwingRoutine(slashTransform, true, true));
+        if (once)
+        {
+            once = false;
+            if (movementInput.sqrMagnitude < 0.0001f)
+                StartCoroutine(SwingRoutine(slashTransform, true, false));
+            else //is moving
+                StartCoroutine(SwingRoutine(slashTransform, true, true));
+        }
     }
 
     private void StartHeavySwing(Transform slashTransform)
     {
-        Debug.Log("weapon: " + (weapon == null) + ", isSwinging: " + isSwinging);
-        if (weapon == null || isSwinging) return;
+        //Debug.Log("weapon: " + (weapon == null) + ", isSwinging: " + isSwinging);
+        if (weapon == null) return;
 
-        Debug.Log("IsOwner: " + IsOwner + ", cinemachineCam: " + (cinemachineCam != null));
+        //Debug.Log("IsOwner: " + IsOwner + ", cinemachineCam: " + (cinemachineCam != null));
 
         if (IsOwner && cinemachineCam != null)
         {
@@ -608,19 +620,28 @@ public class PlayerManager : NetworkBehaviour
             fovDuration = fovDurationBase * 2;
             fovRoutineHeavy = StartCoroutine(SlashFOVEffect());
         }
-        if (movementInput.magnitude < 0.0001f)
-            StartCoroutine(SwingRoutine(slashTransform, false, false));
-        else
-            StartCoroutine(SwingRoutine(slashTransform, false, true));
+        if (once)
+        {
+            once = false;
+            if (movementInput.magnitude < 0.0001f)
+                StartCoroutine(SwingRoutine(slashTransform, false, false));
+            else
+                StartCoroutine(SwingRoutine(slashTransform, false, true));
+        }
     }
 
 
     private IEnumerator SwingRoutine(Transform slashTransform, bool isLightAttack, bool isMoving)
     {
+        if (isSwinging) yield break;
         isSwinging = true;
+        once = true;
+        swingInProgress = true;
         isSwingingbool = true;
         weaponTrail.enabled = false;
         weaponCollider.enabled = false;
+
+        swingTimer = 0f;
 
         float actualPreslash = isLightAttack ? preslash : preslash * 2f;
 
@@ -628,8 +649,8 @@ public class PlayerManager : NetworkBehaviour
             actualPreslash *= 2f;
 
         yield return new WaitForSeconds(actualPreslash);
-        
-        if(isMoving)
+
+        if (isMoving)
             rb.linearVelocity = new Vector3(0, rb.linearVelocity.y, 0);
 
         Debug.Log("Slashing");
@@ -642,10 +663,8 @@ public class PlayerManager : NetworkBehaviour
         currentSlash = slashTransform;
 
         float swingScale = isLightAttack ? 1f : 1.3f;
+        duration = baseSwingDuration * swingScale;
 
-        swingDuration = swingDuration * swingScale * (isLightAttack ? 1f : 1.3f);
-
-        swingTimer = 0f;
         weaponCollider.enabled = true;
 
         baseRotation = currentSlash.rotation * Quaternion.Euler(axisOffset);
@@ -668,7 +687,7 @@ public class PlayerManager : NetworkBehaviour
         if (!isSwinging || weapon == null) return;
 
         swingTimer += Time.deltaTime;
-        float t = Mathf.Clamp01(swingTimer / swingDuration);
+        float t = Mathf.Clamp01(swingTimer / duration);
         t = Mathf.Pow(t, swingExponent);
 
         weapon.rotation = Quaternion.Slerp(swingStart, swingEnd, t);
@@ -692,6 +711,7 @@ public class PlayerManager : NetworkBehaviour
             weaponCollider.enabled = false;
             isSwinging = false;
             isSwingingbool = false;
+            swingInProgress = false;
             lastSwingEndTime = Time.time;
         }
     }
