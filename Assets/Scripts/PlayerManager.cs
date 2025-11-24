@@ -30,7 +30,9 @@ public class PlayerManager : NetworkBehaviour
     [SerializeField] private float dashResetTime = 0.3f;
     [SerializeField] private float dashUpScale = 0.2f;
     private bool canDash = true;
+    private bool canMove = true;
     private Vector3 target;
+    private Vector3 movingAttackHeading;
 
     private InputAction move;
     private InputAction look;
@@ -447,6 +449,7 @@ public class PlayerManager : NetworkBehaviour
 
     private void Walking()
     {
+        if (!canMove) return;
         movementInput = move.ReadValue<Vector2>();
 
         Vector3 targetOffset = new Vector3(movementInput.x, 0, movementInput.y) * ropeTopsSpeed;
@@ -527,7 +530,7 @@ public class PlayerManager : NetworkBehaviour
 
     private void DashCheck()
     {
-        if(sprint.WasPressedThisFrame() && canDash)
+        if(sprint.WasPressedThisFrame() && canDash && canMove)
         {
             canDash = false;
 
@@ -566,15 +569,17 @@ public class PlayerManager : NetworkBehaviour
             hotbar.TriggerAbility();
             RequestShootServerRpc(transform.position + Vector3.up, transform.forward);
         }
-        else if (attack.WasPressedThisFrame() && Time.time - lastShotTime >= shootCooldown && !swingInProgress)
+        else if (attack.WasPressedThisFrame() && Time.time - lastShotTime >= shootCooldown && !swingInProgress && once)
         {
+            once = false;
             swingInProgress = true;
             lastShotTime = Time.time;
             anim.SetBool("IsIdleLong", false);
             StartLightSwing(spawnedSlash);
         }
-        else if (heavyAttack.WasPressedThisFrame() && Time.time - lastShotTime >= shootCooldown && !swingInProgress)
+        else if (heavyAttack.WasPressedThisFrame() && Time.time - lastShotTime >= shootCooldown && !swingInProgress && once)
         {
+            once = false;
             swingInProgress = true;
             lastShotTime = Time.time;
             anim.SetBool("IsIdleLong", false);
@@ -595,14 +600,10 @@ public class PlayerManager : NetworkBehaviour
             fovDuration = fovDurationBase;
             fovRoutineLight = StartCoroutine(SlashFOVEffect());
         }
-        if (once)
-        {
-            once = false;
-            if (movementInput.sqrMagnitude < 0.0001f)
-                StartCoroutine(SwingRoutine(slashTransform, true, false));
-            else //is moving
-                StartCoroutine(SwingRoutine(slashTransform, true, true));
-        }
+        if (movementInput.sqrMagnitude < 0.0001f)
+            StartCoroutine(SwingRoutine(slashTransform, true, false));
+        else //is moving
+            StartCoroutine(SwingRoutine(slashTransform, true, true));
     }
 
     private void StartHeavySwing(Transform slashTransform)
@@ -620,26 +621,27 @@ public class PlayerManager : NetworkBehaviour
             fovDuration = fovDurationBase * 2;
             fovRoutineHeavy = StartCoroutine(SlashFOVEffect());
         }
-        if (once)
-        {
-            once = false;
-            if (movementInput.magnitude < 0.0001f)
-                StartCoroutine(SwingRoutine(slashTransform, false, false));
-            else
-                StartCoroutine(SwingRoutine(slashTransform, false, true));
-        }
+        if (movementInput.magnitude < 0.0001f)
+            StartCoroutine(SwingRoutine(slashTransform, false, false));
+        else
+            StartCoroutine(SwingRoutine(slashTransform, false, true));
     }
 
 
     private IEnumerator SwingRoutine(Transform slashTransform, bool isLightAttack, bool isMoving)
     {
         if (isSwinging) yield break;
+        movingAttackHeading = transform.forward;
+        Vector3 movingSlashHeading = -transform.right;
+        canMove = false;
+        anim.SetBool("Walking", false);
         isSwinging = true;
         once = true;
         swingInProgress = true;
         isSwingingbool = true;
         weaponTrail.enabled = false;
         weaponCollider.enabled = false;
+        StartCoroutine(PausePlayerDelay(isLightAttack ? 1 : 1.3f));
 
         swingTimer = 0f;
 
@@ -656,9 +658,9 @@ public class PlayerManager : NetworkBehaviour
         Debug.Log("Slashing");
 
         if(isLightAttack)
-            RequestSlashServerRpc(transform.position + Vector3.up, -transform.right, true);
+            RequestSlashServerRpc(transform.position + Vector3.up, movingSlashHeading, true);
         else
-            RequestSlashServerRpc(transform.position + Vector3.up, -transform.right, false);
+            RequestSlashServerRpc(transform.position + Vector3.up, movingSlashHeading, false);
 
         currentSlash = slashTransform;
 
@@ -695,10 +697,10 @@ public class PlayerManager : NetworkBehaviour
         Vector3 dir = (weapon.rotation * Vector3.forward).normalized;
         weapon.position = transform.position + Vector3.up * heightOffset + dir * 0.2f;
 
-        // Only move player from swing acceleration IF they were moving when swing started
+        //only move player from swing acceleration IF they were moving when swing started
         if (isSwingingbool && movementInput.sqrMagnitude > 0.01f)
         {
-            rb.AddForce(transform.forward * dashForce * 0.1f, ForceMode.Acceleration);
+            rb.AddForce(movingAttackHeading * dashForce * 0.1f, ForceMode.Acceleration);
         }
 
         if (t > 0.05f)
@@ -799,10 +801,16 @@ public class PlayerManager : NetworkBehaviour
 
         //weaponTrail.enabled = true;
 
-        if (isLight)
-            StartLightSwing(spawnedSlash);
-        else
-            StartHeavySwing(spawnedSlash);
+        //if (isLight)
+        //    StartLightSwing(spawnedSlash);
+        //else
+        //    StartHeavySwing(spawnedSlash);
+    }
+
+    private IEnumerator PausePlayerDelay(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        canMove = true;
     }
 
     private IEnumerator UnparentAfterDelay(Transform t, Transform p, float delay)
