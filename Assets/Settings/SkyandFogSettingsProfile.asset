@@ -336,7 +336,7 @@ MonoBehaviour:
     m_OverrideState: 0
     m_Value: 0
   exposure:
-    m_OverrideState: 1
+    m_OverrideState: 0
     m_Value: 1
   multiplier:
     m_OverrideState: 0
@@ -506,10 +506,10 @@ MonoBehaviour:
     m_OverrideState: 0
     m_Value: 1.25
   scale:
-    m_OverrideState: 0
-    m_Value: 1.5
-  streaksIntensity:
     m_OverrideState: 1
+    m_Value: 1
+  streaksIntensity:
+    m_OverrideState: 0
     m_Value: 1
   streaksLength:
     m_OverrideState: 1
@@ -547,16 +547,16 @@ MonoBehaviour:
   active: 1
   postExposure:
     m_OverrideState: 1
-    m_Value: 1
+    m_Value: 1.2
   contrast:
-    m_OverrideState: 0
-    m_Value: 0
+    m_OverrideState: 1
+    m_Value: -27
   colorFilter:
     m_OverrideState: 0
     m_Value: {r: 1, g: 1, b: 1, a: 1}
   hueShift:
     m_OverrideState: 0
-    m_Value: 0
+    m_Value: 180
   saturation:
     m_OverrideState: 1
     m_Value: 25
@@ -757,7 +757,7 @@ MonoBehaviour:
     m_Value: 2
   threshold:
     m_OverrideState: 1
-    m_Value: 1
+    m_Value: 1.4
   intensity:
     m_OverrideState: 1
     m_Value: 0.05
@@ -931,7 +931,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2d08ce26990eb1a4a9177b860541e702, type: 3}
   m_Name: Exposure
   m_EditorClassIdentifier: 
-  active: 1
+  active: 0
   mode:
     m_OverrideState: 1
     m_Value: 4
@@ -942,11 +942,11 @@ MonoBehaviour:
     m_OverrideState: 0
     m_Value: 1
   fixedExposure:
-    m_OverrideState: 0
-    m_Value: 0
+    m_OverrideState: 1
+    m_Value: 6.08
   compensation:
     m_OverrideState: 1
-    m_Value: 15
+    m_Value: 30
   limitMin:
     m_OverrideState: 1
     m_Value: -2.9959514
@@ -954,23 +954,23 @@ MonoBehaviour:
     m_OverrideState: 1
     m_Value: 13.651822
   curveMap:
-    m_OverrideState: 0
+    m_OverrideState: 1
     m_Value:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
-        time: -10
-        value: -10
-        inSlope: 0
-        outSlope: 1
+        time: 0.0041656494
+        value: 1.0023499
+        inSlope: 2
+        outSlope: 2
         tangentMode: 0
         weightedMode: 0
         inWeight: 0
         outWeight: 0
       - serializedVersion: 3
-        time: 20
-        value: 20
-        inSlope: 1
+        time: 1
+        value: 1
+        inSlope: 0
         outSlope: 0
         tangentMode: 0
         weightedMode: 0
@@ -1033,7 +1033,7 @@ MonoBehaviour:
       m_RotationOrder: 4
   adaptationMode:
     m_OverrideState: 1
-    m_Value: 1
+    m_Value: 0
   adaptationSpeedDarkToLight:
     m_OverrideState: 1
     m_Value: 3

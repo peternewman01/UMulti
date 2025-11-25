@@ -6121,10 +6121,11 @@ MonoBehaviour:
   bodyConstraint: {fileID: 4920868763278166832}
   lookSwitchHalfAngle: 120
   lookSmoothSpeed: 1
-  weightLerpSpeed: 0.01
+  weightLerpSpeed: 1
   boolet: {fileID: 3979177002529581571, guid: 6bb168c71521e1e458ea8fab8d1354bb, type: 3}
   pinnacle: {fileID: 7575054346606955214, guid: a1e7cac4fcd01914a9fb0fc62bd77f4a, type: 3}
   slash: {fileID: 1863424066443970522, guid: 2eecaf86587799e46a7d5aa0ddea1fe2, type: 3}
+  slashHeavy: {fileID: 1863424066443970522, guid: 0f1cd59b70748a045b8577ff81c57a2d, type: 3}
   abilityIndex: -1
   jumpCount: 1
   jumpsUsed: 0
@@ -6149,6 +6150,12 @@ MonoBehaviour:
   fovIncrease: -5
   fovDuration: 0.4
   fovSkew: 0.95
+  doubleTapWindow: 0.3
+  doubleTapActiveTime: 0.4
+  doubleTapForward: 0
+  doubleTapBack: 0
+  doubleTapLeft: 0
+  doubleTapRight: 0
   preslash: 0.15
   swingExponent: 6
   resetDelay: 0.1
@@ -6248,6 +6255,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 90299f6d5abd016449c5b0180de34a85, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  check: 0
 --- !u!114 &4155171479499230009
 MonoBehaviour:
   m_ObjectHideFlags: 0

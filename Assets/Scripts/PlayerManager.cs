@@ -70,6 +70,7 @@ public class PlayerManager : NetworkBehaviour
     [SerializeField] private Transform boolet;
     [SerializeField] private Transform pinnacle;
     [SerializeField] private Transform slash;
+    [SerializeField] private Transform slashHeavy;
 
     private Animator anim;
 
@@ -108,11 +109,20 @@ public class PlayerManager : NetworkBehaviour
     [SerializeField] private float fovIncrease = 10f;
     [SerializeField] private float fovDuration = 0.4f;
     [SerializeField, Range(-1f, 1f)] private float fovSkew = .5f; //negative = skew left (faster rise), positive = skew right (slower rise)
+    [SerializeField] private float doubleTapWindow = 0.1f;
+    [SerializeField] private float doubleTapActiveTime = 0.2f;
 
     private float duration;
     private float fovIncreaseBase;
     private float fovDurationBase;
     private float fovSkewBase;
+    private float lastTapTime = -1f;
+    private Vector2 lastDir;
+    private bool wasPressedLastFrame = false;
+    private float lastDirTapTime = -1f;
+
+    public bool doubleTapForward, doubleTapBack, doubleTapLeft, doubleTapRight;
+    private float forwardResetTimer, backResetTimer, leftResetTimer, rightResetTimer;
 
     private Coroutine fovRoutineLight;
     private Coroutine fovRoutineHeavy;
@@ -308,10 +318,6 @@ public class PlayerManager : NetworkBehaviour
                 rigBuilder.Build();
             }
         }
-        else
-        {
-            Debug.Log("ERROR: 091870982 - " + Camera.allCamerasCount);
-        }
     }
 
     public void GotCamera()
@@ -451,6 +457,43 @@ public class PlayerManager : NetworkBehaviour
     {
         if (!canMove) return;
         movementInput = move.ReadValue<Vector2>();
+
+        //Debug.LogWarning("x: " + movementInput.x + ", y: " + movementInput.y);
+
+        //for "dash attacks"
+        float threshold = 0.7f;
+        bool pressed = movementInput.sqrMagnitude > (threshold * threshold);
+        if (pressed && !wasPressedLastFrame)
+        {
+            Vector2 currentDir = new Vector2(
+                Mathf.RoundToInt(movementInput.x),
+                Mathf.RoundToInt(movementInput.y)
+            );
+
+            if (currentDir != lastDir)
+            {
+                doubleTapForward = doubleTapBack = doubleTapLeft = doubleTapRight = false;
+            }
+
+            if (currentDir == lastDir && (Time.time - lastDirTapTime) <= doubleTapWindow)
+            {
+                if (currentDir.y > 0) { doubleTapForward = true; forwardResetTimer = Time.time; }
+                if (currentDir.y < 0) { doubleTapBack = true; backResetTimer = Time.time; }
+                if (currentDir.x > 0) { doubleTapRight = true; rightResetTimer = Time.time; }
+                if (currentDir.x < 0) { doubleTapLeft = true; leftResetTimer = Time.time; }
+            }
+
+            lastDir = currentDir;
+            lastDirTapTime = Time.time;
+        }
+
+        wasPressedLastFrame = pressed;
+
+        if (doubleTapForward && Time.time - forwardResetTimer > doubleTapActiveTime) doubleTapForward = false;
+        if (doubleTapBack && Time.time - backResetTimer > doubleTapActiveTime) doubleTapBack = false;
+        if (doubleTapLeft && Time.time - leftResetTimer > doubleTapActiveTime) doubleTapLeft = false;
+        if (doubleTapRight && Time.time - rightResetTimer > doubleTapActiveTime) doubleTapRight = false;
+
 
         Vector3 targetOffset = new Vector3(movementInput.x, 0, movementInput.y) * ropeTopsSpeed;
         Vector3 desiredLocalPos = ropeRestingLocalPos + targetOffset;
@@ -600,10 +643,11 @@ public class PlayerManager : NetworkBehaviour
             fovDuration = fovDurationBase;
             fovRoutineLight = StartCoroutine(SlashFOVEffect());
         }
-        if (movementInput.sqrMagnitude < 0.0001f)
-            StartCoroutine(SwingRoutine(slashTransform, true, false));
-        else //is moving
+        Debug.Log("forward " + doubleTapForward + ", right: " + doubleTapRight + ", left: " + doubleTapLeft + ", back: " + doubleTapBack);
+        if ((doubleTapForward || doubleTapRight || doubleTapLeft || doubleTapBack) && movementInput.magnitude > 0.0001f) //movementInput.magnitude < 0.0001f
             StartCoroutine(SwingRoutine(slashTransform, true, true));
+        else //is moving
+            StartCoroutine(SwingRoutine(slashTransform, true, false));
     }
 
     private void StartHeavySwing(Transform slashTransform)
@@ -621,10 +665,10 @@ public class PlayerManager : NetworkBehaviour
             fovDuration = fovDurationBase * 2;
             fovRoutineHeavy = StartCoroutine(SlashFOVEffect());
         }
-        if (movementInput.magnitude < 0.0001f)
-            StartCoroutine(SwingRoutine(slashTransform, false, false));
-        else
+        if ((doubleTapForward || doubleTapRight || doubleTapLeft || doubleTapBack) && movementInput.magnitude > 0.0001f) //movementInput.magnitude < 0.0001f
             StartCoroutine(SwingRoutine(slashTransform, false, true));
+        else
+            StartCoroutine(SwingRoutine(slashTransform, false, false));
     }
 
 
@@ -633,7 +677,12 @@ public class PlayerManager : NetworkBehaviour
         if (isSwinging) yield break;
         movingAttackHeading = transform.forward;
         Vector3 movingSlashHeading = -transform.right;
-        canMove = false;
+        if(!isLightAttack || isMoving)
+            canMove = false;
+
+        if (isMoving)
+            doubleTapForward = doubleTapBack = doubleTapRight = doubleTapLeft = false;
+        Debug.Log(isLightAttack + " " + isMoving);
         anim.SetBool("Walking", false);
         isSwinging = true;
         once = true;
@@ -655,7 +704,7 @@ public class PlayerManager : NetworkBehaviour
         if (isMoving)
             rb.linearVelocity = new Vector3(0, rb.linearVelocity.y, 0);
 
-        Debug.Log("Slashing");
+        //Debug.Log("Slashing");
 
         if(isLightAttack)
             RequestSlashServerRpc(transform.position + Vector3.up, movingSlashHeading, true);
@@ -698,9 +747,9 @@ public class PlayerManager : NetworkBehaviour
         weapon.position = transform.position + Vector3.up * heightOffset + dir * 0.2f;
 
         //only move player from swing acceleration IF they were moving when swing started
-        if (isSwingingbool && movementInput.sqrMagnitude > 0.01f)
+        if (isSwingingbool && (doubleTapForward || doubleTapRight || doubleTapLeft || doubleTapBack) && movementInput.sqrMagnitude > 0.01f)
         {
-            rb.AddForce(movingAttackHeading * dashForce * 0.1f, ForceMode.Acceleration);
+            rb.AddForce(movingAttackHeading * dashForce * 0.5f, ForceMode.Acceleration);
         }
 
         if (t > 0.05f)
@@ -781,7 +830,11 @@ public class PlayerManager : NetworkBehaviour
         float forwardOffset = .5f;
         Vector3 spawnOffset = transform.forward * forwardOffset;
 
-        spawnedSlash = Instantiate(slash);
+        if(isLight)
+            spawnedSlash = Instantiate(slash);
+        else
+            spawnedSlash = Instantiate(slashHeavy);
+
         spawnedSlash.transform.position = spawnPosition + spawnOffset;
         spawnedSlash.transform.rotation = Quaternion.LookRotation(shootDirection);
         spawnedSlash.transform.Rotate(Random.Range(-90f, 90f), 0f, 0f);
