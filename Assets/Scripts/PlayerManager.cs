@@ -21,6 +21,8 @@ public class PlayerManager : NetworkBehaviour
     [HideInInspector] public ControlPanel controlPanel;
     [SerializeField] private Invintory inv;
     private Transform spawnedSlash;
+    private Vector2 previousMousePosition;
+    private bool isMouseMoving;
 
     [Header("Movement")]
     [SerializeField] private Rigidbody rb;
@@ -29,6 +31,7 @@ public class PlayerManager : NetworkBehaviour
     [SerializeField] private float dashForce = 500f;
     [SerializeField] private float dashResetTime = 0.3f;
     [SerializeField] private float dashUpScale = 0.2f;
+    public bool isGrounded = false;
     private bool canDash = true;
     private bool canMove = true;
     private Vector3 target;
@@ -44,6 +47,7 @@ public class PlayerManager : NetworkBehaviour
     private InputAction jump;
     private InputAction scroll;
     private InputAction invButton;
+    private InputAction mousePosition;
 
     private Vector2 movementInput;
     private float moveSpeed = 3f;
@@ -109,8 +113,8 @@ public class PlayerManager : NetworkBehaviour
     [SerializeField] private float fovIncrease = 10f;
     [SerializeField] private float fovDuration = 0.4f;
     [SerializeField, Range(-1f, 1f)] private float fovSkew = .5f; //negative = skew left (faster rise), positive = skew right (slower rise)
-    [SerializeField] private float doubleTapWindow = 0.1f;
-    [SerializeField] private float doubleTapActiveTime = 0.2f;
+    [SerializeField] private float doubleTapWindow = 0.5f;
+    [SerializeField] private float doubleTapActiveTime = 2.5f;
 
     private float duration;
     private float fovIncreaseBase;
@@ -136,6 +140,7 @@ public class PlayerManager : NetworkBehaviour
     private bool isSwinging = false;
     private bool isSwingingbool = false;
     private bool swingInProgress = false;
+    private bool swingingMoving = false;
 
     private float baseSwingDuration;
 
@@ -174,6 +179,7 @@ public class PlayerManager : NetworkBehaviour
     [Header("Visuals")]
     [SerializeField] private Material ropeMaterial;
     [SerializeField] private float ropeWidth = 0.05f;
+    [SerializeField] private GameObject dashVFX;
 
     private List<LineRenderer> ropeLines = new List<LineRenderer>();
     private List<List<Transform>> ropeSegments = new List<List<Transform>>();
@@ -216,10 +222,10 @@ public class PlayerManager : NetworkBehaviour
             anim = transform.Find("lilCultist3").GetComponent<Animator>();
         }
 
-        move = InputSystem.actions.FindAction("Move");
-        look = InputSystem.actions.FindAction("Look");
-        sprint = InputSystem.actions.FindAction("Sprint");
-        interact = InputSystem.actions.FindAction("Interact");
+        //move = InputSystem.actions.FindAction("Move");
+        //look = InputSystem.actions.FindAction("Look");
+        //sprint = InputSystem.actions.FindAction("Sprint");
+        //interact = InputSystem.actions.FindAction("Interact");
         Cursor.lockState = CursorLockMode.None;
         Debug.Log("Player added!");
 
@@ -242,6 +248,9 @@ public class PlayerManager : NetworkBehaviour
         jump = InputSystem.actions.FindAction("Jump");
         scroll = InputSystem.actions.FindAction("Scroll");
         invButton = InputSystem.actions.FindAction("InvButton");
+
+
+        previousMousePosition = look.ReadValue<Vector2>();
 
         rb = GetComponent<Rigidbody>();
         inv = gameObject.GetComponent<Invintory>();
@@ -352,6 +361,21 @@ public class PlayerManager : NetworkBehaviour
 
         scrolling = scroll.ReadValue<float>();
 
+        //check if looking around to deter idle behavior
+        Vector2 currentMousePosition = look.ReadValue<Vector2>();
+
+        // Check if the current position is different from the previous one
+        if (currentMousePosition != previousMousePosition)
+        {
+            isMouseMoving = true;
+        }
+        else
+        {
+            isMouseMoving = false;
+        }
+
+        previousMousePosition = currentMousePosition;
+
         //for torso ik target
         if (Physics.Raycast(cameraTransform.position, cameraTransform.forward, out RaycastHit hit, maxLookDistance, aimLayers))
         {
@@ -431,10 +455,15 @@ public class PlayerManager : NetworkBehaviour
         if (Physics.CheckSphere(groundCheck.position, 0.1f, groundMask) && rb.linearVelocity.y < 3f)
         {
             jumpsUsed = 0;
+            isGrounded = true;
             anim.SetBool("IsGrounded", true);
         }
         else
+        {
+            isGrounded = false;
             anim.SetBool("IsGrounded", false);
+        }
+
         if (jumpsUsed < jumpCount)
         {
             if (jump.WasPerformedThisFrame())
@@ -455,7 +484,12 @@ public class PlayerManager : NetworkBehaviour
 
     private void Walking()
     {
-        if (!canMove) return;
+        if (!canMove)
+        {
+            transform.forward = lastMovementDirection;
+            return;
+        }
+
         movementInput = move.ReadValue<Vector2>();
 
         //Debug.LogWarning("x: " + movementInput.x + ", y: " + movementInput.y);
@@ -643,11 +677,13 @@ public class PlayerManager : NetworkBehaviour
             fovDuration = fovDurationBase;
             fovRoutineLight = StartCoroutine(SlashFOVEffect());
         }
-        Debug.Log("forward " + doubleTapForward + ", right: " + doubleTapRight + ", left: " + doubleTapLeft + ", back: " + doubleTapBack);
         if ((doubleTapForward || doubleTapRight || doubleTapLeft || doubleTapBack) && movementInput.magnitude > 0.0001f) //movementInput.magnitude < 0.0001f
             StartCoroutine(SwingRoutine(slashTransform, true, true));
-        else //is moving
+        else // is not moving
+        {
             StartCoroutine(SwingRoutine(slashTransform, true, false));
+            swingingMoving = false;
+        }
     }
 
     private void StartHeavySwing(Transform slashTransform)
@@ -665,23 +701,30 @@ public class PlayerManager : NetworkBehaviour
             fovDuration = fovDurationBase * 2;
             fovRoutineHeavy = StartCoroutine(SlashFOVEffect());
         }
-        if ((doubleTapForward || doubleTapRight || doubleTapLeft || doubleTapBack) && movementInput.magnitude > 0.0001f) //movementInput.magnitude < 0.0001f
+        if (doubleTapForward || doubleTapRight || doubleTapLeft || doubleTapBack) //movementInput.magnitude < 0.0001f
             StartCoroutine(SwingRoutine(slashTransform, false, true));
         else
+        {
             StartCoroutine(SwingRoutine(slashTransform, false, false));
+            swingingMoving = false;
+        }
     }
 
 
     private IEnumerator SwingRoutine(Transform slashTransform, bool isLightAttack, bool isMoving)
     {
         if (isSwinging) yield break;
+        swingingMoving = true;
         movingAttackHeading = transform.forward;
         Vector3 movingSlashHeading = -transform.right;
         if(!isLightAttack || isMoving)
             canMove = false;
 
         if (isMoving)
-            doubleTapForward = doubleTapBack = doubleTapRight = doubleTapLeft = false;
+        {
+            swingingMoving = true;
+        }
+
         Debug.Log(isLightAttack + " " + isMoving);
         anim.SetBool("Walking", false);
         isSwinging = true;
@@ -697,16 +740,16 @@ public class PlayerManager : NetworkBehaviour
         float actualPreslash = isLightAttack ? preslash : preslash * 2f;
 
         if (isMoving)
+        {
+            dashVFX.SetActive(true);
             actualPreslash *= 2f;
+        }
 
         yield return new WaitForSeconds(actualPreslash);
 
-        if (isMoving)
-            rb.linearVelocity = new Vector3(0, rb.linearVelocity.y, 0);
-
         //Debug.Log("Slashing");
 
-        if(isLightAttack)
+        if (isLightAttack)
             RequestSlashServerRpc(transform.position + Vector3.up, movingSlashHeading, true);
         else
             RequestSlashServerRpc(transform.position + Vector3.up, movingSlashHeading, false);
@@ -746,10 +789,13 @@ public class PlayerManager : NetworkBehaviour
         Vector3 dir = (weapon.rotation * Vector3.forward).normalized;
         weapon.position = transform.position + Vector3.up * heightOffset + dir * 0.2f;
 
+        //Debug.Log("forward " + doubleTapForward + ", right: " + doubleTapRight + ", left: " + doubleTapLeft + ", back: " + doubleTapBack);
         //only move player from swing acceleration IF they were moving when swing started
-        if (isSwingingbool && (doubleTapForward || doubleTapRight || doubleTapLeft || doubleTapBack) && movementInput.sqrMagnitude > 0.01f)
+        if (doubleTapForward || doubleTapRight || doubleTapLeft || doubleTapBack)
         {
-            rb.AddForce(movingAttackHeading * dashForce * 0.5f, ForceMode.Acceleration);
+            Debug.Log("Dash for attack!");
+            Vector3 dashDirection = movingAttackHeading + Vector3.up * dashUpScale;
+            rb.AddForce(dashDirection * dashForce * (isGrounded ? .1f : .08f), ForceMode.Acceleration);
         }
 
         if (t > 0.05f)
@@ -763,6 +809,9 @@ public class PlayerManager : NetworkBehaviour
             isSwinging = false;
             isSwingingbool = false;
             swingInProgress = false;
+            //swingingMoving = false;
+            doubleTapForward = doubleTapBack = doubleTapRight = doubleTapLeft = false;
+
             lastSwingEndTime = Time.time;
         }
     }
@@ -854,15 +903,21 @@ public class PlayerManager : NetworkBehaviour
 
         //weaponTrail.enabled = true;
 
-        //if (isLight)
-        //    StartLightSwing(spawnedSlash);
-        //else
-        //    StartHeavySwing(spawnedSlash);
+        if (swingingMoving && isLight)
+           StartLightSwing(spawnedSlash);
+        else if (swingingMoving && !isLight)
+            StartHeavySwing(spawnedSlash);
+        swingingMoving = false;
     }
 
     private IEnumerator PausePlayerDelay(float delay)
     {
         yield return new WaitForSeconds(delay);
+
+        dashVFX.SetActive(false);
+
+        //rb.linearVelocity = new Vector3(0, rb.linearVelocity.y, 0);
+        swingingMoving = false;
         canMove = true;
     }
 
