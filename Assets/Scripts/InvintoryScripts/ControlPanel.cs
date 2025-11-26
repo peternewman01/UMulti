@@ -179,7 +179,7 @@ public class ControlPanel : MonoBehaviour
     {
         if(MovingSlot)
         {
-            if (CheckSlotAreaOnGrid(slot.pos, MovingSlot.getSize()))
+                if (CheckSlotAreaOnGrid(slot.pos, MovingSlot.getSize()))
             {
                 Slot sourceSlot = slot;
                 //size should stay pretty small, checking somwhere between 1 and 9 slots
