@@ -30,5 +30,7 @@ namespace UseEntity
                 this.damage = damage;
             }
         }
+
+        public float getDamage() => damage;
     }
 }

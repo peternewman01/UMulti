@@ -798,6 +798,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sar: {fileID: 2697717487262445387}
+  ritualArea: {fileID: 0}
 --- !u!114 &6639669853872919631
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1456,7 +1457,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &7557900899729315966
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2515,7 +2516,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &6625628728134927216
 RectTransform:
   m_ObjectHideFlags: 0

@@ -46,6 +46,7 @@ GameObject:
   - component: {fileID: 6830330873840083658}
   - component: {fileID: 2445796792826338579}
   - component: {fileID: 5057017206544902912}
+  - component: {fileID: 3633500550020750801}
   m_Layer: 0
   m_Name: Pickaxe_T1
   m_TagString: Untagged
@@ -211,3 +212,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
   item: {fileID: 11400000, guid: eb76898b6fe774643ad34784f62dffe8, type: 2}
+--- !u!114 &3633500550020750801
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8935281231668874894}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f6068b1c384197740824a5e6b89899e4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damage: 10

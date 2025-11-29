@@ -615,6 +615,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   holdingSlot: {fileID: 0}
   playerManager: {fileID: 0}
+  showsHolding: 0
+  parent: {fileID: 2953539724113368148}
 --- !u!114 &3817680554728417478
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -653,7 +655,7 @@ MonoBehaviour:
   DontDestroyWithOwner: 0
   AutoObjectParentSync: 1
   SyncOwnerTransformWhenParented: 1
-  AllowOwnerToParent: 0
+  AllowOwnerToParent: 1
 --- !u!54 &4318368246524943097
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -6151,7 +6153,6 @@ GameObject:
   - component: {fileID: 9085496850077203498}
   - component: {fileID: 8889824241053453272}
   - component: {fileID: 6953621338408064027}
-  - component: {fileID: 1117286762680026606}
   - component: {fileID: 8870932050372870260}
   m_Layer: 6
   m_Name: Player
@@ -6281,7 +6282,7 @@ MonoBehaviour:
   resetSpeed: 5
   scrollSensitivity: 0.001
   impulseSource: {fileID: 6953621338408064027}
-  holding: {fileID: 0}
+  leftHolding: {fileID: 4860436879202591969}
   ropeStarts:
   - {fileID: 6213002357605317817}
   - {fileID: 5897528942275516577}
@@ -6489,22 +6490,6 @@ MonoBehaviour:
     DissipationDistance: 100
     PropagationSpeed: 343
   DefaultVelocity: {x: 0, y: -1, z: 0}
---- !u!114 &1117286762680026606
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5199031698185166006}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 658e01bff3211014c964bcfa12713abc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  holdingSlot: {fileID: 0}
-  canHit: 0
-  wasHolding: 0
-  stick: {fileID: 3175494475631461071}
 --- !u!135 &8870932050372870260
 SphereCollider:
   m_ObjectHideFlags: 0

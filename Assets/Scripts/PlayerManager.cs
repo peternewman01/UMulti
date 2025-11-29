@@ -10,6 +10,7 @@ using UnityEngine;
 using UnityEngine.Animations;
 using UnityEngine.Animations.Rigging;
 using UnityEngine.InputSystem;
+using UnityEngine.Rendering.HighDefinition;
 using UnityEngine.UI;
 using UnityEngine.Windows;
 
@@ -112,7 +113,7 @@ public class PlayerManager : NetworkBehaviour
     //in future use weapon holding item def for these vals
     [SerializeField] private float fovIncrease = 10f;
     [SerializeField] private float fovDuration = 0.4f;
-    [SerializeField, Range(-1f, 1f)] private float fovSkew = .5f; //negative = skew left (faster rise), positive = skew right (slower rise)
+    [SerializeField, Range(-10f, 10f)] private float fovSkew = .5f; //negative = skew left (faster rise), positive = skew right (slower rise)
     [SerializeField] private float doubleTapWindow = 0.5f;
     [SerializeField] private float doubleTapActiveTime = 2.5f;
 
@@ -162,8 +163,7 @@ public class PlayerManager : NetworkBehaviour
     [SerializeField] private CinemachineImpulseSource impulseSource;
 
     private HotbarSelector hotbar;
-
-    public StickHolding holding;
+    public ShowHodling leftHolding;
 
     [Header("Rope Setup")]
     [SerializeField] private Transform[] ropeStarts;
@@ -267,8 +267,9 @@ public class PlayerManager : NetworkBehaviour
         Invoke("SpawningRaycast", 0.2f);
 
 
-        holding = GetComponent<StickHolding>();
-        holding.holdingSlot = controlPanel.slotHolding;
+        leftHolding = GetComponentInChildren<ShowHodling>();
+
+        //holding.holdingSlot = controlPanel.slotHolding;
 
         if (ropeStarts.Length != ropeEnds.Length)
         {
@@ -630,7 +631,7 @@ public class PlayerManager : NetworkBehaviour
 
     private void AimShooting()
     {
-        if (!holding.canHit)
+        //if (!holding.canHit)
         {
             //return; 
         }
@@ -888,10 +889,22 @@ public class PlayerManager : NetworkBehaviour
         spawnedSlash.transform.rotation = Quaternion.LookRotation(shootDirection);
         spawnedSlash.transform.Rotate(Random.Range(-90f, 90f), 0f, 0f);
 
-        if(!holding.canHit)
+        if(!leftHolding.getShowsHolding())
         {
             UseEntity.Damage slashHurt = spawnedSlash.gameObject.GetComponent<UseEntity.Damage>();
             slashHurt.setDamage(1);
+            Debug.Log("Damage is " + slashHurt.getDamage());
+        }
+        else
+        {
+            GameObject holdingObject = leftHolding.getHoldingObject();
+
+            UseEntity.Damage slashHurt = spawnedSlash.gameObject.GetComponent<UseEntity.Damage>();
+            if(holdingObject.TryGetComponent<WeaponData>(out WeaponData data))
+            {
+                slashHurt.setDamage(data.GetDamage());
+            }
+            Debug.Log("Damage is " + slashHurt.getDamage());
         }
 
         var netObj = spawnedSlash.GetComponent<NetworkObject>();
