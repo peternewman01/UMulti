@@ -757,7 +757,7 @@ MonoBehaviour:
     m_Value: 2
   threshold:
     m_OverrideState: 1
-    m_Value: 1.4
+    m_Value: 123.16
   intensity:
     m_OverrideState: 1
     m_Value: 0.05
@@ -931,7 +931,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2d08ce26990eb1a4a9177b860541e702, type: 3}
   m_Name: Exposure
   m_EditorClassIdentifier: 
-  active: 0
+  active: 1
   mode:
     m_OverrideState: 1
     m_Value: 4
@@ -946,7 +946,7 @@ MonoBehaviour:
     m_Value: 6.08
   compensation:
     m_OverrideState: 1
-    m_Value: 30
+    m_Value: 10
   limitMin:
     m_OverrideState: 1
     m_Value: -2.9959514
@@ -959,22 +959,22 @@ MonoBehaviour:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
-        time: 0.0041656494
-        value: 1.0023499
-        inSlope: 2
-        outSlope: 2
+        time: -10
+        value: -4.9285717
+        inSlope: 0.78730166
+        outSlope: 0.78730166
         tangentMode: 0
         weightedMode: 0
         inWeight: 0
-        outWeight: 0
+        outWeight: 0.1875
       - serializedVersion: 3
-        time: 1
-        value: 1
-        inSlope: 0
-        outSlope: 0
+        time: 20
+        value: 20
+        inSlope: 0.7926267
+        outSlope: 0.7926267
         tangentMode: 0
         weightedMode: 0
-        inWeight: 0
+        inWeight: 0.12916666
         outWeight: 0
       m_PreInfinity: 2
       m_PostInfinity: 2
@@ -985,22 +985,22 @@ MonoBehaviour:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
-        time: -10.5
-        value: 4.9999847
-        inSlope: 0.27428818
-        outSlope: 0.27428818
+        time: -10
+        value: -12
+        inSlope: 0
+        outSlope: 1
         tangentMode: 0
         weightedMode: 0
         inWeight: 0
-        outWeight: 0.20920502
+        outWeight: 0
       - serializedVersion: 3
-        time: 19.375
-        value: 19.714285
-        inSlope: 0.542857
-        outSlope: 0.542857
+        time: 20
+        value: 18
+        inSlope: 1
+        outSlope: 0
         tangentMode: 0
         weightedMode: 0
-        inWeight: 0.16736402
+        inWeight: 0
         outWeight: 0
       m_PreInfinity: 2
       m_PostInfinity: 2

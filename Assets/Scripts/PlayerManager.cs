@@ -738,7 +738,7 @@ public class PlayerManager : NetworkBehaviour
 
         swingTimer = 0f;
 
-        float actualPreslash = isLightAttack ? preslash : preslash * 2f;
+        float actualPreslash = isLightAttack ? preslash : preslash * 2f; //replace preslash with weaponPreslashTimer from WeaponData.cs
 
         if (isMoving)
         {
@@ -880,12 +880,16 @@ public class PlayerManager : NetworkBehaviour
         float forwardOffset = .5f;
         Vector3 spawnOffset = transform.forward * forwardOffset;
 
-        if(isLight)
-            spawnedSlash = Instantiate(slash);
+        if(isLight && !swingingMoving)
+            spawnedSlash = Instantiate(slash); //use slashLightVFX from WeaponData.cs
+        else if (isLight && swingingMoving)
+            spawnedSlash = Instantiate(slash); //use slashDashLightVFX from WeaponData.cs
+        else if (!isLight && !swingingMoving)
+            spawnedSlash = Instantiate(slashHeavy); //use slashHeavyVFX from WeaponData.cs
         else
-            spawnedSlash = Instantiate(slashHeavy);
+            spawnedSlash = Instantiate(slashHeavy); //use slashDashHeavyVFX from WeaponData.cs
 
-        spawnedSlash.transform.position = spawnPosition + spawnOffset;
+        spawnedSlash.transform.position = spawnPosition + spawnOffset; //use weaponReach from WeaponData.cs
         spawnedSlash.transform.rotation = Quaternion.LookRotation(shootDirection);
         spawnedSlash.transform.Rotate(Random.Range(-90f, 90f), 0f, 0f);
 
@@ -1040,7 +1044,7 @@ public class PlayerManager : NetworkBehaviour
             float t = Mathf.Clamp01(elapsed / fovDuration);
 
             //apply skew (parabola skewed to left/right)
-            float skew = Mathf.Pow(t, 1f + fovSkew * 2f); // -1 = fast rise, +1 = slow rise
+            float skew = Mathf.Pow(t, 1f + fovSkew * 2f); // -1 = fast rise, +1 = slow rise //replace with a clamped weaponWeight (from WeaponData.cs) to be from -10 to 10
 
             float parabola = 4f * skew * (1f - skew);
             float fovValue = defaultFOV + parabola * fovIncrease;
