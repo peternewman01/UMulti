@@ -224,4 +224,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f6068b1c384197740824a5e6b89899e4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  damage: 10
+  lightDamage: 1
+  heavyDamage: 3
+  weaponReach: 0.5
+  weaponWeight: -10
+  weaponPreslashTimer: 0.1
+  slashLightVFX: {fileID: 1169051767809893461, guid: 2eecaf86587799e46a7d5aa0ddea1fe2, type: 3}
+  slashDashLightVFX: {fileID: 1169051767809893461, guid: 2eecaf86587799e46a7d5aa0ddea1fe2, type: 3}
+  slashHeavyVFX: {fileID: 1169051767809893461, guid: 0f1cd59b70748a045b8577ff81c57a2d, type: 3}
+  slashDashHeavyVFX: {fileID: 1169051767809893461, guid: 0f1cd59b70748a045b8577ff81c57a2d, type: 3}

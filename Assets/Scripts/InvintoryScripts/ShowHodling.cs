@@ -44,6 +44,12 @@ public class ShowHodling : MonoBehaviour
                 if (col != null)
                     col.enabled = false;
 
+
+                if (holdingObject.TryGetComponent<WeaponData>(out WeaponData data))
+                {
+                    data.gameObject.GetComponent<NetworkObject>().Spawn();
+                    data.SetParent(transform);
+                }
             }
             else if (!holdingSlot.isFilled() && showsHolding)
             {
