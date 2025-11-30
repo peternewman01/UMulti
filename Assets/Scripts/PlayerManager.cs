@@ -923,7 +923,7 @@ public class PlayerManager : NetworkBehaviour
                 spawnedSlash.transform.Rotate(Random.Range(-90f, 90f), 0f, 0f);
                 slashHurt.setDamage(isLight ? data.GetLightDamage() : data.GetHeavyDamage());
             }
-            Debug.Log("Damage is " + slashHurt.getDamage());
+            //Debug.Log("Damage is " + slashHurt.getDamage());
         }
 
         var netObj = spawnedSlash.GetComponent<NetworkObject>();
@@ -1071,7 +1071,9 @@ public class PlayerManager : NetworkBehaviour
                 }
             }
 
-                float skew = Mathf.Pow(t, skewData); // -1 = fast rise, +1 = slow rise //replace with a clamped weaponWeight (from WeaponData.cs) to be from -10 to 10
+            float bias = Mathf.Lerp(0.1f, 0.9f, (skewData + 10f) / 20f); //skew between .1 to .9
+
+            float skew = t / (((1f / bias) - 2f) * (1f - t) + 1f); //skew function
 
             float parabola = 4f * skew * (1f - skew);
             float fovValue = defaultFOV + parabola * fovIncrease;

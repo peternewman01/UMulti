@@ -173,9 +173,6 @@
     "m_StickyNoteDatas": [
         {
             "m_Id": "dcb2814e0ff04e3ab7455ec9995a1a97"
-        },
-        {
-            "m_Id": "b602f5838ebd45a3aa2a4cf1e3ae9c05"
         }
     ],
     "m_Edges": [
@@ -4909,26 +4906,6 @@
     "m_Value": 0.0,
     "m_DefaultValue": 0.0,
     "m_Labels": []
-}
-
-{
-    "m_SGVersion": 0,
-    "m_Type": "UnityEditor.ShaderGraph.StickyNoteData",
-    "m_ObjectId": "b602f5838ebd45a3aa2a4cf1e3ae9c05",
-    "m_Title": "New Note",
-    "m_Content": "Write something here",
-    "m_TextSize": 0,
-    "m_Theme": 0,
-    "m_Position": {
-        "serializedVersion": "2",
-        "x": 1428.0,
-        "y": -598.0,
-        "width": 200.0,
-        "height": 160.0
-    },
-    "m_Group": {
-        "m_Id": ""
-    }
 }
 
 {
