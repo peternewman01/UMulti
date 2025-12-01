@@ -739,8 +739,19 @@ public class PlayerManager : NetworkBehaviour
 
         swingTimer = 0f;
 
-        float actualPreslash = isLightAttack ? preslash : preslash * 2f; //replace preslash with weaponPreslashTimer from WeaponData.cs
 
+        GameObject holdingObject = leftHolding.getHoldingObject();
+        WeaponData weaponData = null;
+        if (holdingObject != null)
+        {
+            weaponData = holdingObject.GetComponent<WeaponData>();
+        }
+
+        float actualPreslash = 0.1f;
+        if (weaponData != null)
+        {
+            actualPreslash = weaponData.GetPreslash(isLightAttack); //replace preslash with weaponPreslashTimer from WeaponData.cs
+        }
         if (isMoving)
         {
             dashVFX.SetActive(true);
@@ -874,11 +885,12 @@ public class PlayerManager : NetworkBehaviour
     [Rpc(SendTo.ClientsAndHost)]
     private void RequestSlashServerRpc(Vector3 spawnPosition, Vector3 shootDirection, bool isLight)
     {
+        GameObject holdingObject = leftHolding.getHoldingObject();
         weaponTrail.Clear();
         weaponTrail.enabled = false;
         Transform p = transform.parent;
 
-        if(!leftHolding.getShowsHolding())
+        if(holdingObject == null)
         {
             if (isLight && !swingingMoving)
                 spawnedSlash = Instantiate(slash); //use slashLightVFX from WeaponData.cs
@@ -902,28 +914,25 @@ public class PlayerManager : NetworkBehaviour
         }
         else
         {
-            GameObject holdingObject = leftHolding.getHoldingObject();
+            WeaponData data = holdingObject.GetComponent<WeaponData>();
+            if (isLight && !swingingMoving)
+                spawnedSlash = Instantiate(data.GetLightVFX().transform); //use slashLightVFX from WeaponData.cs
+            else if (isLight && swingingMoving)
+                spawnedSlash = Instantiate(data.GetDashingLightVFX().transform); //use slashDashLightVFX from WeaponData.cs
+            else if (!isLight && !swingingMoving)
+                spawnedSlash = Instantiate(data.GetHeavyVFX().transform); //use slashHeavyVFX from WeaponData.cs
+            else
+                spawnedSlash = Instantiate(data.GetDashingHeavyVFX().transform); //use slashDashHeavyVFX from WeaponData.cs
 
-            if(holdingObject.TryGetComponent<WeaponData>(out WeaponData data))
-            {
-                if (isLight && !swingingMoving)
-                    spawnedSlash = Instantiate(data.GetLightVFX().transform); //use slashLightVFX from WeaponData.cs
-                else if (isLight && swingingMoving)
-                    spawnedSlash = Instantiate(data.GetDashingLightVFX().transform); //use slashDashLightVFX from WeaponData.cs
-                else if (!isLight && !swingingMoving)
-                    spawnedSlash = Instantiate(data.GetHeavyVFX().transform); //use slashHeavyVFX from WeaponData.cs
-                else
-                    spawnedSlash = Instantiate(data.GetDashingHeavyVFX().transform); //use slashDashHeavyVFX from WeaponData.cs
+            Vector3 spawnOffset = transform.forward * data.GetReach();
+            UseEntity.Damage slashHurt = spawnedSlash.gameObject.GetComponent<UseEntity.Damage>();
 
-                Vector3 spawnOffset = transform.forward * data.GetReach();
-                UseEntity.Damage slashHurt = spawnedSlash.gameObject.GetComponent<UseEntity.Damage>();
+            spawnedSlash.transform.position = spawnPosition + spawnOffset; //use weaponReach from WeaponData.cs
+            spawnedSlash.transform.rotation = Quaternion.LookRotation(shootDirection);
+            spawnedSlash.transform.Rotate(Random.Range(-90f, 90f), 0f, 0f);
+            slashHurt.setDamage(isLight ? data.GetLightDamage() : data.GetHeavyDamage());
 
-                spawnedSlash.transform.position = spawnPosition + spawnOffset; //use weaponReach from WeaponData.cs
-                spawnedSlash.transform.rotation = Quaternion.LookRotation(shootDirection);
-                spawnedSlash.transform.Rotate(Random.Range(-90f, 90f), 0f, 0f);
-                slashHurt.setDamage(isLight ? data.GetLightDamage() : data.GetHeavyDamage());
-            }
-            //Debug.Log("Damage is " + slashHurt.getDamage());
+            Debug.Log("Damage is " + slashHurt.getDamage());
         }
 
         var netObj = spawnedSlash.GetComponent<NetworkObject>();
