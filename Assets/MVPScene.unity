@@ -1118,12 +1118,12 @@ MonoBehaviour:
   sunColorGradient:
     serializedVersion: 2
     key0: {r: 0, g: 0, b: 0, a: 1}
-    key1: {r: 1, g: 0.25034815, b: 0.19339621, a: 1}
+    key1: {r: 1, g: 0.34911653, b: 0.29800004, a: 1}
     key2: {r: 1, g: 0.755287, b: 0.504717, a: 0}
     key3: {r: 1, g: 1, b: 1, a: 0}
     key4: {r: 1, g: 0.9764151, b: 0.6462264, a: 0}
-    key5: {r: 1, g: 0.1273585, b: 0.14361666, a: 0}
-    key6: {r: 1, g: 0, b: 0.6190028, a: 0}
+    key5: {r: 1, g: 0.397, b: 0.4105201, a: 0}
+    key6: {r: 1, g: 0.48900002, b: 0.80561966, a: 0}
     key7: {r: 0, g: 0, b: 0, a: 0}
     ctime0: 193
     ctime1: 2506
@@ -1146,7 +1146,8 @@ MonoBehaviour:
     m_NumColorKeys: 8
     m_NumAlphaKeys: 2
   sunIntensity: 130000
-  moonIntensityMultiplier: 0.00002
+  moonIntensityMultiplier: 0.000008
+  isDay: 1
 --- !u!4 &173468612 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6704981672725469668, guid: 798e03e2fd1847941b6f41951db7bdf4, type: 3}

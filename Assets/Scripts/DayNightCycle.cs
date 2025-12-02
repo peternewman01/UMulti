@@ -13,7 +13,7 @@ public class DayNightCycle : MonoBehaviour
     [SerializeField] private float moonIntensityMultiplier = 0.33f;
 
     private float rotationSpeed;
-    private bool isDay = true; //is also passed to shader graph
+    [SerializeField] private bool isDay = true; //is also passed to shader graph
 
     void Start()
     {
@@ -41,7 +41,7 @@ public class DayNightCycle : MonoBehaviour
         if (timeOfDay >= 179f)
         {
             isDay = !isDay;
-            timeOfDay -= 180f;
+            timeOfDay = Mathf.Clamp(timeOfDay - 180f, 0f, 179f);
         }
 
         //rotate light according to time
@@ -53,13 +53,17 @@ public class DayNightCycle : MonoBehaviour
 
         if (isDay) //daytime: sunrise to sunset
         {
-            intensityMultiplier = Mathf.Clamp01(Mathf.Sin(timeOfDay * Mathf.Deg2Rad));
+            float sinVal = Mathf.Sin((timeOfDay + 1f) * Mathf.Deg2Rad);
+            sinVal = Mathf.Max(0f, sinVal);
+            intensityMultiplier = Mathf.Clamp01(sinVal);
             lightColor = sunColorGradient.Evaluate(timeOfDay / 180f);
         }
         else //nighttime: moonrise to moonset
         {
             float nightAngle = timeOfDay;
-            intensityMultiplier = (1f - Mathf.Clamp01(Mathf.Sin(nightAngle * Mathf.Deg2Rad))) * moonIntensityMultiplier;
+            float sinVal = Mathf.Sin((timeOfDay + 1f) * Mathf.Deg2Rad);
+            sinVal = Mathf.Max(0f, sinVal);
+            intensityMultiplier = (1f - Mathf.Clamp01(sinVal)) * moonIntensityMultiplier;
             lightColor = Color.Lerp(
                 new Color(0.6f, 0.7f, 1f),  //moonlight(cooler color)
                 new Color(0.3f, 0.4f, 0.6f), //deep night
