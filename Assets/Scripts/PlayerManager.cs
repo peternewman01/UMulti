@@ -212,16 +212,16 @@ public class PlayerManager : NetworkBehaviour
         hotbar = MainCanvas.transform.Find("Hotbar").GetComponent<HotbarSelector>();
         hotbar.player = this;
         Cursor.lockState = CursorLockMode.None;
-        Debug.Log("Player added!");
+        //Debug.Log("Player added!");
 
-        if (!IsOwner)
-        {
-            //GetComponent<PlayerInput>().enabled = false;
-        }
-        else
-        {
-            anim = transform.Find("lilCultist3").GetComponent<Animator>();
-        }
+        //if (!IsOwner)
+        //{
+        //    //GetComponent<PlayerInput>().enabled = false;
+        //}
+        //else
+        //{
+        //    anim = transform.Find("lilCultist_Rigged_7").GetComponent<Animator>();
+        //}
 
         //move = InputSystem.actions.FindAction("Move");
         //look = InputSystem.actions.FindAction("Look");
@@ -236,7 +236,7 @@ public class PlayerManager : NetworkBehaviour
         }
         else
         {
-            anim = transform.Find("lilCultist3").GetComponent<Animator>();
+            anim = transform.Find("lilCultist_Rigged_7").GetComponent<Animator>();
         }
 
         move = InputSystem.actions.FindAction("Move");
@@ -319,7 +319,7 @@ public class PlayerManager : NetworkBehaviour
                 }
                 bodyConstraint.data.sourceObjects = sourceBody;
             }
-            rigBuilder = transform.Find("lilCultist3").GetComponent<RigBuilder>();
+            rigBuilder = transform.Find("lilCultist_Rigged_7").GetComponent<RigBuilder>();
             if (rigBuilder == null)
                 Debug.Log("NOOO RIG BUILDER :W");
 
@@ -619,8 +619,8 @@ public class PlayerManager : NetworkBehaviour
 
             Vector3 dashDirection = transform.forward + Vector3.up * dashUpScale;
             rb.AddForce(dashDirection.normalized * dashForce);
-            //anim.SetBool("IsKnockedOver", true);
-            //Invoke("KnockOverReset", 1);
+            anim.SetBool("IsKnockedOver", true);
+            Invoke("KnockOverReset", .3f);
         }
     }
 
