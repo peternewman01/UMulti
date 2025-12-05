@@ -92,7 +92,7 @@ ModelImporter:
       name: lilCultist_rig|Jump
       takeName: lilCultist_rig|Jump
       internalID: 5989023709882420641
-      firstFrame: 0
+      firstFrame: 1.8
       lastFrame: 31
       wrapMode: 0
       orientationOffsetY: 0

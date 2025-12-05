@@ -620,7 +620,8 @@ public class PlayerManager : NetworkBehaviour
             Vector3 dashDirection = transform.forward + Vector3.up * dashUpScale;
             rb.AddForce(dashDirection.normalized * dashForce);
             anim.SetBool("IsKnockedOver", true);
-            Invoke("KnockOverReset", .3f);
+            anim.SetBool("IsRolling", true);
+            Invoke("KnockOverReset", 2f);
         }
     }
 
@@ -628,6 +629,7 @@ public class PlayerManager : NetworkBehaviour
     private void KnockOverReset()
     {
         anim.SetBool("IsKnockedOver", false);
+        anim.SetBool("IsRolling", false);
     }
 
     private void AimShooting()
@@ -639,7 +641,7 @@ public class PlayerManager : NetworkBehaviour
 
         if (cameraTransform == null) return;
 
-        if (attack.WasPressedThisFrame() && abilityIndex != -1 && Time.time - lastShotTime >= shootCooldown)
+        if (attack.WasPressedThisFrame() && abilityIndex != -1 && Time.time - lastShotTime >= shootCooldown && !anim.GetBool("IsRolling"))
         {
             lastShotTime = Time.time;
 
@@ -648,7 +650,7 @@ public class PlayerManager : NetworkBehaviour
             hotbar.TriggerAbility();
             RequestShootServerRpc(transform.position + Vector3.up, transform.forward);
         }
-        else if (attack.WasPressedThisFrame() && Time.time - lastShotTime >= shootCooldown && !swingInProgress && once)
+        else if (attack.WasPressedThisFrame() && Time.time - lastShotTime >= shootCooldown && !swingInProgress && once && !anim.GetBool("IsRolling"))
         {
             once = false;
             swingInProgress = true;
@@ -656,7 +658,7 @@ public class PlayerManager : NetworkBehaviour
             anim.SetBool("IsIdleLong", false);
             StartLightSwing(spawnedSlash);
         }
-        else if (heavyAttack.WasPressedThisFrame() && Time.time - lastShotTime >= shootCooldown && !swingInProgress && once)
+        else if (heavyAttack.WasPressedThisFrame() && Time.time - lastShotTime >= shootCooldown && !swingInProgress && once && !anim.GetBool("IsRolling"))
         {
             once = false;
             swingInProgress = true;
