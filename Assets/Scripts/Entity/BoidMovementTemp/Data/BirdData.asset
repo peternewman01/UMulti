@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 60139834e966c1847be0baabb367f95d, type: 3}
-  m_Name: CowTest
+  m_Name: BirdData
   m_EditorClassIdentifier: 
   horizontalMovementSpeed: 10
   forwardMovementSpeed: 0.15
@@ -18,7 +18,7 @@ MonoBehaviour:
   maxSpeed: 8
   perceptionRadius: 10
   seperationRadius: 2
-  maxSteerForce: 8
+  maxSteerForce: 7
   jumpVelocity: {x: 0, y: 8, z: 0}
   alignmentWeight: 2
   cohesionWeight: 1

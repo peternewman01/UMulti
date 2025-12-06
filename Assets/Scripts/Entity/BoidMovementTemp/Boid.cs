@@ -18,21 +18,24 @@ public class Boid : Entity
 
     private Vector3 _previousLookDir;
     private Vector3 _lookDirRef;
+    [SerializeField] private bool lookFlat;
 
-    [SerializeField] private float _magnitureThreshold = 2f;
     [SerializeField] private float _period = 0.3f;
     private Vector3 _recentMovementInPeriod;
     private Vector3 _positionLastFrame;
-    [SerializeField] private bool wasNullInPeriod = false;
+    public bool wasNullInPeriod = false;
+    [SerializeField] private bool hasNewTarget = false;
     private Rigidbody _rb;
 
     public BoidData Data => _data;
+    public bool HasNewTarget => hasNewTarget;
     public BoidMovement Movement => _boidMovement;
+    public BoidAvoidance Avoidance => _avoidance;
     public Vector3 Position { get; private set; }
 
     private Vector3 forwardVec;
 
-    private Vector3 target = Vector3.zero;
+    public Vector3 target = Vector3.zero;
 
     public Vector3 GetVelocity() => _velocity;
 
@@ -66,59 +69,31 @@ public class Boid : Entity
 
     private void Update()
     {
-        _rb.linearVelocity = new Vector3(0f, _rb.linearVelocity.y, 0f);
-        _rb.angularVelocity = Vector3.zero;
-        if (target != Vector3.zero && Vector3.Distance(transform.position, target) > stopDist)
-        {
-            Vector3 direction = (target - transform.position).normalized;
-            //direction.y = 0;
-            _boidMovement.Move(direction * Data.forwardMovementSpeed);
-        }
-
         if(Mathf.Abs(_acceleration.y) < 0.3)
         {
             _acceleration.y = 0;
         }
 
-        if (Physics.Raycast(_avoidance.getOffsetPosition() + Vector3.up, Vector3.down, out RaycastHit hit, 2.5f, groundMask))
-        {
-            Vector3 movementThisFrame = transform.position - _positionLastFrame;
-            _positionLastFrame = transform.position;
+        _velocity += _acceleration;
+        transform.position += (_velocity) * Time.deltaTime;
 
-            LoadMovementInPeriod(movementThisFrame);
-            //Debug.Log(_recentMovementInPeriod.magnitude + " < " + _magnitureThreshold);
-            if (_recentMovementInPeriod.magnitude < _magnitureThreshold && !wasNullInPeriod)
-            {
-                _boidMovement.OnJump();
-                StartCoroutine(_avoidance.DelayPush((target - transform.position).normalized * Data.forwardMovementSpeed * 6, 0.2f));
-                //Debug.Log("YAY!" + _recentMovementInPeriod.magnitude);
-            }
+        Vector3 movementThisFrame = transform.position - _positionLastFrame;
+        _positionLastFrame = transform.position;
 
-            //var dir = _velocity.normalized;
-            //var speed = _velocity.magnitude;
-            //speed = Mathf.Clamp(speed, _data.minSpeed, _data.maxSpeed);
-            //_velocity = dir * speed;
-            //(Quaternion.Slerp(Quaternion.identity, Quaternion.FromToRotation(transform.up, hit.normal), 1.25f))
-
-
-            _velocity += _acceleration;
-            transform.position += (_velocity) * Time.deltaTime;
-            //Debug.Log(_velocity + " | " + ((Quaternion.Slerp(Quaternion.identity, Quaternion.FromToRotation(transform.up, hit.normal), 1.5f)) * _velocity));
-        }
-        else
-        {
-            _velocity += _acceleration;
-            transform.position += _velocity * Time.deltaTime;
-        }
+        LoadMovementInPeriod(movementThisFrame);
 
         var lookDir = Vector3.zero;
         if (Mathf.Abs(transform.position.x) <= _data.limitX + 1f && Mathf.Abs(transform.position.x) >= _data.limitX - 0.1f)
         {
             lookDir = Vector3.SmoothDamp(_previousLookDir, Vector3.forward, ref _lookDirRef, 0.2f);
         }
-        else
+        else if (lookFlat)
         {
             lookDir = Vector3.SmoothDamp(_previousLookDir, new Vector3(_velocity.x, 0f, _velocity.z), ref _lookDirRef, 0.2f);
+        }
+        else
+        {
+            lookDir = Vector3.SmoothDamp(_previousLookDir, new Vector3(_velocity.x, _velocity.y, _velocity.z), ref _lookDirRef, 0.2f);
         }
         transform.LookAt(transform.position + lookDir);
         _previousLookDir = lookDir;
@@ -135,13 +110,31 @@ public class Boid : Entity
     public void SetTarget(Vector3 target)
     {
         this.target = target;
+        hasNewTarget = true;
+        Invoke("killNewTarget", 1f);
     }
 
+    public void MoveToTarget()
+    {
+        _rb.linearVelocity = new Vector3(0f, _rb.linearVelocity.y, 0f);
+        _rb.angularVelocity = Vector3.zero;
+        if (target != Vector3.zero && Vector3.Distance(transform.position, target) > stopDist)
+        {
+            Vector3 direction = (target - transform.position).normalized;
+            //direction.y = 0;
+            _boidMovement.Move(direction * Data.forwardMovementSpeed);
+        }
+    }
+private void killNewTarget()
+    {
+        Debug.Log("lostNewTarget");
+        hasNewTarget= false;
+    }
 
     private void LoadMovementInPeriod(Vector3 movementThisFrame)
     {
         _recentMovementInPeriod += movementThisFrame;
-        if (movementThisFrame.magnitude < _magnitureThreshold/4)
+        if (movementThisFrame.magnitude < 0.01f)
         {
             wasNullInPeriod = true;
             StartCoroutine(RemoveMovementInPeriodNull(_period, movementThisFrame));
@@ -162,4 +155,6 @@ public class Boid : Entity
         _recentMovementInPeriod -= removeMovement;
         wasNullInPeriod = false;
     }
+
+    public Vector3 getRecentMovement() => _recentMovementInPeriod;
 }

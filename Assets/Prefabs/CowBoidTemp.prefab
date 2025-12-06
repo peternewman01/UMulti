@@ -260,9 +260,11 @@ MonoBehaviour:
     m_Bits: 256
   _velocity: {x: 0, y: 0, z: 0}
   _acceleration: {x: 0, y: 0, z: 0}
-  _magnitureThreshold: 0.8
+  lookFlat: 1
   _period: 0.3
   wasNullInPeriod: 0
+  hasNewTarget: 0
+  target: {x: 0, y: 0, z: 0}
 --- !u!114 &7808205395897925960
 MonoBehaviour:
   m_ObjectHideFlags: 0
