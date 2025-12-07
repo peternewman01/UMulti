@@ -26,7 +26,6 @@ public class Boid : Entity
     public bool wasNullInPeriod = false;
     [SerializeField] private bool hasNewTarget = false;
     private Rigidbody _rb;
-
     public BoidData Data => _data;
     public bool HasNewTarget => hasNewTarget;
     public BoidMovement Movement => _boidMovement;
@@ -36,6 +35,7 @@ public class Boid : Entity
     private Vector3 forwardVec;
 
     public Vector3 target = Vector3.zero;
+    public float StopDist => stopDist;
 
     public Vector3 GetVelocity() => _velocity;
 

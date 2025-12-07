@@ -11448,15 +11448,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
   flyingDirection: {x: 0, y: 0, z: 1}
-  tSlerpValue: 0.333
-  maxYAngle: 30
-  minYAngle: -75
-  positionRadius: 5
+  tSlerpValue: 0.25
+  maxYAngle: 35
+  minYAngle: -55
+  diveAccelleration: 0.3
+  positionRadius: 25
   desiredOrbitRadius: 10
-  orbitSpringStrength: 1
+  orbitSpringStrength: 0.75
   minHeight: 5
   maxHeight: 10
-  timeToWander: 4
+  timeToWander: 2
   boid: {fileID: 0}
   groundMask:
     serializedVersion: 2
@@ -11525,7 +11526,7 @@ Rigidbody:
   m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 0
-  m_CollisionDetection: 0
+  m_CollisionDetection: 2
 --- !u!114 &6846451947963487153
 MonoBehaviour:
   m_ObjectHideFlags: 0

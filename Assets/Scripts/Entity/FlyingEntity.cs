@@ -9,12 +9,14 @@ using static UnityEngine.UI.Image;
 [RequireComponent(typeof(Boid))]
 public class FlyingEntity : Entity
 {
-    //figure out tomorrow
+    private const float START_DIVE_ADD = -0.75f;
 
     [SerializeField] private Vector3 flyingDirection;
     [SerializeField] [Range(0,1)] private float tSlerpValue;
     [SerializeField] private float maxYAngle = 30f;
     [SerializeField] private float minYAngle = -75f;
+    [SerializeField] private float diveAccelleration = 0.25f;
+    private float currentDiveAdd = START_DIVE_ADD;
 
     [SerializeField] float positionRadius = 5f;
     [SerializeField] float desiredOrbitRadius = 1.5f;
@@ -56,7 +58,23 @@ public class FlyingEntity : Entity
             boid.Movement.OnJump(); 
             StartCoroutine(boid.Avoidance.DelayPush((boid.target - transform.position).normalized * boid.Data.forwardMovementSpeed * 6, 0.2f));
         }
-        boid.Steer(flyingDirection * boid.Data.maxSteerForce);
+        boid.Steer(flyingDirection * boid.Data.forwardMovementSpeed);
+        if(Vector3.Distance(target, transform.position) < boid.StopDist)
+        {
+            Vector3 target = transform.position + (Random.onUnitSphere * positionRadius);
+            target.y = 10000;
+
+            if (Physics.Raycast(target, Vector3.down, out RaycastHit hit, Mathf.Infinity, groundMask))
+            {
+                target = hit.point;
+                target.y += Random.Range(minHeight, maxHeight);
+                this.target = target;
+            }
+            else
+            {
+                Debug.LogError("Failed To Find Ground");
+            }
+        }
         Vector3 normalDirectionToPoint = (target - transform.position).normalized;
         flyingDirection = Vector3.Slerp(flyingDirection, normalDirectionToPoint, tSlerpValue);
 
@@ -65,6 +83,7 @@ public class FlyingEntity : Entity
         float minY = Mathf.Sin(minYAngle * Mathf.Deg2Rad);
         flyingDirection.y = Mathf.Clamp(flyingDirection.y, minY, maxY);
         ApplyOrbitalSpring();
+        CheckDiveAccelleration();
     }
 
 
@@ -122,4 +141,17 @@ public class FlyingEntity : Entity
         flyingDirection += springForce * Time.deltaTime;
     }
 
+    private void CheckDiveAccelleration()
+    {
+        if(flyingDirection.normalized.y < 0)
+        {
+            currentDiveAdd += diveAccelleration;
+
+            boid.Steer(Vector3.down * currentDiveAdd);
+        }
+        else
+        {
+            currentDiveAdd = 0;
+        }
+    }
 }

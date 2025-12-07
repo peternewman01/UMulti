@@ -12,17 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 60139834e966c1847be0baabb367f95d, type: 3}
   m_Name: BirdData
   m_EditorClassIdentifier: 
-  horizontalMovementSpeed: 10
-  forwardMovementSpeed: 0.15
-  minSpeed: 5
+  forwardMovementSpeed: 6
+  maxSteerForce: 4
   maxSpeed: 8
   perceptionRadius: 10
   seperationRadius: 2
-  maxSteerForce: 7
   jumpVelocity: {x: 0, y: 8, z: 0}
-  alignmentWeight: 2
-  cohesionWeight: 1
-  seperationWeight: 2.5
   inputWeight: 1.58
   avoidanceWeight: 2
   noiseWeight: 0.05
