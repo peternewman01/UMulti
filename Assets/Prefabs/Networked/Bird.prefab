@@ -11449,7 +11449,7 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   flyingDirection: {x: 0, y: 0, z: 1}
   tSlerpValue: 0.2
-  maxYAngle: 35
+  maxYAngle: 40
   minYAngle: -55
   diveAccelleration: 0.1
   currentDiveMaxSpeed: 4
@@ -11457,7 +11457,7 @@ MonoBehaviour:
   desiredOrbitRadius: 13
   orbitSpringStrength: 3.5
   minHeight: 8
-  maxHeight: 14
+  maxHeight: 16
   timeToWander: 3
   boid: {fileID: 0}
   groundMask:

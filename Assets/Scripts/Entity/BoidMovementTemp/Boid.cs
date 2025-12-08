@@ -75,7 +75,8 @@ public class Boid : Entity
         }
 
         _velocity += _acceleration;
-        transform.position += (_velocity) * Time.deltaTime;
+        //transform.position += (_velocity) * Time.deltaTime;
+        _rb.linearVelocity = _velocity;
 
         Vector3 movementThisFrame = transform.position - _positionLastFrame;
         _positionLastFrame = transform.position;

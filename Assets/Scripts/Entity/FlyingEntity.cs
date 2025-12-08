@@ -12,7 +12,6 @@ public class FlyingEntity : Entity
     private const float START_DIVE_ADD = -0.1f;
 
     [SerializeField] private Vector3 flyingDirection;
-    [SerializeField] [Range(0,1)] private float tSlerpValue;
     [SerializeField] private float maxYAngle = 30f;
     [SerializeField] private float minYAngle = -75f;
     [SerializeField] private float diveAccelleration = 0.25f;
@@ -60,6 +59,8 @@ public class FlyingEntity : Entity
             StartCoroutine(boid.Avoidance.DelayPush((boid.target - transform.position).normalized * boid.Data.forwardMovementSpeed * 6, 0.2f));
         }
         boid.Steer(flyingDirection * boid.Data.forwardMovementSpeed);
+
+        //bad, should rely on behavior stuff
         if(Vector3.Distance(target, transform.position) < boid.StopDist)
         {
             Vector3 target = transform.position + (Random.onUnitSphere * positionRadius);
@@ -77,8 +78,7 @@ public class FlyingEntity : Entity
             }
         }
         Vector3 normalDirectionToPoint = (target - transform.position).normalized;
-        flyingDirection = Vector3.Slerp(flyingDirection, normalDirectionToPoint, tSlerpValue);
-        //Debug.Log(flyingDirection.magnitude);
+        flyingDirection = Vector3.Slerp(flyingDirection, normalDirectionToPoint, Time.deltaTime * 2);
 
 
         float maxY = Mathf.Sin(maxYAngle * Mathf.Deg2Rad);
@@ -87,20 +87,6 @@ public class FlyingEntity : Entity
         ApplyOrbitalSpring();
         CheckDiveAccelleration();
     }
-
-
-    /*    IEnumerator Wander(float delay)
-        {
-            while (true)
-            {
-                yield return new WaitForSeconds(delay);
-
-                Vector3 target = transform.position + (Random.onUnitSphere * radius);
-                target.y = transform.position.y;
-
-                boid.SetTarget(target);
-            }
-        }*/
 
     private IEnumerator Wander(float delay)
     {
@@ -148,7 +134,6 @@ public class FlyingEntity : Entity
         if(flyingDirection.normalized.y < 0)
         {
             currentDiveAdd += diveAccelleration;
-            Debug.Log(currentDiveAdd + ", " + Mathf.Min(currentDiveAdd, currentDiveMaxSpeed));
 
             boid.Steer(Vector3.down * Mathf.Min(currentDiveAdd, currentDiveMaxSpeed));
         }
