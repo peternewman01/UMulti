@@ -9,7 +9,7 @@ using static UnityEngine.UI.Image;
 [RequireComponent(typeof(Boid))]
 public class FlyingEntity : Entity
 {
-    private const float START_DIVE_ADD = -0.75f;
+    private const float START_DIVE_ADD = -0.1f;
 
     [SerializeField] private Vector3 flyingDirection;
     [SerializeField] [Range(0,1)] private float tSlerpValue;
@@ -17,6 +17,7 @@ public class FlyingEntity : Entity
     [SerializeField] private float minYAngle = -75f;
     [SerializeField] private float diveAccelleration = 0.25f;
     private float currentDiveAdd = START_DIVE_ADD;
+    [SerializeField] private float currentDiveMaxSpeed = 3;
 
     [SerializeField] float positionRadius = 5f;
     [SerializeField] float desiredOrbitRadius = 1.5f;
@@ -77,6 +78,7 @@ public class FlyingEntity : Entity
         }
         Vector3 normalDirectionToPoint = (target - transform.position).normalized;
         flyingDirection = Vector3.Slerp(flyingDirection, normalDirectionToPoint, tSlerpValue);
+        //Debug.Log(flyingDirection.magnitude);
 
 
         float maxY = Mathf.Sin(maxYAngle * Mathf.Deg2Rad);
@@ -129,16 +131,16 @@ public class FlyingEntity : Entity
     private void ApplyOrbitalSpring()
     {
         Vector3 toTarget = target - transform.position;
-        float dist = toTarget.magnitude;
-
-        // Difference from desired distance
+        float dist = Vector3.Distance(target, transform.position);
         float radialError = dist - desiredOrbitRadius;
 
-        // Radial direction (toward target)
-        Vector3 radialDir = toTarget.normalized;
-
-        Vector3 springForce = radialDir * (radialError * orbitSpringStrength);
-        flyingDirection += springForce * Time.deltaTime;
+        if(dist < desiredOrbitRadius)
+        {
+            Vector3 radialDir = toTarget.normalized;
+            
+            Vector3 springForce = radialDir * (radialError * orbitSpringStrength);
+            flyingDirection += springForce * Time.deltaTime;
+        }
     }
 
     private void CheckDiveAccelleration()
@@ -146,8 +148,9 @@ public class FlyingEntity : Entity
         if(flyingDirection.normalized.y < 0)
         {
             currentDiveAdd += diveAccelleration;
+            Debug.Log(currentDiveAdd + ", " + Mathf.Min(currentDiveAdd, currentDiveMaxSpeed));
 
-            boid.Steer(Vector3.down * currentDiveAdd);
+            boid.Steer(Vector3.down * Mathf.Min(currentDiveAdd, currentDiveMaxSpeed));
         }
         else
         {

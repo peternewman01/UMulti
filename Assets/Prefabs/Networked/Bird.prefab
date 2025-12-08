@@ -11448,16 +11448,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
   flyingDirection: {x: 0, y: 0, z: 1}
-  tSlerpValue: 0.25
+  tSlerpValue: 0.2
   maxYAngle: 35
   minYAngle: -55
-  diveAccelleration: 0.3
+  diveAccelleration: 0.1
+  currentDiveMaxSpeed: 4
   positionRadius: 25
-  desiredOrbitRadius: 10
-  orbitSpringStrength: 0.75
-  minHeight: 5
-  maxHeight: 10
-  timeToWander: 2
+  desiredOrbitRadius: 13
+  orbitSpringStrength: 3.5
+  minHeight: 8
+  maxHeight: 14
+  timeToWander: 3
   boid: {fileID: 0}
   groundMask:
     serializedVersion: 2

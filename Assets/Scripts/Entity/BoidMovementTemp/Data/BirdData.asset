@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: BirdData
   m_EditorClassIdentifier: 
   forwardMovementSpeed: 6
-  maxSteerForce: 4
+  maxSteerForce: 0.8
   maxSpeed: 8
   perceptionRadius: 10
   seperationRadius: 2
