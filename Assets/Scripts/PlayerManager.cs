@@ -762,8 +762,6 @@ public class PlayerManager : NetworkBehaviour
 
         yield return new WaitForSeconds(actualPreslash);
 
-        //Debug.Log("Slashing");
-
         if (isLightAttack)
             RequestSlashServerRpc(transform.position + Vector3.up, movingSlashHeading, true);
         else
@@ -939,7 +937,8 @@ public class PlayerManager : NetworkBehaviour
 
         var netObj = spawnedSlash.GetComponent<NetworkObject>();
         netObj.Spawn(true);
-        spawnedSlash.parent = transform;
+        if(!swingingMoving)
+            spawnedSlash.parent = transform;
 
         StartCoroutine(UnparentAfterDelay(transform, p, 0.3f));
         Destroy(spawnedSlash.gameObject, .5f);
