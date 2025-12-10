@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 4428126337939789166}
   - component: {fileID: 6133817876659481774}
   - component: {fileID: 7206156795829946406}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: MediumRock.011_LOD2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -97,7 +97,7 @@ GameObject:
   - component: {fileID: 8534397893816762942}
   - component: {fileID: 2191363608327439045}
   - component: {fileID: -165844718220631024}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: MediumRock1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -185,7 +185,7 @@ GameObject:
   - component: {fileID: 8369972443752038036}
   - component: {fileID: 3368364983723010948}
   - component: {fileID: 926841726831940594}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: MediumRock.011_LOD1
   m_TagString: Untagged
   m_Icon: {fileID: 0}

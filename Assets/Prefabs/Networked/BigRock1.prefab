@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 1273534587638153443}
   - component: {fileID: 4287650776695847710}
   - component: {fileID: 7835344159533064467}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: BigRock.001_LOD2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -98,7 +98,7 @@ GameObject:
   - component: {fileID: 6461044850322305159}
   - component: {fileID: 6969102747608489113}
   - component: {fileID: 7076577356643573397}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: BigRock.001_LOD1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -190,7 +190,7 @@ MeshCollider:
   m_LayerOverridePriority: 0
   m_IsTrigger: 0
   m_ProvidesContacts: 0
-  m_Enabled: 0
+  m_Enabled: 1
   serializedVersion: 5
   m_Convex: 1
   m_CookingOptions: 30
@@ -206,7 +206,7 @@ GameObject:
   - component: {fileID: 6187640711520384800}
   - component: {fileID: 7699319217318641680}
   - component: {fileID: 3653031796275781521}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: BigRock.001_LOD3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -293,7 +293,7 @@ GameObject:
   - component: {fileID: 9189926838704883775}
   - component: {fileID: -2047586432215323043}
   - component: {fileID: 199820095264947955}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: BigRock1
   m_TagString: Untagged
   m_Icon: {fileID: 0}

@@ -14,14 +14,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   weightedPrefabs:
   - prefab: {fileID: 3245228849349106259, guid: 73e64eb63673fe040aba97ba586da7d5, type: 3}
-    weight: 0
+    weight: 1
   - prefab: {fileID: 6758087893537374941, guid: feb6eabfbc80726468454cc5c72ad1a9, type: 3}
-    weight: 0
+    weight: 1
   isNetworkObject: 1
   spawningData:
-    floorValue: 0.5
+    floorValue: 0.61
     powScaling: 3
-    density: 0.85
+    density: 0.17
     posOffset: 0.15
     randomness: 0.6
     maxSteepness: 90
