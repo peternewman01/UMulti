@@ -1,0 +1,9 @@
+fileFormatVersion: 2
+guid: 8941fa4bd4c588143a9fcd51d7f85b9d
+AssetOrigin:
+  serializedVersion: 1
+  productId: 338072
+  packageName: Ultimate Foliage Renormalizer
+  packageVersion: 1.1
+  assetPath: Assets/Foliage Renormalizer/Scripts/Editor/ConvexHullMeshBuilder.cs
+  uploadId: 832044

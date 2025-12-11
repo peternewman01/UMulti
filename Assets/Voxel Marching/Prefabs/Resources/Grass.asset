@@ -19,9 +19,9 @@ MonoBehaviour:
     weight: 2
   isNetworkObject: 1
   spawningData:
-    floorValue: 0.5
+    floorValue: 0.61
     powScaling: 9.65
-    density: 0.821
+    density: 1
     posOffset: 0.483
     randomness: 1
     maxSteepness: 90

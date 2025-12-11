@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 122530dd7d8aee04e92e64c68401b94d
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 112000000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 338072
+  packageName: Ultimate Foliage Renormalizer
+  packageVersion: 1.1
+  assetPath: Assets/Foliage Renormalizer/Demo/Scenes/Foliage Renormalizer Demo/LightingData.asset
+  uploadId: 832044

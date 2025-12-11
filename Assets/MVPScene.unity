@@ -9214,7 +9214,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5011904300596053217, guid: d7b169373decc8d4084cf5ae4cf41c55, type: 3}
       propertyPath: resourceGenerators.Array.size
-      value: 4
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 5011904300596053217, guid: d7b169373decc8d4084cf5ae4cf41c55, type: 3}
       propertyPath: 'resourceGenerators.Array.data[0]'
@@ -9232,6 +9232,14 @@ PrefabInstance:
       propertyPath: 'resourceGenerators.Array.data[3]'
       value: 
       objectReference: {fileID: 11400000, guid: 5302a1df5f753684081b693b27ca2e7d, type: 2}
+    - target: {fileID: 5011904300596053217, guid: d7b169373decc8d4084cf5ae4cf41c55, type: 3}
+      propertyPath: 'resourceGenerators.Array.data[4]'
+      value: 
+      objectReference: {fileID: 11400000, guid: 9b057d11c8bf58b48a481cdde58e98ef, type: 2}
+    - target: {fileID: 5011904300596053217, guid: d7b169373decc8d4084cf5ae4cf41c55, type: 3}
+      propertyPath: 'resourceGenerators.Array.data[5]'
+      value: 
+      objectReference: {fileID: 11400000, guid: abfbbcea2348b404da69d043f370bb75, type: 2}
     - target: {fileID: 5011904300596053217, guid: d7b169373decc8d4084cf5ae4cf41c55, type: 3}
       propertyPath: resourceGenerators.Array.data[0].spawningData.density
       value: 0.06

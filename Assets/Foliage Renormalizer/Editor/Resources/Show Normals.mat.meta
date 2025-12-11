@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 726ef1b404c0982488786acf3f18f8de
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 2100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 338072
+  packageName: Ultimate Foliage Renormalizer
+  packageVersion: 1.1
+  assetPath: Assets/Foliage Renormalizer/Editor/Resources/Show Normals.mat
+  uploadId: 832044
