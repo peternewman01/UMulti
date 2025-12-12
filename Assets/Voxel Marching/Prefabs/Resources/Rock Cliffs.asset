@@ -14,9 +14,25 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   weightedPrefabs:
   - prefab: {fileID: 7733100026862656815, guid: ceaa6797543faef4391494a12cdbb35f, type: 3}
-    weight: 1
+    weight: 20
   - prefab: {fileID: 1624423753916669083, guid: 1df31333d36453c4281b4d9387c7255d, type: 3}
+    weight: 40
+  - prefab: {fileID: 8461186257273503723, guid: 84729444787648044a27495f5a6de7c3, type: 3}
+    weight: 1
+  - prefab: {fileID: 644826549068100157, guid: a96ace0d394af064d8696b4f48334a83, type: 3}
+    weight: 1
+  - prefab: {fileID: 5313668342970142321, guid: 3fb801e8985be3f40be5e0e5880fe78e, type: 3}
+    weight: 1
+  - prefab: {fileID: 1986873031401001117, guid: 251b5fd7fd654bd4588ba4eb7b1cfa75, type: 3}
+    weight: 1
+  - prefab: {fileID: 4415310515768470462, guid: d5f9df169a13aea4ab8eb3d93d09cd97, type: 3}
+    weight: 1
+  - prefab: {fileID: 539962483497274397, guid: 7941969766ffc4349961532ed092a2ff, type: 3}
     weight: 2
+  - prefab: {fileID: 5945924096855718525, guid: a6265704cddad0646b95d6d251ea296f, type: 3}
+    weight: 2
+  - prefab: {fileID: 4415310515768470462, guid: d5f9df169a13aea4ab8eb3d93d09cd97, type: 3}
+    weight: 1
   isNetworkObject: 1
   spawningData:
     floorValue: 0.717
