@@ -132,7 +132,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 2708565493
+  GlobalObjectIdHash: 3329455853
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 1
@@ -184,7 +184,6 @@ GameObject:
   - component: {fileID: 7861292644178231369}
   - component: {fileID: 4203603363921069380}
   - component: {fileID: 5293310516377873521}
-  - component: {fileID: 2107945820934821447}
   m_Layer: 0
   m_Name: 'nodes[1]'
   m_TagString: Untagged
@@ -238,7 +237,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: f85f5b3c94e24444a8cdd0b8a0a48324, type: 2}
+  - {fileID: 2100000, guid: 25f8c3fd843472b4a84b7eb0e0da1382, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -260,60 +259,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &2107945820934821447
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4843135961228368122}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 738e6d0aab2a1314884af6261b92004d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  TargetRenderer: {fileID: 5293310516377873521}
-  OriginalFoliageMesh: {fileID: -8112242198910648583, guid: b67c5695ea8cdcf40bff437ffdd81308, type: 3}
-  ShowSubmeshSelectionMask: 1
-  OriginalRotation: {x: 0, y: -0, z: -0, w: 1}
-  RemeshedRotation: {x: 0, y: 0, z: 0, w: 0}
-  RemeshedFoliageMesh: {fileID: 4300000, guid: 855535559a80e0940bb0a562ffaefd38, type: 2}
-  LastGenerationID: 1
-  OriginalMaterials: []
-  ShowMaterialNormals: 0
-  VertexColorPreviewChannel: 0
-  ProxyMeshFilter: {fileID: 0}
-  GeneratedProxyMesh: {fileID: 4300000, guid: 62431ee055f9fee4bb6f93673b75e8f2, type: 2}
-  DrawDependentSubmeshMask: 1
-  Dependants: []
-  IgnoredMaterials: []
-  general:
-    grassMode: 0
-  proxy:
-    voxelResolution: 128
-    tightness: 0.7
-    blurIterations: 5
-    optWeld: 1
-    optWeldEps: 0.0001
-  grass:
-    applyRotation: 0
-  baker:
-    EnableNormalTransfer: 1
-    ProxyNormalInfluence: 1
-    upwardBias: 0.25
-    BakeAO: 1
-    AoBakeChannel: 1
-    AoMinimumdistance: 0.02
-    AoMaximumdistance: 0.375
-    AoDarkeningStrength: 0.8
-    BakeGroundAO: 0
-    BakeGroundAOGrassMode: 1
-    GroundAoStartHeight: 0
-    GroundAoEndHeight: 0.5
-    GroundAoDarkeningStrength: 0.8
-  ShowProxyGeneratorAdvancedOptions: 0
-  ShowFoliageTransferAdvancedOptions: 0
-  ShowGroundPlaneAOBakerOptions: 0
 --- !u!1 &5788899436073473586
 GameObject:
   m_ObjectHideFlags: 0

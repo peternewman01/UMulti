@@ -208,12 +208,14 @@ Material:
     - _TransparentZWrite: 0
     - _UVSec: 0
     - _UseShadowThreshold: 0
+    - _WindStrength: 10
     - _ZTestDepthEqualForOpaque: 3
     - _ZTestGBuffer: 3
     - _ZTestTransparent: 4
     - _ZWrite: 1
     m_Colors:
     - _BaseColor: {r: 0.48235294, g: 0.50980395, b: 0.30980393, a: 1}
+    - _BendDir: {r: 2, g: 0, b: 0, a: 0}
     - _Color: {r: 0.4823529, g: 0.5098039, b: 0.3098039, a: 1}
     - _DoubleSidedConstants: {r: 1, g: 1, b: 1, a: 0}
     - _EmissionColor: {r: 1, g: 1, b: 1, a: 1}
