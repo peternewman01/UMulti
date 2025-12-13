@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Linq;
 using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
@@ -17,10 +18,13 @@ public class FlyingEntity : Entity
     [SerializeField] private float diveAccelleration = 0.25f;
     private float currentDiveAdd = START_DIVE_ADD;
     [SerializeField] private float currentDiveMaxSpeed = 3;
-
     [SerializeField] float positionRadius = 5f;
+
+    [Header("Orbit")]
+    [SerializeField] bool orbitCurrentTarget = true;
     [SerializeField] float desiredOrbitRadius = 1.5f;
-    [SerializeField] float orbitSpringStrength = 2f; 
+    [SerializeField] float orbitSpringStrength = 2f;
+    [SerializeField] bool upOrbitCross = true;
     [SerializeField] float minHeight = 3f;
     [SerializeField] float maxHeight = 8f;
     [SerializeField] float timeToWander = 8f;
@@ -34,6 +38,14 @@ public class FlyingEntity : Entity
     private Vector3 target;
 
     private Rigidbody rb;
+
+    [Header("Dive Attack")]
+    [SerializeField] private PlayerVisionCheck VisionCone;
+    [SerializeField] private float seePlayerDiveBoost;
+    [SerializeField] private PlayerManager diveTarget = null;
+    private bool hasLastKnownPosition = false;
+    private Vector3 lastKnownPostion;
+
 
     private void Start()
     {
@@ -58,24 +70,12 @@ public class FlyingEntity : Entity
             boid.Movement.OnJump(); 
             StartCoroutine(boid.Avoidance.DelayPush((boid.target - transform.position).normalized * boid.Data.forwardMovementSpeed * 6, 0.2f));
         }
-        boid.Steer(flyingDirection * boid.Data.forwardMovementSpeed);
+        boid.Steer(flyingDirection.normalized * boid.Data.forwardMovementSpeed);
 
         //bad, should rely on behavior stuff
-        if(Vector3.Distance(target, transform.position) < boid.StopDist)
+        if(orbitCurrentTarget && Vector3.Distance(target, transform.position) < boid.StopDist)
         {
-            Vector3 target = transform.position + (Random.onUnitSphere * positionRadius);
-            target.y = 10000;
-
-            if (Physics.Raycast(target, Vector3.down, out RaycastHit hit, Mathf.Infinity, groundMask))
-            {
-                target = hit.point;
-                target.y += Random.Range(minHeight, maxHeight);
-                this.target = target;
-            }
-            else
-            {
-                Debug.LogError("Failed To Find Ground");
-            }
+            FindNewTarget();
         }
         Vector3 normalDirectionToPoint = (target - transform.position).normalized;
         flyingDirection = Vector3.Slerp(flyingDirection, normalDirectionToPoint, Time.deltaTime * 2);
@@ -84,35 +84,37 @@ public class FlyingEntity : Entity
         float maxY = Mathf.Sin(maxYAngle * Mathf.Deg2Rad);
         float minY = Mathf.Sin(minYAngle * Mathf.Deg2Rad);
         flyingDirection.y = Mathf.Clamp(flyingDirection.y, minY, maxY);
-        ApplyOrbitalSpring();
+        if(orbitCurrentTarget) ApplyOrbitalSpring();
         CheckDiveAccelleration();
+
+        if (diveTarget == null && VisionCone.RecentSeenPlayer.Count != 0)
+        {
+            diveTarget = VisionCone.RecentSeenPlayer.First().Key;
+            target = diveTarget.transform.position;
+            lastKnownPostion = target;
+
+            hasLastKnownPosition = true;
+        }
+        else if (diveTarget != null && VisionCone.RecentSeenPlayer.Count == 0)
+        {
+            diveTarget = null;
+
+            Invoke("FindNewTarget", 0.5f);
+        }
     }
+
 
     private IEnumerator Wander(float delay)
     {
-        while (true)
-        {
-            Vector3 target = transform.position + (Random.onUnitSphere * positionRadius);
-            target.y = 10000;
-
-            if (Physics.Raycast(target, Vector3.down, out RaycastHit hit, Mathf.Infinity, groundMask))
+        //while (true)
+        //{
+            if(diveTarget == null)
             {
-                if(hit.normal != Vector3.up)
-                {
-                    break;
-                }
-                target = hit.point;
-                target.y += Random.Range(minHeight, maxHeight);
-                this.target = target;
+                FindNewTarget();
             }
-            else
-            {
-                Debug.LogError("Failed To Find Ground");
-            }
-
             yield return new WaitForSeconds(delay);
-        }
-        StartCoroutine(Wander(timeToWander));
+            StartCoroutine(Wander(timeToWander));
+        //}
     }
     private void ApplyOrbitalSpring()
     {
@@ -126,6 +128,12 @@ public class FlyingEntity : Entity
             
             Vector3 springForce = radialDir * (radialError * orbitSpringStrength);
             flyingDirection += springForce * Time.deltaTime;
+        }
+        if(dist < desiredOrbitRadius + 3)
+        {
+            Vector3 cross = Vector3.Cross(toTarget.normalized, upOrbitCross ? Vector3.up : Vector3.down);
+
+            flyingDirection += cross * 5;
         }
     }
 
@@ -142,4 +150,30 @@ public class FlyingEntity : Entity
             currentDiveAdd = 0;
         }
     }
+
+    private void FindNewTarget()
+    {
+        Vector3 target = transform.position + (Random.onUnitSphere * positionRadius);
+
+        if(hasLastKnownPosition)
+        {
+            target = transform.position + (((lastKnownPostion - transform.position).normalized * Random.Range(0.1f,1f)) * positionRadius);
+        }
+
+        target.y = 10000;
+
+        if (Physics.Raycast(target, Vector3.down, out RaycastHit hit, Mathf.Infinity, groundMask))
+        {
+            target = hit.point;
+            target.y += Random.Range(minHeight, maxHeight);
+            this.target = target;
+        }
+        else
+        {
+            Debug.LogError("Failed To Find Ground");
+        }
+
+    }
+
+    public PlayerManager getDiveTarget() { return diveTarget; }
 }

@@ -11363,6 +11363,7 @@ GameObject:
   - component: {fileID: 6846451947963487153}
   - component: {fileID: 851813844057299304}
   - component: {fileID: 5895780667694263383}
+  - component: {fileID: 8515103311984290617}
   m_Layer: 9
   m_Name: Bird
   m_TagString: Untagged
@@ -11385,6 +11386,7 @@ Transform:
   m_Children:
   - {fileID: 2500277146424618564}
   - {fileID: 7139052025496874128}
+  - {fileID: 6597772912774487088}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!95 &8936004180720846506
@@ -11453,8 +11455,10 @@ MonoBehaviour:
   diveAccelleration: 0.1
   currentDiveMaxSpeed: 4
   positionRadius: 25
+  orbitCurrentTarget: 0
   desiredOrbitRadius: 13
-  orbitSpringStrength: 3.5
+  orbitSpringStrength: 4
+  upOrbitCross: 1
   minHeight: 8
   maxHeight: 16
   timeToWander: 3
@@ -11462,6 +11466,9 @@ MonoBehaviour:
   groundMask:
     serializedVersion: 2
     m_Bits: 256
+  VisionCone: {fileID: 7647378033752344067}
+  seePlayerDiveBoost: 10
+  diveTarget: {fileID: 0}
 --- !u!114 &6035629143805751486
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11581,6 +11588,21 @@ MonoBehaviour:
   wasNullInPeriod: 0
   hasNewTarget: 0
   target: {x: 0, y: 0, z: 0}
+--- !u!114 &8515103311984290617
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2338652279895161979}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a78ad8f9082d52d4ab881e623835be19, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  targetPlayer: {fileID: 0}
+  blastDist: 3
+  damage: 1
 --- !u!1 &2343956286583347508
 GameObject:
   m_ObjectHideFlags: 0
@@ -36548,3 +36570,76 @@ Transform:
   - {fileID: 7632401323503991285}
   m_Father: {fileID: 1604373402249776233}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1001 &2084137321095507419
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 1190159480815178488}
+    m_Modifications:
+    - target: {fileID: 5144140295727100395, guid: f4b33635a242b9e47b7f15f4161a78b6, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5144140295727100395, guid: f4b33635a242b9e47b7f15f4161a78b6, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -51.8
+      objectReference: {fileID: 0}
+    - target: {fileID: 5144140295727100395, guid: f4b33635a242b9e47b7f15f4161a78b6, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 139.7
+      objectReference: {fileID: 0}
+    - target: {fileID: 5144140295727100395, guid: f4b33635a242b9e47b7f15f4161a78b6, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.82412624
+      objectReference: {fileID: 0}
+    - target: {fileID: 5144140295727100395, guid: f4b33635a242b9e47b7f15f4161a78b6, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0.56640625
+      objectReference: {fileID: 0}
+    - target: {fileID: 5144140295727100395, guid: f4b33635a242b9e47b7f15f4161a78b6, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5144140295727100395, guid: f4b33635a242b9e47b7f15f4161a78b6, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5144140295727100395, guid: f4b33635a242b9e47b7f15f4161a78b6, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: -69
+      objectReference: {fileID: 0}
+    - target: {fileID: 5144140295727100395, guid: f4b33635a242b9e47b7f15f4161a78b6, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5144140295727100395, guid: f4b33635a242b9e47b7f15f4161a78b6, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5487769137518635857, guid: f4b33635a242b9e47b7f15f4161a78b6, type: 3}
+      propertyPath: m_Name
+      value: VisionCone
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: f4b33635a242b9e47b7f15f4161a78b6, type: 3}
+--- !u!4 &6597772912774487088 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 5144140295727100395, guid: f4b33635a242b9e47b7f15f4161a78b6, type: 3}
+  m_PrefabInstance: {fileID: 2084137321095507419}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &7647378033752344067 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8560399597424815064, guid: f4b33635a242b9e47b7f15f4161a78b6, type: 3}
+  m_PrefabInstance: {fileID: 2084137321095507419}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 43307a56e290dc943a7ae36031676c96, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
