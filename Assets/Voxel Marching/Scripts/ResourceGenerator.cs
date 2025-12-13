@@ -58,8 +58,8 @@ namespace UnityEngine
             if (fitness < spawningData.floorValue) return 0f;
             //Debug.Log($"Perlin at ({x}, {z}) = {fitness}");
             fitness += Random.Range(-spawningData.randomness, spawningData.randomness);
-            if (Mathf.Acos(Vector3.Dot(hitData.normal, Vector3.up)) > spawningData.maxSteepness) return 0f; ;
-            if (Mathf.Acos(Vector3.Dot(hitData.normal, Vector3.up)) < spawningData.minSteepness) return 0f; ;
+            if ((Mathf.Acos(Vector3.Dot(hitData.normal, Vector3.up)) * Mathf.Rad2Deg) > spawningData.maxSteepness) return 0f; ;
+            if ((Mathf.Acos(Vector3.Dot(hitData.normal, Vector3.up)) * Mathf.Rad2Deg) < spawningData.minSteepness) return 0f; ;
             if (hitData.point.y > spawningData.maxHeight) return 0f;
             if (hitData.point.y < spawningData.minHeight) return 0f;
 

@@ -904,7 +904,7 @@ public class PlayerManager : NetworkBehaviour
             float forwardOffset = .5f;
             Vector3 spawnOffset = transform.forward * forwardOffset;
 
-            spawnedSlash.transform.position = spawnPosition + spawnOffset; //use weaponReach from WeaponData.cs
+            spawnedSlash.transform.position = spawnPosition + (spawnOffset * .2f); //unarmed range reduced
             spawnedSlash.transform.rotation = Quaternion.LookRotation(shootDirection);
             spawnedSlash.transform.Rotate(Random.Range(-90f, 90f), 0f, 0f);
 
