@@ -54,6 +54,9 @@ public class PlayerManager : NetworkBehaviour
     private Vector2 movementInput;
     private float moveSpeed = 3f;
     public Transform cameraTransform;
+
+    private GameObject dashVFXObj;
+    private GameObject slashFieldObj;
     //public Transform aimCamTransform;
 
     private Vector3 camForward;
@@ -117,6 +120,7 @@ public class PlayerManager : NetworkBehaviour
     [SerializeField, Range(-10f, 10f)] private float fovSkew = .5f; //negative = skew left (faster rise), positive = skew right (slower rise)
     [SerializeField] private float doubleTapWindow = 0.5f;
     [SerializeField] private float doubleTapActiveTime = 2.5f;
+    [SerializeField] private GameObject slashField;
 
     private float duration;
     private float fovIncreaseBase;
@@ -737,7 +741,10 @@ public class PlayerManager : NetworkBehaviour
         isSwingingbool = true;
         weaponTrail.enabled = false;
         weaponCollider.enabled = false;
-        StartCoroutine(PausePlayerDelay(isLightAttack ? 1 : 1.3f));
+        if (isMoving)
+            StartCoroutine(PausePlayerDelay(isLightAttack ? 1 : 1.3f));
+        else
+            StartCoroutine(PausePlayerDelay(isLightAttack ? 3 : 3.9f));
 
         swingTimer = 0f;
 
@@ -756,7 +763,14 @@ public class PlayerManager : NetworkBehaviour
         }
         if (isMoving)
         {
-            dashVFX.SetActive(true);
+            dashVFXObj = Instantiate(dashVFX);
+            slashFieldObj = Instantiate(slashField);
+
+            dashVFXObj.transform.parent = transform;
+            slashFieldObj.transform.parent = transform;
+
+            slashFieldObj.transform.localPosition = Vector3.up;
+            Debug.Log(slashFieldObj.transform.localPosition);
             actualPreslash *= 2f;
         }
 
@@ -766,6 +780,7 @@ public class PlayerManager : NetworkBehaviour
             RequestSlashServerRpc(transform.position + Vector3.up, movingSlashHeading, true);
         else
             RequestSlashServerRpc(transform.position + Vector3.up, movingSlashHeading, false);
+
 
         currentSlash = slashTransform;
 
@@ -806,9 +821,9 @@ public class PlayerManager : NetworkBehaviour
         //only move player from swing acceleration IF they were moving when swing started
         if (doubleTapForward || doubleTapRight || doubleTapLeft || doubleTapBack)
         {
-            Debug.Log("Dash for attack!");
+            //Debug.Log("Dash for attack!");
             Vector3 dashDirection = movingAttackHeading + Vector3.up * dashUpScale;
-            rb.AddForce(dashDirection * dashForce * (isGrounded ? .1f : .08f), ForceMode.Acceleration);
+            rb.AddForce(dashDirection * dashForce * (isGrounded ? .25f : .1f), ForceMode.Acceleration);
         }
 
         if (t > 0.05f)
@@ -945,10 +960,10 @@ public class PlayerManager : NetworkBehaviour
 
         //weaponTrail.enabled = true;
 
-        if (swingingMoving && isLight)
-           StartLightSwing(spawnedSlash);
-        else if (swingingMoving && !isLight)
-            StartHeavySwing(spawnedSlash);
+        //if (swingingMoving && isLight)
+        //   StartLightSwing(spawnedSlash);
+        //else if (swingingMoving && !isLight)
+        //    StartHeavySwing(spawnedSlash);
         swingingMoving = false;
     }
 
@@ -956,7 +971,11 @@ public class PlayerManager : NetworkBehaviour
     {
         yield return new WaitForSeconds(delay);
 
-        dashVFX.SetActive(false);
+        Debug.Log("Waited: " + delay);
+        Debug.Log(slashFieldObj.transform.localPosition);
+
+        Destroy(dashVFXObj);
+        Destroy(slashFieldObj);
 
         //rb.linearVelocity = new Vector3(0, rb.linearVelocity.y, 0);
         swingingMoving = false;

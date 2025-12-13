@@ -13655,12 +13655,12 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 1
   volumeAnchorOverride: {fileID: 0}
-  antialiasing: 2
+  antialiasing: 0
   SMAAQuality: 2
   dithering: 1
   stopNaNs: 0
-  taaSharpenStrength: 0.5
-  TAAQuality: 1
+  taaSharpenStrength: 2
+  TAAQuality: 0
   taaSharpenMode: 0
   taaRingingReduction: 0
   taaHistorySharpening: 0.35
