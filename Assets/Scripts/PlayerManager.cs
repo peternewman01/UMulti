@@ -15,6 +15,15 @@ using UnityEngine.Rendering.HighDefinition;
 using UnityEngine.UI;
 using UnityEngine.Windows;
 
+enum OnAttack
+{
+    None,
+    Light,
+    Heavy,
+    Other,
+    COUNT
+}
+
 public class PlayerManager : NetworkBehaviour
 {
     public InputActionAsset InputActions;
@@ -121,6 +130,8 @@ public class PlayerManager : NetworkBehaviour
     [SerializeField] private float doubleTapWindow = 0.5f;
     [SerializeField] private float doubleTapActiveTime = 2.5f;
     [SerializeField] private GameObject slashField;
+    [SerializeField] private OnAttack currentCombo = OnAttack.None;
+    [SerializeField] private bool continueAttacking = false;
 
     private float duration;
     private float fovIncreaseBase;
@@ -644,31 +655,106 @@ public class PlayerManager : NetworkBehaviour
         }
 
         if (cameraTransform == null) return;
-
-        if (attack.WasPressedThisFrame() && abilityIndex != -1 && Time.time - lastShotTime >= shootCooldown && !anim.GetBool("IsRolling"))
+        if(!swingInProgress)
         {
-            lastShotTime = Time.time;
+            if (attack.WasPressedThisFrame() && abilityIndex != -1 && Time.time - lastShotTime >= shootCooldown && !anim.GetBool("IsRolling"))
+            {
+                lastShotTime = Time.time;
+            
+                CameraShakeManager.instance.CameraShake(impulseSource, .1f); //recoil
+            
+                hotbar.TriggerAbility();
+                RequestShootServerRpc(transform.position + Vector3.up, transform.forward);
+            }
+            else if ((attack.WasPressedThisFrame() && once && !anim.GetBool("IsRolling")) || (continueAttacking && currentCombo == OnAttack.Light))
+            {
+                once = false;
+                GameObject holdingObject = leftHolding.getHoldingObject();
+                WeaponData weaponData = null;
+                if (holdingObject != null)
+                {
+                    weaponData = holdingObject.GetComponent<WeaponData>();
+                }
+            
+                if(weaponData != null)
+                {
+                    if (!continueAttacking)
+                    {
+                        weaponData.ResetAttackIndex();
+                    }
+                    else
+                    {
+                        Debug.Log("Continued");
+                    }
 
-            CameraShakeManager.instance.CameraShake(impulseSource, .1f); //recoil
+                    float delay = weaponData.GetNextLightAttackDelay();
+                    Invoke("ResetSwingInProgress", delay);
+                    Debug.Log("delay " + delay);
+                }
+                else
+                {
+                    Invoke("ResetSwingInProgress", 0.3f);
+                }
+            
+                swingInProgress = true;
+                continueAttacking = false;
+                currentCombo = OnAttack.Light;
+                lastShotTime = Time.time;
+                anim.SetBool("IsIdleLong", false);
+                StartLightSwing(spawnedSlash);
+            }
+            else if ((heavyAttack.WasPressedThisFrame() && once && !anim.GetBool("IsRolling")) || (continueAttacking && currentCombo == OnAttack.Heavy))
+            {
+                once = false;
+                GameObject holdingObject = leftHolding.getHoldingObject();
+                WeaponData weaponData = null;
+                if (holdingObject != null)
+                {
+                    weaponData = holdingObject.GetComponent<WeaponData>();
+                }
+            
+                if (weaponData != null)
+                {
+                    if (!continueAttacking)
+                    {
+                        weaponData.ResetAttackIndex();
+                    }
+                    else
+                    {
+                        Debug.Log("Continued");
+                    }
 
-            hotbar.TriggerAbility();
-            RequestShootServerRpc(transform.position + Vector3.up, transform.forward);
+                    float delay = weaponData.GetNextHeavyAttackDelay();
+                    Invoke("ResetSwingInProgress", delay);
+                    Debug.Log("delay " + delay);
+                }
+                else
+                {
+                    Invoke("ResetSwingInProgress", 0.5f);
+                }
+                swingInProgress = true;
+                continueAttacking = false;
+                currentCombo = OnAttack.Heavy;
+                lastShotTime = Time.time;
+                anim.SetBool("IsIdleLong", false);
+                StartHeavySwing(spawnedSlash);
+            }
         }
-        else if (attack.WasPressedThisFrame() && Time.time - lastShotTime >= shootCooldown && !swingInProgress && once && !anim.GetBool("IsRolling"))
+        else if(attack.WasPressedThisFrame() && !anim.GetBool("IsRolling"))
         {
-            once = false;
-            swingInProgress = true;
-            lastShotTime = Time.time;
-            anim.SetBool("IsIdleLong", false);
-            StartLightSwing(spawnedSlash);
+            if(currentCombo != OnAttack.Light)
+            {
+                currentCombo = OnAttack.None;
+            }
+            continueAttacking = true;
         }
-        else if (heavyAttack.WasPressedThisFrame() && Time.time - lastShotTime >= shootCooldown && !swingInProgress && once && !anim.GetBool("IsRolling"))
+        else if(heavyAttack.WasPressedThisFrame() && !anim.GetBool("IsRolling"))
         {
-            once = false;
-            swingInProgress = true;
-            lastShotTime = Time.time;
-            anim.SetBool("IsIdleLong", false);
-            StartHeavySwing(spawnedSlash);
+            if (currentCombo != OnAttack.Heavy)
+            {
+                currentCombo = OnAttack.None;
+            }
+            continueAttacking = true;
         }
 
     }
@@ -733,17 +819,16 @@ public class PlayerManager : NetworkBehaviour
             swingingMoving = true;
         }
 
-        Debug.Log(isLightAttack + " " + isMoving);
+        //Debug.Log(isLightAttack + " " + isMoving);
         anim.SetBool("Walking", false);
         isSwinging = true;
         once = true;
         swingInProgress = true;
         isSwingingbool = true;
         weaponTrail.enabled = false;
-        weaponCollider.enabled = false;
-        Debug.Log(5);
+            weaponCollider.enabled = false;
         if (isMoving)
-            StartCoroutine(PausePlayerDelay(isLightAttack ? 3 : 3.9f));
+            StartCoroutine(PausePlayerDelay(isLightAttack ? 2 : 2.9f));
         else
             StartCoroutine(PausePlayerDelay(isLightAttack ? 1 : 1.3f));
 
@@ -837,7 +922,7 @@ public class PlayerManager : NetworkBehaviour
             weaponCollider.enabled = false;
             isSwinging = false;
             isSwingingbool = false;
-            swingInProgress = false;
+            //swingInProgress = false;
             //swingingMoving = false;
             doubleTapForward = doubleTapBack = doubleTapRight = doubleTapLeft = false;
 
@@ -926,7 +1011,7 @@ public class PlayerManager : NetworkBehaviour
 
             UseEntity.Damage slashHurt = spawnedSlash.gameObject.GetComponent<UseEntity.Damage>();
             slashHurt.setDamage(isLight ? 1 : 3);
-            Debug.Log("Damage is " + slashHurt.getDamage());
+            //Debug.Log("Damage is " + slashHurt.getDamage());
         }
         else
         {
@@ -973,6 +1058,7 @@ public class PlayerManager : NetworkBehaviour
         yield return new WaitForSeconds(delay);
 
         Debug.Log("Waited: " + delay);
+        //Debug.Log(slashFieldObj.transform.localPosition);
 
         Destroy(dashVFXObj);
         Destroy(slashFieldObj);
@@ -980,7 +1066,6 @@ public class PlayerManager : NetworkBehaviour
         //rb.linearVelocity = new Vector3(0, rb.linearVelocity.y, 0);
         swingingMoving = false;
         canMove = true;
-        Debug.Log(6);
     }
 
     private IEnumerator UnparentAfterDelay(Transform t, Transform p, float delay)
@@ -1174,4 +1259,13 @@ public class PlayerManager : NetworkBehaviour
     private void CanDash() { canDash = true; }
 
     public Invintory GetInventory() => inv;
+
+    public void ResetSwingInProgress() 
+    {
+        swingInProgress = false;
+        if (!continueAttacking)
+        {
+            currentCombo = OnAttack.None;
+        }
+    }
 }
