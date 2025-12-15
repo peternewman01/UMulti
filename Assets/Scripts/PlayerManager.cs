@@ -741,10 +741,11 @@ public class PlayerManager : NetworkBehaviour
         isSwingingbool = true;
         weaponTrail.enabled = false;
         weaponCollider.enabled = false;
+        Debug.Log(5);
         if (isMoving)
-            StartCoroutine(PausePlayerDelay(isLightAttack ? 1 : 1.3f));
-        else
             StartCoroutine(PausePlayerDelay(isLightAttack ? 3 : 3.9f));
+        else
+            StartCoroutine(PausePlayerDelay(isLightAttack ? 1 : 1.3f));
 
         swingTimer = 0f;
 
@@ -972,7 +973,6 @@ public class PlayerManager : NetworkBehaviour
         yield return new WaitForSeconds(delay);
 
         Debug.Log("Waited: " + delay);
-        Debug.Log(slashFieldObj.transform.localPosition);
 
         Destroy(dashVFXObj);
         Destroy(slashFieldObj);
@@ -980,6 +980,7 @@ public class PlayerManager : NetworkBehaviour
         //rb.linearVelocity = new Vector3(0, rb.linearVelocity.y, 0);
         swingingMoving = false;
         canMove = true;
+        Debug.Log(6);
     }
 
     private IEnumerator UnparentAfterDelay(Transform t, Transform p, float delay)
