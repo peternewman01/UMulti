@@ -3303,7 +3303,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 2594642646
+  GlobalObjectIdHash: 1209685909
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 1
@@ -11876,7 +11876,7 @@ MonoBehaviour:
     DoStepAnimationOnDistanceFactor: 0.055
   UseGluing: 1
   MainGlueBlend: 1
-  GlueRangeThreshold: 0.5
+  GlueRangeThreshold: 0.3
   GlueFadeInSpeed: 0.85
   AllowGlueBelowFoot: 0.2
   GlueFadeOutSpeed: 0.5
@@ -12174,7 +12174,7 @@ ParticleSystem:
   m_GameObject: {fileID: 3776798851797591526}
   serializedVersion: 8
   lengthInSec: 5
-  simulationSpeed: 1
+  simulationSpeed: 0.5
   stopAction: 0
   cullingMode: 0
   ringBufferMode: 0
@@ -12355,7 +12355,7 @@ ParticleSystem:
       serializedVersion: 2
       minMaxState: 0
       minColor: {r: 1, g: 1, b: 1, a: 1}
-      maxColor: {r: 1, g: 1, b: 1, a: 1}
+      maxColor: {r: 0, g: 0, b: 0, a: 1}
       maxGradient:
         serializedVersion: 2
         key0: {r: 1, g: 1, b: 1, a: 1}
@@ -12419,7 +12419,7 @@ ParticleSystem:
     startSize:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 0.1
+      scalar: 0.4
       minScalar: 1
       maxCurve:
         serializedVersion: 2
@@ -13002,7 +13002,7 @@ ParticleSystem:
     rateOverTime:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 10
+      scalar: 1
       minScalar: 10
       maxCurve:
         serializedVersion: 2
@@ -13620,7 +13620,7 @@ ParticleSystem:
         m_PostInfinity: 2
         m_RotationOrder: 4
     speedRange: {x: 0, y: 1}
-    tilesX: 7
+    tilesX: 9
     tilesY: 1
     animationType: 0
     rowIndex: 0
@@ -13632,7 +13632,7 @@ ParticleSystem:
     flipU: 0
     flipV: 0
   VelocityModule:
-    enabled: 0
+    enabled: 1
     x:
       serializedVersion: 2
       minMaxState: 0
@@ -13689,7 +13689,7 @@ ParticleSystem:
     y:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 0
+      scalar: 0.06
       minScalar: 0
       maxCurve:
         serializedVersion: 2
@@ -13901,7 +13901,7 @@ ParticleSystem:
     orbitalZ:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 0
+      scalar: 3.18
       minScalar: 0
       maxCurve:
         serializedVersion: 2
@@ -14113,7 +14113,7 @@ ParticleSystem:
     radial:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 0
+      scalar: 0.18
       minScalar: 0
       maxCurve:
         serializedVersion: 2
@@ -14826,11 +14826,11 @@ ParticleSystem:
         m_PostInfinity: 2
         m_RotationOrder: 4
   NoiseModule:
-    enabled: 0
+    enabled: 1
     strength:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 1
+      scalar: 0.1
       minScalar: 1
       maxCurve:
         serializedVersion: 2
@@ -14987,7 +14987,7 @@ ParticleSystem:
         m_PostInfinity: 2
         m_RotationOrder: 4
     separateAxes: 0
-    frequency: 0.5
+    frequency: 2
     damping: 1
     octaves: 1
     octaveMultiplier: 0.5
@@ -16075,9 +16075,9 @@ ParticleSystem:
         m_RotationOrder: 4
     maxLights: 20
   TrailModule:
-    enabled: 0
+    enabled: 1
     mode: 0
-    ratio: 1
+    ratio: 0.2
     lifetime:
       serializedVersion: 2
       minMaxState: 0
@@ -16140,13 +16140,13 @@ ParticleSystem:
     dieWithParticles: 1
     sizeAffectsWidth: 1
     sizeAffectsLifetime: 0
-    inheritParticleColor: 1
+    inheritParticleColor: 0
     generateLightingData: 0
     splitSubEmitterRibbons: 0
     attachRibbonsToTransform: 0
     colorOverLifetime:
       serializedVersion: 2
-      minMaxState: 0
+      minMaxState: 1
       minColor: {r: 1, g: 1, b: 1, a: 1}
       maxColor: {r: 1, g: 1, b: 1, a: 1}
       maxGradient:
@@ -16167,7 +16167,7 @@ ParticleSystem:
         ctime5: 0
         ctime6: 0
         ctime7: 0
-        atime0: 0
+        atime0: 47609
         atime1: 65535
         atime2: 0
         atime3: 0
@@ -16176,7 +16176,7 @@ ParticleSystem:
         atime6: 0
         atime7: 0
         m_Mode: 0
-        m_ColorSpace: -1
+        m_ColorSpace: 0
         m_NumColorKeys: 2
         m_NumAlphaKeys: 2
       minGradient:
@@ -16211,7 +16211,7 @@ ParticleSystem:
         m_NumAlphaKeys: 2
     widthOverTrail:
       serializedVersion: 2
-      minMaxState: 0
+      minMaxState: 1
       scalar: 1
       minScalar: 1
       maxCurve:
@@ -16219,7 +16219,7 @@ ParticleSystem:
         m_Curve:
         - serializedVersion: 3
           time: 0
-          value: 1
+          value: 0.29999956
           inSlope: 0
           outSlope: 0
           tangentMode: 0
@@ -16228,7 +16228,7 @@ ParticleSystem:
           outWeight: 0.33333334
         - serializedVersion: 3
           time: 1
-          value: 1
+          value: 0
           inSlope: 0
           outSlope: 0
           tangentMode: 0
@@ -16264,27 +16264,27 @@ ParticleSystem:
         m_RotationOrder: 4
     colorOverTrail:
       serializedVersion: 2
-      minMaxState: 0
+      minMaxState: 1
       minColor: {r: 1, g: 1, b: 1, a: 1}
       maxColor: {r: 1, g: 1, b: 1, a: 1}
       maxGradient:
         serializedVersion: 2
-        key0: {r: 1, g: 1, b: 1, a: 1}
-        key1: {r: 1, g: 1, b: 1, a: 1}
-        key2: {r: 0, g: 0, b: 0, a: 0}
-        key3: {r: 0, g: 0, b: 0, a: 0}
-        key4: {r: 0, g: 0, b: 0, a: 0}
-        key5: {r: 0, g: 0, b: 0, a: 0}
-        key6: {r: 0, g: 0, b: 0, a: 0}
-        key7: {r: 0, g: 0, b: 0, a: 0}
+        key0: {r: 1, g: 0, b: 0, a: 1}
+        key1: {r: 0.9827938, g: 0, b: 1, a: 0}
+        key2: {r: 0.48024476, g: 0.011764705, b: 1, a: 0}
+        key3: {r: 0.019607842, g: 0.7809501, b: 1, a: 0}
+        key4: {r: 0.11504066, g: 0.8392157, b: 0.035294127, a: 0}
+        key5: {r: 0.7011305, g: 0.7019608, b: 0.047058802, a: 0}
+        key6: {r: 0.88235295, g: 0.4628272, b: 0.019607842, a: 0}
+        key7: {r: 1, g: 0.10950938, b: 0, a: 0}
         ctime0: 0
-        ctime1: 65535
-        ctime2: 0
-        ctime3: 0
-        ctime4: 0
-        ctime5: 0
-        ctime6: 0
-        ctime7: 0
+        ctime1: 6746
+        ctime2: 14649
+        ctime3: 23708
+        ctime4: 33539
+        ctime5: 45875
+        ctime6: 56283
+        ctime7: 65535
         atime0: 0
         atime1: 65535
         atime2: 0
@@ -16294,8 +16294,8 @@ ParticleSystem:
         atime6: 0
         atime7: 0
         m_Mode: 0
-        m_ColorSpace: -1
-        m_NumColorKeys: 2
+        m_ColorSpace: 0
+        m_NumColorKeys: 8
         m_NumAlphaKeys: 2
       minGradient:
         serializedVersion: 2
@@ -16922,6 +16922,7 @@ ParticleSystemRenderer:
   m_RendererPriority: 0
   m_Materials:
   - {fileID: 2100000, guid: 4aa63358227ee6a49b7b24754d2da1ee, type: 2}
+  - {fileID: 599381414884822943, guid: 60ebe9cf1e053e845bea27b079172130, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -19973,7 +19974,7 @@ MonoBehaviour:
   scrolling: 0
   weapon: {fileID: 2953539724113368148}
   swingAngle: 90
-  swingDuration: 0.2
+  swingDuration: 0.4
   swingAxis: {x: -1, y: -1, z: 0}
   axisOffset: {x: 0, y: 90, z: -40}
   weaponTrail: {fileID: 3132745989059202623}
@@ -19991,6 +19992,8 @@ MonoBehaviour:
   doubleTapWindow: 0.3
   doubleTapActiveTime: 0.4
   slashField: {fileID: 8689326457082886213, guid: 274219b139ef17c4fa1c491b2b30b2b7, type: 3}
+  currentCombo: 0
+  continueAttacking: 0
   doubleTapForward: 0
   doubleTapBack: 0
   doubleTapLeft: 0
@@ -20024,6 +20027,32 @@ MonoBehaviour:
   ropeMaterial: {fileID: -876546973899608171, guid: 783ca800291d60b4c9fadaad2890ffd6, type: 3}
   ropeWidth: 0.01
   dashVFX: {fileID: 4370346036745170380, guid: 18c9424da6145a6409611540ef183ec6, type: 3}
+  slashSizeOverLifetime:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 2
+      outSlope: 2
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  startScale: {x: 0.5, y: 0.5, z: 1.5}
+  endScale: {x: 1, y: 1, z: 3}
 --- !u!114 &2675783541006157575
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -196,6 +196,9 @@ public class PlayerManager : NetworkBehaviour
     [SerializeField] private Material ropeMaterial;
     [SerializeField] private float ropeWidth = 0.05f;
     [SerializeField] private GameObject dashVFX;
+    [SerializeField] private AnimationCurve slashSizeOverLifetime;
+    [SerializeField] private Vector3 startScale = Vector3.zero;
+    [SerializeField] private Vector3 endScale = new Vector3(1f, 1f, 3f);
 
     private List<LineRenderer> ropeLines = new List<LineRenderer>();
     private List<List<Transform>> ropeSegments = new List<List<Transform>>();
@@ -808,6 +811,7 @@ public class PlayerManager : NetworkBehaviour
     private IEnumerator SwingRoutine(Transform slashTransform, bool isLightAttack, bool isMoving)
     {
         if (isSwinging) yield break;
+        isSwinging = true;
         swingingMoving = true;
         movingAttackHeading = transform.forward;
         Vector3 movingSlashHeading = -transform.right;
@@ -869,6 +873,7 @@ public class PlayerManager : NetworkBehaviour
 
 
         currentSlash = slashTransform;
+        currentSlash.localScale = startScale;
 
         float swingScale = isLightAttack ? 1f : 1.3f;
         duration = baseSwingDuration * swingScale;
@@ -902,6 +907,12 @@ public class PlayerManager : NetworkBehaviour
 
         Vector3 dir = (weapon.rotation * Vector3.forward).normalized;
         weapon.position = transform.position + Vector3.up * heightOffset + dir * 0.2f;
+        if (currentSlash != null)
+        {
+            float t2 = Mathf.Clamp01(swingTimer / duration);
+            float curveT = slashSizeOverLifetime.Evaluate(t2);
+            currentSlash.localScale = Vector3.Lerp(startScale, endScale, curveT);
+        }
 
         //Debug.Log("forward " + doubleTapForward + ", right: " + doubleTapRight + ", left: " + doubleTapLeft + ", back: " + doubleTapBack);
         //only move player from swing acceleration IF they were moving when swing started
@@ -1220,7 +1231,6 @@ public class PlayerManager : NetworkBehaviour
 
         bool inRange = Mathf.Abs(angle) <= lookSwitchHalfAngle;
 
-        // Instead of snapping weights here, simply set new targets
         if (inRange)
         {
             targetForwardWeight = 1f;
