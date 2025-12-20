@@ -11,6 +11,7 @@ public class DayNightCycle : MonoBehaviour
     [SerializeField] private Gradient sunColorGradient;
     [SerializeField] private float sunIntensity = 1f;
     [SerializeField] private float moonIntensityMultiplier = 0.33f;
+    [SerializeField] private Texture2D moonTexture;
 
     private float rotationSpeed;
     [SerializeField] private bool isDay = true; //is also passed to shader graph
@@ -53,6 +54,14 @@ public class DayNightCycle : MonoBehaviour
 
         if (isDay) //daytime: sunrise to sunset
         {
+            //unset moon
+            var dirLight = sunLight.gameObject.GetComponent<HDAdditionalLightData>();
+            dirLight.surfaceTexture = null;
+            dirLight.flareMultiplier = 0.021f;
+            dirLight.flareFalloff = 120;
+            dirLight.flareTint = Color.white;
+            dirLight.angularDiameter = .5f;
+
             float sinVal = Mathf.Sin((timeOfDay + 1f) * Mathf.Deg2Rad);
             sinVal = Mathf.Max(0f, sinVal);
             intensityMultiplier = Mathf.Clamp01(sinVal);
@@ -60,13 +69,21 @@ public class DayNightCycle : MonoBehaviour
         }
         else //nighttime: moonrise to moonset
         {
+            //make moon visible
+            var dirLight = sunLight.gameObject.GetComponent<HDAdditionalLightData>();
+            dirLight.surfaceTexture = moonTexture;
+            dirLight.angularDiameter = 6f;
+            dirLight.flareMultiplier = 0;
+            dirLight.flareFalloff = 0;
+            dirLight.flareTint = Color.black;
+
             float nightAngle = timeOfDay;
             float sinVal = Mathf.Sin((timeOfDay + 1f) * Mathf.Deg2Rad);
             sinVal = Mathf.Max(0f, sinVal);
             intensityMultiplier = (1f - Mathf.Clamp01(sinVal)) * moonIntensityMultiplier;
             lightColor = Color.Lerp(
-                new Color(0.6f, 0.7f, 1f),  //moonlight(cooler color)
-                new Color(0.3f, 0.4f, 0.6f), //deep night
+                new Color(0.7f, 0.8f, 1f),  //moonlight(cooler color)
+                new Color(0.4f, 0.5f, 0.7f), //deep night
                 Mathf.Sin(nightAngle * Mathf.Deg2Rad)
             );
         }
