@@ -1114,7 +1114,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   sunLight: {fileID: 157207113}
   timeOfDay: 0
-  dayDuration: 200
+  dayDuration: 4
   sunColorGradient:
     serializedVersion: 2
     key0: {r: 0, g: 0, b: 0, a: 1}
@@ -1147,7 +1147,15 @@ MonoBehaviour:
     m_NumAlphaKeys: 2
   sunIntensity: 130000
   moonIntensityMultiplier: 0.000008
-  moonTexture: {fileID: 2800000, guid: f76e8a4ca91915c4f8ce9c588cbad03b, type: 3}
+  moonPhases:
+  - {fileID: 2800000, guid: 9869e177eedb7cf4299071d5327126fa, type: 3}
+  - {fileID: 2800000, guid: b9bd6ae8f05f9f945934774d557930b1, type: 3}
+  - {fileID: 2800000, guid: a88a9a4658b4ed5479520ddb1949787b, type: 3}
+  - {fileID: 2800000, guid: b1f6d93f0dae2cb4db592ce32b905ecb, type: 3}
+  - {fileID: 2800000, guid: 58a3dc6b2449e4b48ac967a6970ec79d, type: 3}
+  - {fileID: 2800000, guid: a0364009d4973434280fc8f8e69fc079, type: 3}
+  - {fileID: 2800000, guid: e7935a92d32c11045bbfb8d092cfcd40, type: 3}
+  - {fileID: 2800000, guid: 918758499669a56469ebd9d1748be95e, type: 3}
   isDay: 1
 --- !u!4 &173468612 stripped
 Transform:

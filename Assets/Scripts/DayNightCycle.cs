@@ -1,3 +1,4 @@
+﻿using System;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.HighDefinition;
@@ -6,19 +7,24 @@ public class DayNightCycle : MonoBehaviour
 {
     public Light sunLight;
 
-    [Range(0, 180)] public float timeOfDay = 0f; //0�180 full day, is passed to shader graph
+    [Range(0, 180)] public float timeOfDay = 0f; //0–180 full day, is passed to shader graph
     [SerializeField] private float dayDuration = 120f; //seconds per full cycle, i think we should do 10 min days, but am open to persuasion, @ me lol
     [SerializeField] private Gradient sunColorGradient;
     [SerializeField] private float sunIntensity = 1f;
     [SerializeField] private float moonIntensityMultiplier = 0.33f;
-    [SerializeField] private Texture2D moonTexture;
+    [SerializeField] private Texture2D[] moonPhases;
 
     private float rotationSpeed;
+    private int currentMoonPhase;
+    private bool dayAdvancedThisCycle;
     [SerializeField] private bool isDay = true; //is also passed to shader graph
 
     void Start()
     {
         rotationSpeed = 180 / dayDuration;
+
+        currentMoonPhase = 0;
+        dayAdvancedThisCycle = false;   
 
         if (sunColorGradient == null)
         {
@@ -41,8 +47,23 @@ public class DayNightCycle : MonoBehaviour
         timeOfDay += rotationSpeed * Time.deltaTime;
         if (timeOfDay >= 179f)
         {
-            isDay = !isDay;
             timeOfDay = Mathf.Clamp(timeOfDay - 180f, 0f, 179f);
+            isDay = !isDay;
+
+            if (!isDay && !dayAdvancedThisCycle)
+            {
+                dayAdvancedThisCycle = true;
+
+                if (moonPhases != null && moonPhases.Length > 0)
+                {
+                    currentMoonPhase = (currentMoonPhase + 1) % moonPhases.Length;
+                }
+            }
+        }
+
+        if (isDay)
+        {
+            dayAdvancedThisCycle = false;
         }
 
         //rotate light according to time
@@ -71,7 +92,10 @@ public class DayNightCycle : MonoBehaviour
         {
             //make moon visible
             var dirLight = sunLight.gameObject.GetComponent<HDAdditionalLightData>();
-            dirLight.surfaceTexture = moonTexture;
+            if (moonPhases != null && moonPhases.Length > 0)
+            {
+                dirLight.surfaceTexture = moonPhases[currentMoonPhase];
+            }
             dirLight.angularDiameter = 6f;
             dirLight.flareMultiplier = 0;
             dirLight.flareFalloff = 0;
@@ -80,7 +104,8 @@ public class DayNightCycle : MonoBehaviour
             float nightAngle = timeOfDay;
             float sinVal = Mathf.Sin((timeOfDay + 1f) * Mathf.Deg2Rad);
             sinVal = Mathf.Max(0f, sinVal);
-            intensityMultiplier = (1f - Mathf.Clamp01(sinVal)) * moonIntensityMultiplier;
+            intensityMultiplier = (0.3f + (1f - 0.3f) * (1f - Mathf.Clamp01(Mathf.Sin((timeOfDay + 1f) * Mathf.Deg2Rad)))) * moonIntensityMultiplier * Mathf.Clamp01(1f - Mathf.Abs((currentMoonPhase + 1) - 6f) / 5f);
+
             lightColor = Color.Lerp(
                 new Color(0.7f, 0.8f, 1f),  //moonlight(cooler color)
                 new Color(0.4f, 0.5f, 0.7f), //deep night
