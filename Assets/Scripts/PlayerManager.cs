@@ -7,6 +7,7 @@ using Unity.Cinemachine;
 using Unity.Netcode;
 using Unity.VisualScripting;
 using UnityEditor;
+using UnityEditor.Rendering;
 using UnityEngine;
 using UnityEngine.Animations;
 using UnityEngine.Animations.Rigging;
@@ -692,7 +693,6 @@ public class PlayerManager : NetworkBehaviour
 
                     float delay = weaponData.GetNextLightAttackDelay();
                     Invoke("ResetSwingInProgress", delay);
-                    Debug.Log("delay " + delay);
                 }
                 else
                 {
@@ -813,7 +813,12 @@ public class PlayerManager : NetworkBehaviour
         if (isSwinging) yield break;
         isSwinging = true;
         swingingMoving = true;
+
+        Vector3 cameraDir = -cameraTransform.right;
         movingAttackHeading = transform.forward;
+        Vector3 blendedDir = (-cameraDir * targetCameraWeight) + (cameraDir * targetForwardWeight);
+
+        blendedDir = blendedDir.normalized;
         Vector3 movingSlashHeading = -transform.right;
         if(!isLightAttack || isMoving)
             canMove = false;
@@ -867,9 +872,9 @@ public class PlayerManager : NetworkBehaviour
         yield return new WaitForSeconds(actualPreslash);
 
         if (isLightAttack)
-            RequestSlashServerRpc(transform.position + Vector3.up, movingSlashHeading, true);
+            RequestSlashServerRpc(transform.position + Vector3.up, blendedDir, true);
         else
-            RequestSlashServerRpc(transform.position + Vector3.up, movingSlashHeading, false);
+            RequestSlashServerRpc(transform.position + Vector3.up, blendedDir, false);
 
 
         currentSlash = slashTransform;

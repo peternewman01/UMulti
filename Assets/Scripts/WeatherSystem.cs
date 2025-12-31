@@ -7,6 +7,7 @@ public class WeatherSystem : MonoBehaviour
     [SerializeField] private float minFogAttenuation = 10f;
     [SerializeField] private float maxFogAttenuation = 70f;
     [SerializeField] private float transitionSpeed = 0.25f;
+    [SerializeField] private Transform weatherSpawn;
 
     [SerializeField] private WeatherPreset[] weathers;
     private int weatherIndex;
@@ -64,6 +65,7 @@ public class WeatherSystem : MonoBehaviour
 
     void TickActiveWeather(WeatherPreset currWeather)
     {
+        if (isTransitioning) return;
         currWeather.currentValue = Mathf.Clamp01(currWeather.currentValue + Random.Range(-1f, 1f) * Time.deltaTime);
         if (currWeather.currentValue <= 0.05f)
             RegressWeather();
@@ -95,9 +97,9 @@ public class WeatherSystem : MonoBehaviour
         {
             targetWeatherInstance = Instantiate(
                 targetPreset.weatherPrefab,
-                transform.position,
+                weatherSpawn.position,
                 Quaternion.identity,
-                transform
+                weatherSpawn
             );
         }
     }
@@ -127,21 +129,20 @@ public class WeatherSystem : MonoBehaviour
             t
         );
 
-        clouds.shapeScale.value = Mathf.Lerp(
-            currentPreset.cloudShapeScale,
-            targetPreset.cloudShapeScale,
-            t
-        );
+        //clouds.shapeScale.value = LogLerp(
+        //    currentPreset.cloudShapeScale,
+        //    targetPreset.cloudShapeScale,
+        //    t);
+
+        //clouds.erosionScale.value =LogLerp(
+        //    currentPreset.cloudErosionScale,
+        //    targetPreset.cloudErosionScale,
+        //    t);
+
 
         clouds.erosionFactor.value = Mathf.Lerp(
             currentPreset.cloudErosionFactor,
             targetPreset.cloudErosionFactor,
-            t
-        );
-
-        clouds.erosionScale.value = Mathf.Lerp(
-            currentPreset.cloudErosionScale,
-            targetPreset.cloudErosionScale,
             t
         );
 
@@ -158,11 +159,11 @@ public class WeatherSystem : MonoBehaviour
             t
         );
 
-        RenderSettings.sun.intensity = Mathf.Lerp(
-            1f - currentPreset.cloudDarkness,
-            1f - targetPreset.cloudDarkness,
-            t
-        );
+        //RenderSettings.sun.intensity = Mathf.Lerp(
+        //    1f - currentPreset.cloudDarkness,
+        //    1f - targetPreset.cloudDarkness,
+        //    t
+        //);
 
         // Wind
         currentWind = Mathf.Lerp(
@@ -199,8 +200,8 @@ public class WeatherSystem : MonoBehaviour
         clouds.erosionScale.value = preset.cloudErosionScale;
         clouds.ambientOcclusionCurve.value = preset.cloudAmbientOcclusionCurve;
 
-        RenderSettings.ambientIntensity = 1f - preset.cloudDarkness;
-        RenderSettings.sun.intensity = 1f - preset.cloudDarkness;
+        //RenderSettings.ambientIntensity = 1f - preset.cloudDarkness;
+        //RenderSettings.sun.intensity = 1f - preset.cloudDarkness;
 
         currentWind = preset.windIntensity;
     }

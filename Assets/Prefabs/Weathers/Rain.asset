@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Rain
   m_EditorClassIdentifier: 
   weatherName: rain
-  initialValue: 0
+  initialValue: 0.5
   currentValue: 0
   fogIntensity: 0.33
   cloudDensity: 0.3
