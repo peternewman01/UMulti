@@ -2,9 +2,10 @@ using System;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using TerrainGen;
 
 //[CreateAssetMenu(fileName = "NewIslandGeneration", menuName = "MarchingVoxelCubes/TerrainGeneration/CircleIsland")]
-public abstract class IslandGenerator : TerrainGeneration
+public abstract class IslandGenerator : MonoBehaviour, ITerrainGeneration
 {
     [Serializable]
     protected struct HeightMaterials
@@ -54,4 +55,5 @@ public abstract class IslandGenerator : TerrainGeneration
     public abstract bool IsInsideIsland(Vector2Int chunk);
 
     public float GetFluxuation() => yFluxuation;
+    public abstract float[] CustomNoise(Vector3 pos, MarchingAlgorithm algorithm);
 }

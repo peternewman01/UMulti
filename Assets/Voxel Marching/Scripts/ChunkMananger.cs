@@ -8,7 +8,8 @@ using UnityEngine;
 public class ChunkMananger : NetworkBehaviour
 {
     public static ChunkMananger Instance;
-    [SerializeField] private MarchingAlgorithm marchingAlgorithmPrefab;
+    [SerializeField] private TerrainGenerationMarching marchingAlgorithmPrefab;
+    [SerializeField] private IslandGeneratorManager terrainGenManager;
 
     [Tooltip("How large a sub-cube is for chunk generation")]
     [SerializeField] private uint subCubeSize = 32;
@@ -171,9 +172,12 @@ public class ChunkMananger : NetworkBehaviour
 
         for (uint i = 0; i < subCubesPerChunk; i++)
         {
-            NetcodeConnector.SpawnMarchingAlgorithmRpc(marchingAlgorithmPrefab, out MarchingAlgorithm spawned, (ChunkToWorld(chunk) + new Vector3(0, i * subCubeSize, 0) * stepHeightAngle) * cubeSpacing, chunk, i);
-            spawned.name = GetChunkName(chunk) + "--SubChunk " + i;
-            spawned.transform.parent = spawnedChunk.transform;
+            TerrainGenerationMarching terrainGen = Instantiate(marchingAlgorithmPrefab, (ChunkToWorld(chunk) + new Vector3(0, i * subCubeSize, 0) * stepHeightAngle) * cubeSpacing, Quaternion.identity);
+            NetcodeConnector.SpawnMarchingAlgorithmRpc(marchingAlgorithmPrefab.GetAlgorithm(), out MarchingAlgorithm spawned, (ChunkToWorld(chunk) + new Vector3(0, i * subCubeSize, 0) * stepHeightAngle) * cubeSpacing, chunk, i);
+            terrainGen.name = GetChunkName(chunk) + "--SubChunk " + i;
+            terrainGen.transform.parent = spawnedChunk.transform;
+            spawned.Init();
+            spawned.GenerateIslandRpc(terrainGen.GenerateTerrainData((int)subCubeSize, terrainGenManager));
         }
 
         return subCubesPerChunk;

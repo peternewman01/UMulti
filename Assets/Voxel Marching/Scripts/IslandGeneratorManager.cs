@@ -8,7 +8,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "IslandManager", menuName = "MarchingVoxelCubes/TerrainGeneration/IslandManager")]
-public class IslandGeneratorManager : TerrainGeneration
+public class IslandGeneratorManager : MonoBehaviour, ITerrainGeneration
 {
     [Serializable]
     private struct WeightedGenerator
@@ -82,7 +82,7 @@ public class IslandGeneratorManager : TerrainGeneration
         return islandGenerator;
     }
 
-    public override float[] CustomNoise(Vector3 pos, MarchingAlgorithm algorithm)
+    public float[] CustomNoise(Vector3 pos, MarchingAlgorithm algorithm)
     {
         List<float> values = new();
 

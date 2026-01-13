@@ -1,9 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TerrainGen;
 
 [CreateAssetMenu(fileName = "FlamewasteGenerationManager", menuName = "MarchingVoxelCubes/TerrainGeneration/FlamewasteGenManager")]
-public class FlamewasteGeneratorManager : TerrainGeneration
+public class FlamewasteGeneratorManager : ITerrainGeneration
 {
     [SerializeField] private uint baseHeight = 32;
     [SerializeField] private float powerScaling = 1.2f;
@@ -74,7 +75,7 @@ public class FlamewasteGeneratorManager : TerrainGeneration
         ChunkMananger.Instance.AddChunks(chunks.ToArray());
     }
 
-    public override float[] CustomNoise(Vector3 pos, MarchingAlgorithm algorithm)
+    public float[] CustomNoise(Vector3 pos, MarchingAlgorithm algorithm)
     {
         if(needsToInitilize) Init();
 

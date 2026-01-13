@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using Unity.VisualScripting;
 using UnityEngine;
+using TerrainGen;
 
 [CreateAssetMenu(fileName = "NewIslandGeneration", menuName = "MarchingVoxelCubes/TerrainGeneration/CircleIsland")]
 public class CircleIslandGenerator : IslandGenerator

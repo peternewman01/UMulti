@@ -1,22 +1,24 @@
+using Palmmedia.ReportGenerator.Core;
 using System.Collections.Generic;
+using Unity.VisualScripting.FullSerializer;
 using UnityEngine;
 
-public class FlamewasteMarchingAlgorithm : MarchingAlgorithm
+public class FlamewasteMarchingAlgorithm : TerrainGenerationMarching
 {
-    protected override void CreateTerrainMapDataAt(int x, int z)
+    protected override void ProcessTerrainData(int x, int z, float[] yData, float[,,] terrainData, int subChunk, int voxelArea, int yOffset)
     {
-        float[] airGaps = generation.CustomNoise(ChunkMananger.Instance.ChunkToWorld(chunk) + new Vector3(x, 0, z), this);
+        SortedDictionary<int, float> pointData = new();
         float min = 0f;
-        float max = airGaps[0];
-        uint yOffset = subChunk * voxelArea;
+        float max = yData[0];
 
-        for (uint y = 0; y < voxelArea + 1; y++)
+        for (int y = 0; y < voxelArea + 1; y++)
         {
-            uint yValue = y + yOffset;
-            float point = GetPointValue(yValue, min, max);
-            if (point > 0f) hasData = true;
-            terrainMap[x, y, z] = point;
+            int yValue = y + yOffset;
+            float point = algorithm.GetPointValue(yValue, min, max);
+            algorithm.SetHasData(point > 0f);
+            terrainData[x, y, z] = point;
         }
 
+        return;
     }
 }

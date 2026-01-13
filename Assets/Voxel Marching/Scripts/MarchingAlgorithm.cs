@@ -14,10 +14,8 @@ using UnityEngine;
 [RequireComponent(typeof(MeshFilter))]
 [RequireComponent(typeof(MeshRenderer))]
 
-public abstract class MarchingAlgorithm : NetworkBehaviour
+public class MarchingAlgorithm : NetworkBehaviour
 {
-    
-    public TerrainGeneration generation = null; // Set in the editor
     protected bool hasData = false;
     protected uint voxelArea;
     protected Vector2Int chunk;
@@ -30,18 +28,12 @@ public abstract class MarchingAlgorithm : NetworkBehaviour
 
     public Action TerrainPopulationComplete;
     public Action<Vector3, MarchingAlgorithm> MeshColliderUpdated;
-    public override void OnNetworkSpawn()
-    {
-        base.OnNetworkSpawn();
-        Init();
-        GenerateIslandRpc();
-    }
 
 
     [Rpc(SendTo.Server)]
-    public void GenerateIslandRpc()
+    public void GenerateIslandRpc(float[,,] terrainData)
     {
-        PopulateTerrainMap();
+        PopulateTerrainMap(terrainData);
         gameObject.SetActive(hasData);
     }
 
@@ -65,14 +57,12 @@ public abstract class MarchingAlgorithm : NetworkBehaviour
     /// </summary>
     private void PopulateTerrainMap()
     {  
-        for (int x = 0; x < voxelArea + 1; x++)
-        {
-            for (int z = 0; z < voxelArea + 1; z++)
-            {
-                CreateTerrainMapDataAt(x, z);
-            }
-        }
+        TerrainPopulationComplete?.Invoke();
+    }
 
+    public void PopulateTerrainMap(float[,,] data)
+    {
+        terrainMap = data;
         TerrainPopulationComplete?.Invoke();
     }
 
@@ -83,7 +73,6 @@ public abstract class MarchingAlgorithm : NetworkBehaviour
     /// </summary>
     /// <param name="x">x sub-coord</param>
     /// <param name="z">z sub-coord</param>
-    protected abstract void CreateTerrainMapDataAt(int x, int z);
 
     /// <summary>
     /// O(n^3) complexity, where n is voxelArea.
@@ -193,7 +182,7 @@ public abstract class MarchingAlgorithm : NetworkBehaviour
         return index;
     }
 
-    protected virtual float GetPointValue(float y, float min, float max)
+    public virtual float GetPointValue(float y, float min, float max)
     {
         return y >= min - 0.5f && y <= max + 0.5f /*Q1*/ ? /*Q1-T*/ y <= max - 0.5f /*Q2*/ ? /*Q2-T*/ y >= min + 0.5f /*Q3*/ ?
      /*Q3-T*/ 1f : /*Q3-F*/ y > min /*Q4*/ ? /*Q4-T*/ y - min : /*Q4-F*/ min - y :
@@ -204,6 +193,9 @@ public abstract class MarchingAlgorithm : NetworkBehaviour
     public Vector2Int GetChunk() => chunk;
     public int GetSubChunk() => (int)subChunk;
     public int GetVoxelArea() => (int)voxelArea;
+
+    public bool HasData() => hasData;
+    public void SetHasData(bool value) => hasData = value;
 
     internal object GetGenerator()
     {

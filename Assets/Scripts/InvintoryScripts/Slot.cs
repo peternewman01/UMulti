@@ -141,7 +141,7 @@ public class Slot : MonoBehaviour
     }
     public void ScaleSetImage(Image target, Sprite newImage)
     {
-        if (!target.gameObject.active)
+        if (!target.gameObject.activeInHierarchy)
         {
             target.gameObject.SetActive(true);
         }

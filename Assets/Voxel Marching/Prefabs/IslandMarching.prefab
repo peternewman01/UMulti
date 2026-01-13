@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 1995180507462551992}
   - component: {fileID: 8624352617437211986}
   - component: {fileID: 4996782206289865368}
+  - component: {fileID: 7223812631164159460}
   - component: {fileID: 2150305323032263239}
   m_Layer: 8
   m_Name: IslandMarching
@@ -136,6 +137,19 @@ MonoBehaviour:
   AutoObjectParentSync: 1
   SyncOwnerTransformWhenParented: 1
   AllowOwnerToParent: 0
+--- !u!114 &7223812631164159460
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7649833412591417169}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: acec31069bcdff846ae29d51932d9b81, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ShowTopMostFoldoutHeaderGroup: 1
 --- !u!114 &2150305323032263239
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -149,4 +163,3 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
-  generation: {fileID: 11400000, guid: 77769e6fa5352c040b979e70a3597736, type: 2}
